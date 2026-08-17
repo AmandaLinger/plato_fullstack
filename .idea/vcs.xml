@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$USER_HOME$/Documentos/PlatoBack" vcs="Git" />
+    <mapping directory="$USER_HOME$/Documentos/PlatoFront" vcs="Git" />
   </component>
 </project>
