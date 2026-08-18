@@ -1,0 +1,58 @@
+main {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-image: var(--purple-gradient);
+  padding: 32px 16px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-container {
+  box-sizing: border-box;
+  width: min(100%, 960px);
+  margin: 0 auto;
+  border-radius: 16px;
+  background-color: var(--plato-background);
+  padding: 24px;
+}
+
+
+
+header {
+  margin-bottom: 24px;
+
+  h1,
+  p {
+    margin: 0;
+  }
+
+  h1 {
+    color: var(--plato-purple);
+    font-size: var(--ts-32);
+  }
+
+  > p:not(.eyebrow) {
+    margin-top: 8px;
+    color: var(--plato-text-secondary);
+  }
+}
+
+.eyebrow {
+  margin-bottom: 4px;
+  color: var(--plato-text-secondary);
+  font-size: var(--ts-16);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media (min-width: 700px) {
+  main {
+    padding: 56px 24px;
+  }
+
+  .page-container {
+    padding: 32px;
+  }
+}

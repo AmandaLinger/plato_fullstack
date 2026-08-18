@@ -1,0 +1,39 @@
+<div class="overlay" (click)="closed.emit()">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="reserve-table-title" (click)="$event.stopPropagation()">
+    <button class="close-button" type="button" aria-label="Fechar" (click)="closed.emit()">×</button>
+    <p class="eyebrow">Reserva</p>
+    <h2 id="reserve-table-title">Reservar mesa</h2>
+
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <label for="reserva-mesa">Mesa</label>
+      <select id="reserva-mesa" formControlName="mesaNumero">
+        <option value="" disabled>Selecione uma mesa</option>
+        @for (mesa of mesas; track mesa.numero) {
+          @if (mesa.status === 'Livre') {
+            <option [value]="mesa.numero">Mesa {{ mesa.numero }}</option>
+          }
+        }
+      </select>
+      @if (form.controls.mesaNumero.touched && form.controls.mesaNumero.invalid) {
+        <small class="field-error">Selecione uma mesa livre.</small>
+      }
+
+      <label for="reserva-cliente">Nome do cliente</label>
+      <input id="reserva-cliente" type="text" formControlName="clienteNome" autocomplete="name">
+      @if (form.controls.clienteNome.touched && form.controls.clienteNome.invalid) {
+        <small class="field-error">Informe o nome do cliente.</small>
+      }
+
+      <label for="reserva-horario">Horário da reserva</label>
+      <input id="reserva-horario" type="time" formControlName="horario">
+      @if (form.controls.horario.touched && form.controls.horario.invalid) {
+        <small class="field-error">Informe o horário da reserva.</small>
+      }
+
+      <div class="actions">
+        <button class="secondary-button" type="button" (click)="closed.emit()">Cancelar</button>
+        <button class="primary-button" type="submit" [disabled]="form.invalid">Salvar</button>
+      </div>
+    </form>
+  </section>
+</div>

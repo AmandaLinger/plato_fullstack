@@ -1,0 +1,34 @@
+<main>
+
+  <div class="logo-escrita">
+    plato
+  </div>
+
+  <form class="container">
+    <div class="img-container">
+      <img src="/logo_plato.svg" alt="ícone de login">
+    </div>
+
+    <div class="inputs">
+      <div class="flex-column mb-8px">
+        <label for="usuario" class="mb-4px">Usuario</label>
+        <input name="usuario" placeholder="usuario" />
+      </div>
+
+      <div class="flex-column mb-8px">
+        <label for="senha" class="mb-4px">Senha</label>
+        <input name="senha" type="password" placeholder="********" />
+      </div>
+    </div>
+
+    <div class="container-btn">
+      <app-btn-orange routerLink="/home">
+        login
+      </app-btn-orange>
+    </div>
+    <a routerLink="/cadastrar-restaurante" class="link-cadastro">
+      Cadastrar restaurante</a>
+  </form>
+
+  <app-footer-component/>
+</main>

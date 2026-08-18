@@ -1,0 +1,4 @@
+@use '../configuracoes-child';
+
+.state-message { color: var(--plato-text-secondary); text-align: center; }
+.error-message { color: var(--plato-error); text-align: center; }

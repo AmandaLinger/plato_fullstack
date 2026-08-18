@@ -1,0 +1,16 @@
+<main class="settings-page">
+  <section class="settings-container mesas-container" aria-labelledby="tables-title">
+    <app-btn-back />
+    <header class="settings-header"><div><h1 id="tables-title">Mesas</h1><p>Defina a quantidade de mesas do estabelecimento.</p></div></header>
+    <div class="tables-card">
+      <p>Total atual de mesas</p><strong>{{ totalMesas }}</strong>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <label for="total-mesas">Novo total</label>
+        <input id="total-mesas" type="number" min="1" formControlName="totalMesas">
+        @if (form.controls.totalMesas.touched && form.controls.totalMesas.invalid) { <small>Informe um número inteiro maior que zero.</small> }
+        <button class="action-button" type="submit">Salvar alterações</button>
+      </form>
+    </div>
+    @if (saved) { <p class="feedback-message" role="status">Quantidade de mesas atualizada.</p> }
+  </section>
+</main>

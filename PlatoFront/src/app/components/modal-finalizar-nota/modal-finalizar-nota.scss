@@ -1,0 +1,11 @@
+@use '../modal-detalhe-produto/modal-detalhe-produto.scss' as *;
+
+.modal { width: min(100%, 540px); }
+.products { margin: 20px 0; border-top: 1px solid var(--plato-border); border-bottom: 1px solid var(--plato-border); padding: 16px 0;
+  h3 { margin: 0; font-size: var(--ts-20); }
+  ul { display: grid; gap: 8px; margin: 12px 0; padding: 0; list-style: none; color: var(--plato-text-secondary); }
+}
+.total { display: flex; justify-content: space-between; border-top: 1px solid var(--plato-border); padding-top: 12px; color: var(--plato-purple-dark); font-size: var(--ts-20); font-weight: 700; }
+form { display: grid; gap: 8px; }
+select { border: 1px solid var(--plato-border); border-radius: 8px; background-color: var(--plato-surface); padding: 12px; color: var(--plato-text); font: inherit; }
+.primary-button:disabled { cursor: not-allowed; opacity: 0.55; }

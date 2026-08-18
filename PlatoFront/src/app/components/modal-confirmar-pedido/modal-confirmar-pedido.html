@@ -1,0 +1,50 @@
+<div class="overlay" (click)="closed.emit()">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-order-title" (click)="$event.stopPropagation()">
+    <button class="close-button" type="button" aria-label="Fechar" (click)="closed.emit()">×</button>
+    <p class="eyebrow">Conferência</p>
+    <h2 id="confirm-order-title">Confirmar pedido</h2>
+
+    <ul class="items-list">
+      @for (item of itens; track $index) {
+        <li><span>{{ item.quantidade }}x {{ item.produto.nome }}</span><strong>{{ item.subtotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong></li>
+      }
+    </ul>
+
+    <div class="total"><span>Total</span><strong>{{ valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong></div>
+
+    <form [formGroup]="form" (ngSubmit)="confirmOrder()">
+      <label for="mesa">Mesa</label>
+      <input id="mesa" type="number" min="1" [max]="totalMesas()" step="1" formControlName="mesa" placeholder="Ex.: 12">
+      @if (form.controls.mesa.touched && form.controls.mesa.invalid) {
+        @if (form.controls.mesa.hasError('max')) {
+          <small class="field-error">A mesa deve estar entre 1 e {{ totalMesas() }}.</small>
+        } @else {
+          <small class="field-error">Informe um número inteiro de mesa maior que zero.</small>
+        }
+      }
+      <label for="garcom">Garçom</label>
+      @if (isLoadingFuncionarios) {
+        <select id="garcom" formControlName="garcomId" [disabled]="true">
+          <option value="">Carregando funcionários...</option>
+        </select>
+      } @else {
+        <select id="garcom" formControlName="garcomId">
+          <option value="" disabled>Selecione um garçom</option>
+          @for (funcionario of funcionarios; track funcionario.id) {
+            <option [value]="funcionario.id">{{ funcionario.nome }}</option>
+          }
+        </select>
+      }
+      @if (funcionariosError) {
+        <small class="field-error">{{ funcionariosError }}</small>
+      } @else if (form.controls.garcomId.touched && form.controls.garcomId.invalid) {
+        <small class="field-error">Selecione um garçom.</small>
+      }
+
+      <div class="actions">
+        <button class="secondary-button" type="button" (click)="closed.emit()">Voltar</button>
+        <button class="primary-button" type="submit" [disabled]="form.invalid || isLoadingFuncionarios || funcionarios.length === 0 || itens.length === 0">Confirmar pedido</button>
+      </div>
+    </form>
+  </section>
+</div>

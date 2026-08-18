@@ -1,0 +1,118 @@
+@use '../page-layout';
+
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+}
+
+.btn-reserva{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  border: none;
+  background-image: var(--orange-gradient);
+  font-weight: bold;
+  color: var(--plato-surface);
+  font-size: var(--ts-16);
+
+  padding: 16px;
+}
+
+.reservation-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.table-card {
+  border: 1px solid var(--plato-border);
+  border-radius: 12px;
+  background-color: var(--plato-surface);
+  padding: 20px 16px;
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--plato-purple);
+      box-shadow: 0 4px 12px rgb(76 29 149 / 16%);
+      outline: none;
+    }
+  }
+
+  span,
+  p {
+    color: var(--plato-text-secondary);
+  }
+
+  strong {
+    display: block;
+    margin: 4px 0 12px;
+    color: var(--plato-purple-dark);
+    font-size: var(--ts-32);
+  }
+
+  p {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  &.livre p {
+    color: var(--plato-success);
+  }
+
+  &.ocupada p {
+    color: var(--plato-error);
+  }
+
+  &.aguardando-conta p {
+    color: var(--plato-warning);
+  }
+
+  &.reservada p {
+    color: var(--plato-warning);
+  }
+}
+
+.reservation-details {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+
+  span,
+  time {
+    color: var(--plato-text);
+  }
+
+  button {
+    width: fit-content;
+    border: 1px solid var(--plato-error);
+    border-radius: 6px;
+    background: transparent;
+    padding: 6px 8px;
+    color: var(--plato-error);
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--ts-12);
+  }
+}
+
+@media (min-width: 700px) {
+  .tables-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-height: 700px;
+  }
+
+  .btn-reserva{
+    font-size: var(--ts-20);
+    padding: 16px;
+  }
+}

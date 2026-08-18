@@ -1,0 +1,54 @@
+main{
+  background-image: var(--purple-gradient);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+  .container{
+    background-color: var(--plato-surface);
+    padding: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 16px;
+
+    margin: 24px;
+  }
+
+  .img-container{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  img{
+    height: 150px;
+  }
+}
+
+
+.input-container{
+  flex-direction: column;
+  margin-bottom: 16px;
+
+  label{
+    font-size: var(--ts-20);
+    color: var(--plato-purple);
+  }
+  input{
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: var(--ts-20);
+  }
+}
+
+.btn-back{
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}

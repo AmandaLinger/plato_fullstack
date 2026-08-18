@@ -1,0 +1,30 @@
+<div class="overlay" (click)="closed.emit()">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title" (click)="$event.stopPropagation()">
+    <button class="close-button" type="button" aria-label="Fechar" (click)="closed.emit()">×</button>
+
+    @if (produto; as selectedProduct) {
+      <img class="product-image" [src]="selectedProduct.imagemUrl" [alt]="selectedProduct.nome">
+      <p class="eyebrow">Detalhe do produto</p>
+      <h2 id="product-modal-title">{{ selectedProduct.nome }}</h2>
+      <p class="description">{{ selectedProduct.descricao }}</p>
+      <strong class="price">{{ selectedProduct.preco | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+
+      <div class="quantity-control">
+        <span>Quantidade</span>
+        <div>
+          <button type="button" aria-label="Diminuir quantidade" (click)="decreaseQuantity()">−</button>
+          <output aria-live="polite">{{ quantidade }}</output>
+          <button type="button" aria-label="Aumentar quantidade" (click)="increaseQuantity()">+</button>
+        </div>
+      </div>
+
+      <label for="observacoes">Observações</label>
+      <textarea id="observacoes" [(ngModel)]="observacoes" placeholder="Ex.: sem cebola"></textarea>
+
+      <div class="actions">
+        <button class="secondary-button" type="button" (click)="closed.emit()">Cancelar</button>
+        <button class="primary-button" type="button" (click)="addToOrder()">Adicionar ao pedido</button>
+      </div>
+    }
+  </section>
+</div>

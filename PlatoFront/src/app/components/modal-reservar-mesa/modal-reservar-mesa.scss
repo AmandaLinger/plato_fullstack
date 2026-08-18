@@ -1,0 +1,5 @@
+@use '../modal-confirmar-pedido/modal-confirmar-pedido.scss' as *;
+
+.modal {
+  width: min(100%, 480px);
+}

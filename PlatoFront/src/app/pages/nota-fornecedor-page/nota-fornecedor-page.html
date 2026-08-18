@@ -1,0 +1,49 @@
+<main class="settings-page">
+  <section class="settings-container" aria-labelledby="supplier-invoices-title">
+    <app-btn-back />
+    <header class="settings-header">
+      <div>
+        <h1 id="supplier-invoices-title">Notas de fornecedores</h1>
+        <p>Consulte e registre documentos fiscais recebidos.</p>
+      </div>
+      <div class="container-position">
+        <button class="action-button" type="button"
+                aria-label="Adicionar nota de fornecedor" (click)="isModalOpen = true">
+          +
+        </button>
+      </div>
+    </header>
+
+    @if (errorMessage) { <p class="error-message" role="alert">{{ errorMessage }}</p> }
+    @if (successMessage) { <p class="feedback-message" role="status">{{ successMessage }}</p> }
+
+    @if (isLoading) {
+      <section class="state-message" aria-live="polite" aria-busy="true"><span class="loading-indicator" aria-hidden="true"></span><p>Carregando notas...</p></section>
+    } @else if (notas.length === 0) {
+      <section class="empty-state">
+        <img src="/lista_vazia.png" alt="Nenhuma nota cadastrada">
+        <p>nenhuma nota de fornecedor <br> cadastrada</p>
+      </section>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Fornecedor</th><th>Número da nota</th><th>Data de emissão</th><th>Valor total</th></tr></thead>
+          <tbody>
+            @for (nota of notas; track nota.id) {
+              <tr>
+                <td>{{ nota.fornecedorNome }}</td>
+                <td>{{ nota.numeroNota || 'Não informado' }}</td>
+                <td>{{ nota.dataEmissao | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ nota.valorTotal === null ? 'Não informado' : (nota.valorTotal | currency: 'BRL' : 'symbol' : '1.2-2') }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>
+
+@if (isModalOpen) {
+  <app-modal-nota-fornecedor [fornecedores]="fornecedores" (closed)="isModalOpen = false" (saved)="saveNota($event)" />
+}

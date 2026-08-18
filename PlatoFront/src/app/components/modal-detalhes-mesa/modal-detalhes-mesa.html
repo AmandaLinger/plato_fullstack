@@ -1,0 +1,41 @@
+<div class="overlay" (click)="closed.emit()">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="table-consumption-title" (click)="$event.stopPropagation()">
+    <button class="close-button" type="button" aria-label="Fechar detalhes da mesa" (click)="closed.emit()">×</button>
+    <p class="eyebrow">Consumo da mesa</p>
+    <h2 id="table-consumption-title">Mesa {{ mesaNumero | number: '2.0-0' }}</h2>
+
+    @if (isLoading) {
+      <section class="state-message" aria-live="polite" aria-busy="true"><span class="loading-indicator" aria-hidden="true"></span><p>Carregando consumo...</p></section>
+    } @else if (errorMessage) {
+      <p class="error-message" role="alert">{{ errorMessage }}</p>
+    } @else if (consumo; as currentConsumption) {
+      @if (currentConsumption.abertoEm) {
+        <p class="opened-at">Atendimento aberto em {{ currentConsumption.abertoEm | date: 'dd/MM/yyyy HH:mm' }}</p>
+      }
+      @if (currentConsumption.itens.length === 0) {
+        <p class="empty-message">Nenhum item consumido.</p>
+      } @else {
+        <div class="items-table-wrapper">
+          <table>
+            <thead><tr><th>Item</th><th>Qtd.</th><th>Unitário</th><th>Subtotal</th></tr></thead>
+            <tbody>
+              @for (item of currentConsumption.itens; track item.id) {
+                <tr>
+                  <td>{{ item.produtoNome }} @if (item.observacoes) { <small>{{ item.observacoes }}</small> }</td>
+                  <td>{{ item.quantidade }}</td>
+                  <td>{{ item.precoUnitario | currency: 'BRL' : 'symbol' : '1.2-2' }}</td>
+                  <td>{{ item.subtotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+      <div class="total"><span>Total acumulado</span><strong>{{ currentConsumption.valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong></div>
+      <div class="actions">
+        <button class="secondary-button" type="button" (click)="closed.emit()">Fechar</button>
+        <button class="primary-button" type="button" (click)="addItems.emit()">Adicionar mais itens</button>
+      </div>
+    }
+  </section>
+</div>

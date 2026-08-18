@@ -1,0 +1,69 @@
+<main>
+  <section class="page-container" aria-labelledby="page-title">
+    <app-btn-back />
+    <header>
+      <p class="eyebrow">Financeiro</p>
+      <h1 id="page-title">Notas fiscais do dia</h1>
+      <p>Consulte os pedidos finalizados em uma data específica.</p>
+    </header>
+
+    <form class="date-filter" (ngSubmit)="loadNotasFiscais()">
+      <label for="data-notas">Data dos pedidos</label>
+      <div>
+        <input id="data-notas" type="date" name="dataSelecionada" [(ngModel)]="dataSelecionada" required>
+        <button type="submit" [disabled]="!dataSelecionada || isLoading">Filtrar</button>
+      </div>
+    </form>
+
+    <section class="summary" aria-label="Resumo das notas fiscais">
+      <article class="summary-card">
+        <span>Total de notas</span>
+        <strong>{{ totalNotas }}</strong>
+      </article>
+      <article class="summary-card">
+        <span>Valor acumulado</span>
+        <strong>{{ valorTotalAcumulado | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+      </article>
+    </section>
+
+    @if (isLoading) {
+      <section class="state-message" aria-live="polite" aria-busy="true">
+        <span class="loading-indicator" aria-hidden="true"></span>
+        <p>Carregando notas fiscais...</p>
+      </section>
+    } @else if (errorMessage) {
+      <section class="state-message error-state" role="alert">
+        <p>{{ errorMessage }}</p>
+        <app-btn-orange (click)="loadNotasFiscais()">Tentar novamente</app-btn-orange>
+      </section>
+    } @else if (notasFiscais.length === 0) {
+      <section class="state-message">
+        <h2>Nenhum pedido finalizado nesta data</h2>
+        <p>Selecione outra data para consultar.</p>
+      </section>
+    } @else {
+      <section class="invoice-list" aria-label="Lista de notas fiscais emitidas">
+        @for (notaFiscal of notasFiscais; track notaFiscal.id) {
+          <article class="invoice-card">
+            <div class="invoice-heading">
+              <div>
+                <span class="invoice-number">NF {{ notaFiscal.numero }}</span>
+                <time [attr.datetime]="notaFiscal.emitidaEm">Pedido de {{ notaFiscal.emitidaEm + 'T12:00:00' | date: 'dd/MM/yyyy' }}</time>
+              </div>
+              <strong>{{ notaFiscal.valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+            </div>
+
+            <div class="products">
+              <span>Produtos</span>
+              <ul>
+                @for (produto of notaFiscal.produtos; track produto.nome) {
+                  <li>{{ produto.quantidade }}x {{ produto.nome }}</li>
+                }
+              </ul>
+            </div>
+          </article>
+        }
+      </section>
+    }
+  </section>
+</main>

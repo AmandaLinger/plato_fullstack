@@ -1,0 +1,50 @@
+<main>
+  <section class="page-container" aria-labelledby="page-title">
+    <app-btn-back />
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Gerenciamento</p>
+        <h1 id="page-title">Cardápio</h1>
+        <p>Cadastre e atualize os produtos disponíveis na loja.</p>
+      </div>
+      <button class="add-button" type="button" aria-label="Adicionar produto" (click)="openCreateModal()">+</button>
+    </header>
+
+    @if (errorMessage) {
+      <div class="error-message" role="alert">{{ errorMessage }}</div>
+    }
+
+    @if (isLoading) {
+      <section class="state-message" aria-live="polite" aria-busy="true">
+        <span class="loading-indicator" aria-hidden="true"></span>
+        <p>Carregando produtos...</p>
+      </section>
+    } @else if (produtos.length === 0) {
+      <section class="empty-state">
+        <img src="/lista_vazia.png" alt="Nenhum produto cadastrado">
+        <p>nenhum produto <br> cadastrado</p>
+      </section>
+    } @else {
+      <section class="products-grid" aria-label="Produtos cadastrados">
+        @for (produto of produtos; track produto.id) {
+          <article class="product-card">
+            <img [src]="produto.imagemUrl" [alt]="produto.nome">
+            <div class="product-content">
+              <h2>{{ produto.nome }}</h2>
+              <p>{{ produto.descricao }}</p>
+              <strong>{{ produto.preco | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+            </div>
+            <div class="card-actions">
+              <button type="button" (click)="openEditModal(produto)">Editar</button>
+              <button class="delete-button" type="button" (click)="deleteProduto(produto)">Excluir</button>
+            </div>
+          </article>
+        }
+      </section>
+    }
+  </section>
+</main>
+
+@if (isModalOpen) {
+  <app-modal-produto-form [produto]="produtoSelecionado" (closed)="closeModal()" (saved)="saveProduto($event)" />
+}

@@ -1,0 +1,41 @@
+button{
+  background-image: var(--orange-gradient);
+  color: var(--plato-surface);
+  font-size: var(--btn-font-size, var(--ts-24));
+  border: none;
+  border-radius: 16px;
+  padding: 16px 24px;
+  font-weight: 700;
+}
+button:hover{
+  scale: 1.1;
+  cursor:pointer
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+button:disabled:hover {
+  scale: 1;
+}
+
+@media screen and (min-width: 700px){
+  button{
+    scale:1.1;
+  }
+  button:hover{
+    scale: 1.2;
+  }
+}
+
+@media screen and (min-width: 1700px){
+  button{
+    scale:1.2;
+  }
+  button:hover{
+    transition: ease-in-out 0.2s ;
+    scale: 1.3;
+  }
+}

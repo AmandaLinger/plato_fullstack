@@ -1,0 +1,34 @@
+@use '../modal-detalhe-produto/modal-detalhe-produto.scss' as *;
+
+.modal { width: min(100%, 560px); }
+
+form { display: grid; gap: 8px; margin-top: 20px; }
+
+input, textarea { border: 1px solid var(--plato-border); border-radius: 8px; padding: 12px; font: inherit; }
+
+textarea { min-height: 96px; }
+
+.file-input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; clip-path: inset(50%); }
+
+.upload-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px dashed var(--plato-purple);
+  border-radius: 8px;
+  padding: 36px;
+  color: var(--plato-purple-dark);
+  cursor: pointer;
+  font-weight: 700;
+
+  img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+  }
+}
+.image-preview { width: 100%; height: 160px; border-radius: 8px; object-fit: cover; background-color: var(--plato-border); }
+.field-error { color: var(--plato-error); }
+.primary-button:disabled, .secondary-button:disabled, .close-button:disabled { cursor: not-allowed; opacity: 0.55; }

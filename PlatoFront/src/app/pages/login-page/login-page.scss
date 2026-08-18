@@ -1,0 +1,157 @@
+main{
+  height: 100vh;
+
+  background-image:var(--purple-gradient) ;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-escrita{
+  position: absolute;
+  top: 50px;
+  font-size: var(--ts-48);
+  font-family: 'Ubuntu', sans-serif;
+  color: var(--plato-surface);
+}
+
+.container{
+  background-color: var(--plato-background);
+  padding:32px 24px 48px 24px;
+  border-radius: 16px;
+  position: relative;
+}
+
+.img-container {
+  display: flex;
+  justify-content: center;
+
+  img{
+    height: 250px;
+    margin-block: 16px;
+  }
+}
+
+
+.inputs{
+  .flex-column{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mb-8px{
+    margin-bottom: 8px;
+  }
+
+  .mb-4px{
+    margin-bottom: 4px;
+  }
+
+  label{
+    color: var(--plato-purple-dark);
+    font-weight: bold;
+    font-size: var(--ts-16);
+  }
+
+  input{
+    padding: 8px;
+    border-radius: 8px;
+    border: 1ps solid var(--plato-purple-dark);
+    font-size: var(--ts-16);
+  }
+}
+
+.container-btn{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -24px;
+  display: flex;
+  justify-content: center;
+}
+
+.link-cadastro{
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  color: var(--plato-surface);
+  font-size: var(--ts-16);
+
+
+  bottom: -70px;
+}
+
+
+@media screen and (min-width: 700px){
+  .container{
+    padding:40px 32px 56px 32px;
+  }
+
+  .img-container {
+    img{
+      height: 350px;
+    }
+  }
+
+
+  .inputs{
+    .mb-8px{
+      margin-bottom: 16px;
+    }
+
+    .mb-4px{
+      margin-bottom: 8px;
+    }
+
+    label{
+      font-size: var(--ts-16);
+    }
+
+    input{
+      padding: 8px;
+      font-size: var(--ts-16);
+    }
+  }
+
+  .link-cadastro{
+    font-size: var(--ts-20);
+  }
+}
+
+@media screen and (min-width: 1700px){
+  .logo-escrita{
+    font-size: var(--ts-56);
+  }
+
+  .container{
+    padding:40px 32px 56px 32px;
+  }
+
+  .img-container {
+    img{
+      height: 400px;
+    }
+  }
+
+
+  .inputs{
+    .mb-8px{
+      margin-bottom: 24px;
+    }
+
+    .mb-4px{
+      margin-bottom: 8px;
+    }
+
+    label{
+      font-size: var(--ts-20);
+    }
+
+    input{
+      padding: 16px;
+      font-size: var(--ts-20);
+    }
+  }
+}

@@ -1,0 +1,32 @@
+<main>
+
+  <div class="position-config">
+    <app-btn-config (configClick)="openConfig()" />
+  </div>
+
+  <div class="container">
+    <app-item-home routerLink="/fazer-pedido">
+      Fazer pedido
+    </app-item-home>
+
+    <app-item-home routerLink="/finalizar-pedido">
+      Finalizar pedido
+    </app-item-home>
+
+    <app-item-home routerLink="/consultar-mesas">
+      Consultar mesas
+    </app-item-home>
+
+    <app-item-home routerLink="/notas-do-dia">
+      Notas do dia
+    </app-item-home>
+
+    <app-item-home>
+      Outros
+    </app-item-home>
+  </div>
+
+  @if (isConfigOpen) {
+    <app-tela-config (closed)="closeConfig()" />
+  }
+</main>

@@ -1,0 +1,58 @@
+<div class="overlay" (click)="close()">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="finalize-invoice-title" (click)="$event.stopPropagation()">
+    <button class="close-button" type="button" aria-label="Fechar" [disabled]="isSaving" (click)="close()">×</button>
+
+    @if (notaFiscal; as nota) {
+      <p class="eyebrow">Fechamento de caixa</p>
+      <h2 id="finalize-invoice-title">Finalizar nota — {{ nota.mesa }}</h2>
+
+      <section class="products" aria-label="Produtos da nota fiscal">
+        <h3>Produtos da nota</h3>
+        <ul>
+          @for (produto of nota.produtos; track produto.nome) {
+            <li><span>{{ produto.quantidade }}x {{ produto.nome }}</span></li>
+          }
+        </ul>
+        <div class="total"><span>Total</span><strong>{{ nota.valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong></div>
+      </section>
+
+      <form (ngSubmit)="finalizeNote()">
+        <label for="operador">Caixa / Operador</label>
+        @if (isLoadingOperadores) {
+          <select id="operador" name="operador" [disabled]="true">
+            <option>Carregando funcionários...</option>
+          </select>
+        } @else {
+          <select id="operador" name="operador" [(ngModel)]="operadorId" [disabled]="isSaving" required>
+            <option value="" disabled>Selecione o operador</option>
+            @for (operador of operadores; track operador.id) {
+              <option [value]="operador.id">{{ operador.nome }}</option>
+            }
+          </select>
+        }
+        @if (operadoresError) {
+          <small class="field-error" role="alert">{{ operadoresError }}</small>
+        } @else if (!isLoadingOperadores && operadores.length === 0) {
+          <small class="field-error">Nenhum funcionário cadastrado.</small>
+        }
+
+        <label for="forma-pagamento">Forma de pagamento</label>
+        <select id="forma-pagamento" name="formaPagamento" [(ngModel)]="formaPagamento" [disabled]="isSaving" required>
+          <option value="" disabled>Selecione a forma de pagamento</option>
+          @for (forma of formasPagamento; track forma.valor) {
+            <option [value]="forma.valor">{{ forma.rotulo }}</option>
+          }
+        </select>
+
+        @if (saveError) {
+          <small class="field-error" role="alert">{{ saveError }}</small>
+        }
+
+        <div class="actions">
+          <button class="secondary-button" type="button" [disabled]="isSaving" (click)="close()">Cancelar</button>
+          <button class="primary-button" type="submit" [disabled]="!canFinalize">{{ isSaving ? 'Finalizando...' : 'Finalizar nota' }}</button>
+        </div>
+      </form>
+    }
+  </section>
+</div>

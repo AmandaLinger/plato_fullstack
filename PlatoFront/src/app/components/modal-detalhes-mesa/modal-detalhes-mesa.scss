@@ -1,0 +1,19 @@
+@use '../modal-detalhe-produto/modal-detalhe-produto.scss' as *;
+
+.modal { width: min(100%, 760px); }
+.opened-at { margin: 8px 0 20px; color: var(--plato-text-secondary); }
+.items-table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { border-bottom: 1px solid var(--plato-border); padding: 12px 8px; text-align: left; white-space: nowrap; }
+th { color: var(--plato-purple-dark); }
+td { color: var(--plato-text); }
+td small { display: block; margin-top: 4px; color: var(--plato-text-secondary); white-space: normal; }
+.total { display: flex; justify-content: space-between; margin-top: 20px; border-top: 1px solid var(--plato-border); padding-top: 16px; color: var(--plato-purple-dark); font-size: var(--ts-20); font-weight: 700; }
+.actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+.state-message, .empty-message, .error-message { border-radius: 8px; padding: 20px; text-align: center; }
+.state-message, .empty-message { background-color: var(--plato-border); color: var(--plato-text-secondary); }
+.state-message p, .empty-message { margin: 0; }
+.error-message { background-color: var(--plato-orange-light); color: var(--plato-error); }
+.loading-indicator { display: block; width: 28px; height: 28px; margin: 0 auto 12px; border: 3px solid var(--plato-surface); border-top-color: var(--plato-purple); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 520px) { .actions { flex-direction: column-reverse; } }

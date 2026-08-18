@@ -1,0 +1,41 @@
+<div class="overlay" (click)="closed.emit()">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="supplier-invoice-title" (click)="$event.stopPropagation()">
+    <button class="close-button" type="button" aria-label="Fechar" (click)="closed.emit()">×</button>
+    <p class="eyebrow">Financeiro</p>
+    <h2 id="supplier-invoice-title">Nova nota de fornecedor</h2>
+
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <label for="fornecedor">Fornecedor</label>
+      <select id="fornecedor" formControlName="fornecedorId">
+        <option value="" disabled>Selecione um fornecedor</option>
+        @for (fornecedor of fornecedores; track fornecedor.id) {
+          <option [value]="fornecedor.id">{{ fornecedor.nome }}</option>
+        }
+      </select>
+      @if (form.controls.fornecedorId.touched && form.controls.fornecedorId.invalid) { <small>Selecione o fornecedor.</small> }
+
+      <label for="data-emissao">Data da nota</label>
+      <input id="data-emissao" type="date" formControlName="dataEmissao">
+      @if (form.controls.dataEmissao.touched && form.controls.dataEmissao.invalid) { <small>Informe a data da nota.</small> }
+
+      <label for="numero-nota">Número da nota <span>(opcional)</span></label>
+      <input id="numero-nota" formControlName="numeroNota">
+
+      <label for="valor-total">Valor total <span>(opcional)</span></label>
+      <input id="valor-total" type="number" min="0" step="0.01" formControlName="valorTotal">
+      @if (form.controls.valorTotal.touched && form.controls.valorTotal.invalid) { <small>O valor não pode ser negativo.</small> }
+
+      <label for="chave-acesso">Chave de acesso <span>(opcional, 44 dígitos)</span></label>
+      <input id="chave-acesso" inputmode="numeric" maxlength="44" formControlName="chaveAcesso">
+      @if (form.controls.chaveAcesso.touched && form.controls.chaveAcesso.invalid) { <small>A chave deve conter exatamente 44 dígitos.</small> }
+
+      <label for="observacoes">Observações <span>(opcional)</span></label>
+      <textarea id="observacoes" formControlName="observacoes"></textarea>
+
+      <div class="actions">
+        <button class="secondary-button" type="button" (click)="closed.emit()">Cancelar</button>
+        <button class="primary-button" type="submit" [disabled]="form.invalid">Salvar nota</button>
+      </div>
+    </form>
+  </section>
+</div>

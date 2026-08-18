@@ -1,0 +1,34 @@
+<main class="config-overlay" (click)="close()">
+  <div
+    class="container"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Menu de configurações"
+    (click)="$event.stopPropagation()"
+  >
+    <button class="close-button" type="button"
+            aria-label="Fechar configurações" (click)="close()">
+      ×
+    </button>
+
+    <app-item-home routerLink="/perfil" class="margin-top-16px">
+      Perfil
+    </app-item-home>
+
+    <app-item-home routerLink="/cardapioEdit">
+      Editar cardápio
+    </app-item-home>
+
+    <app-item-home routerLink="/nota-fornecedor">
+      Nota de fornecedor
+    </app-item-home>
+
+    <app-item-home routerLink="/configuracoes">
+      Configurações
+    </app-item-home>
+
+    <app-item-home routerLink="/">
+      Sair
+    </app-item-home>
+  </div>
+</main>

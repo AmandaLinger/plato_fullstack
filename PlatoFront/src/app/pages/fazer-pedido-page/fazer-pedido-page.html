@@ -1,0 +1,80 @@
+<main>
+  <section class="page-container" aria-labelledby="page-title">
+    <app-btn-back />
+    <header>
+      <p class="eyebrow">Novo atendimento</p>
+      <h1 id="page-title">Fazer pedido</h1>
+      <p>Selecione um produto para definir quantidade e observações.</p>
+    </header>
+
+    <div class="content-grid">
+      <section class="products" aria-label="Itens do cardápio">
+        @if (isLoadingProdutos) {
+          <p class="state-message" aria-live="polite">Carregando produtos...</p>
+        } @else if (produtosError) {
+          <p class="error-message" role="alert">{{ produtosError }}</p>
+        } @else if (produtos.length === 0) {
+          <p class="state-message">Nenhum produto cadastrado.</p>
+        } @else {
+          @for (produto of produtos; track produto.id) {
+            <button class="product-card" type="button" (click)="openProductModal(produto)">
+              <img [src]="produto.imagemUrl" [alt]="produto.nome">
+              <div>
+                <h2>{{ produto.nome }}</h2>
+                <p>{{ produto.descricao }}</p>
+              </div>
+              <strong>{{ produto.preco | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+            </button>
+          }
+        }
+      </section>
+
+      <aside class="order-summary">
+        <h2>Resumo do pedido</h2>
+        @if (itens.length === 0) {
+          <p>Nenhum item adicionado.</p>
+        } @else {
+          <ul class="order-items">
+            @for (item of itens; track $index) {
+              <li>
+                <div class="item-details">
+                  <strong>{{ item.quantidade }}x {{ item.produto.nome }}</strong>
+                  @if (item.observacoes) { <span>{{ item.observacoes }}</span> }
+                  <small>{{ item.subtotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</small>
+                </div>
+                <div class="item-actions">
+                  <button type="button" aria-label="Diminuir quantidade" (click)="decreaseItemQuantity($index)">−</button>
+                  <button type="button" aria-label="Aumentar quantidade" (click)="increaseItemQuantity($index)">+</button>
+                  <button type="button" aria-label="Remover item" (click)="removeItem($index)">×</button>
+                </div>
+              </li>
+            }
+          </ul>
+          <div class="total"><span>Total</span><strong>{{ valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong></div>
+        }
+        <div class="container-style">
+          <app-btn-orange [disabled]="itens.length === 0 || isSubmitting" (click)="openConfirmationModal()">Realizar pedido</app-btn-orange>
+        </div>
+        @if (pedidoError) {
+          <p class="error-message" role="alert">{{ pedidoError }}</p>
+        }
+      </aside>
+    </div>
+  </section>
+
+  <div class="container-position">
+    @if (pedidoConfirmado; as pedido) {
+      <p class="confirmation-message" role="status">
+        Pedido da mesa {{ pedido.mesa }} confirmado para {{ pedido.garcom }}.
+      </p>
+    }
+  </div>
+</main>
+
+@if (isProductModalOpen) {
+  <app-modal-detalhe-produto [produto]="produtoSelecionado" (closed)="closeProductModal()" (added)="addItem($event)" />
+}
+
+@if (isConfirmationModalOpen) {
+  <app-modal-confirmar-pedido [itens]="itens" [valorTotal]="valorTotal" (closed)="closeConfirmationModal()" (confirmed)="confirmOrder($event)" />
+}

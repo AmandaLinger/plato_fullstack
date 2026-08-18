@@ -1,0 +1,158 @@
+@use '../page-layout';
+
+.date-filter {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 24px;
+
+  div { display: flex; gap: 8px; }
+  input { flex: 1; border: 1px solid var(--plato-border); border-radius: 8px; padding: 10px 12px; font: inherit; }
+  button { border: 0; border-radius: 8px; background: var(--plato-purple); padding: 10px 18px; color: var(--plato-surface); font: inherit; font-weight: 700; cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: 0.55; }
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.summary-card,
+.invoice-card,
+.state-message {
+  border: 1px solid var(--plato-border);
+  border-radius: 12px;
+  background-color: var(--plato-surface);
+}
+
+.summary-card {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+
+  span {
+    color: var(--plato-text-secondary);
+    font-size: var(--ts-16);
+  }
+
+  strong {
+    color: var(--plato-purple-dark);
+    font-size: var(--ts-24);
+  }
+}
+
+.invoice-list {
+  display: grid;
+  gap: 12px;
+
+}
+
+.invoice-card {
+  padding: 16px;
+}
+
+.invoice-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  strong {
+    color: var(--plato-purple-dark);
+    font-size: var(--ts-20);
+    white-space: nowrap;
+  }
+}
+
+.invoice-number,
+time {
+  display: block;
+}
+
+.invoice-number {
+  color: var(--plato-text);
+  font-size: var(--ts-20);
+  font-weight: 700;
+}
+
+time,
+.products > span {
+  color: var(--plato-text-secondary);
+}
+
+.products {
+  margin-top: 16px;
+  border-top: 1px solid var(--plato-border);
+  padding-top: 12px;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.state-message {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 32px 16px;
+  text-align: center;
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  p {
+    color: var(--plato-text-secondary);
+  }
+}
+
+.error-state p {
+  color: var(--plato-error);
+}
+
+.loading-indicator {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--plato-border);
+  border-top-color: var(--plato-purple);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 520px) {
+  .page-container{
+    max-height: 800px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
+  .invoice-heading {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (min-width: 700px){
+  .invoice-list{
+    max-height: 450px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
+

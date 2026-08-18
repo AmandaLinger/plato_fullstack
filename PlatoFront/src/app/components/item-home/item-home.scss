@@ -1,0 +1,17 @@
+button{
+  width: 300px;
+  background-color: var(--plato-border);
+  border: none;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+  font-size: var(--ts-24);
+  padding: 16px;
+}
+
+button:hover{
+  scale: 1.1;
+
+  transition: ease-in-out 0.2s ;
+}

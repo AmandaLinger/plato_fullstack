@@ -1,0 +1,87 @@
+@use '../page-layout';
+
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+
+.add-button {
+  display: grid;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background-image: var(--orange-gradient);
+  color: var(--plato-surface);
+  cursor: pointer;
+  font-size: var(--ts-32);
+  font-weight: 700;
+}
+
+.products-grid {
+  display: grid;
+  gap: 16px;
+
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+.product-card { display: grid; grid-template-columns: 88px 1fr; gap: 16px; border: 1px solid var(--plato-border); border-radius: 12px; background-color: var(--plato-surface); padding: 16px;
+  > img { width: 88px; height: 88px; border-radius: 8px; object-fit: cover; background-color: var(--plato-border); }
+}
+.product-content { h2, p { margin: 0; } h2 { font-size: var(--ts-20); } p { margin-top: 4px; color: var(--plato-text-secondary); } strong { display: block; margin-top: 12px; color: var(--plato-purple-dark); } }
+.card-actions { display: flex; grid-column: 1 / -1; justify-content: flex-end; gap: 8px;
+  button { border: 0; border-radius: 8px; background-color: var(--plato-purple-light); padding: 8px 12px; color: var(--plato-surface); cursor: pointer; font: inherit; font-weight: 700; }
+  .delete-button { background-color: var(--plato-error); }
+}
+.state-message, .empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  border: 1px solid var(--plato-border);
+  border-radius: 12px;
+  background-color: var(--plato-surface);
+  padding: 32px 16px;
+  color: var(--plato-text-secondary);
+  text-align: center;
+  p {
+    margin: 0;
+  }
+}
+
+.empty-state img {
+  height: 48px;
+}
+.error-message { margin-bottom: 16px; border-radius: 8px; background-color: var(--plato-orange-light); padding: 12px; color: var(--plato-error); font-weight: 600; }
+.loading-indicator { width: 28px; height: 28px; border: 3px solid var(--plato-border); border-top-color: var(--plato-purple); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (min-width: 700px) {
+
+}
+
+@media (min-width: 1700px) {
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    max-height: 700px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .product-card {
+    grid-template-columns: 100px 1fr;
+  }
+  .product-card > img {
+    width: 100px; height: 100px;
+  }
+
+  .empty-state {
+    img {
+      height: 80px;
+    }
+    p{
+      font-size: var(--ts-20);
+    }
+  }
+}

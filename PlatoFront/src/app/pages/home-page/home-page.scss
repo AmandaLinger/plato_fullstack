@@ -1,0 +1,25 @@
+main{
+  background-image: var(--purple-gradient);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.position-config{
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.container{
+  background-color: var(--plato-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 16px;
+
+  padding: 24px;
+}

@@ -1,0 +1,6 @@
+@use '../configuracoes-child';
+.kitchen-container { max-width: 680px; }
+.placeholder { border-radius: 12px; background-color: var(--plato-surface); padding: 56px 24px; text-align: center;
+  h1 { margin: 8px 0; color: var(--plato-purple); }
+  p:last-child { margin: 0; color: var(--plato-text-secondary); }
+}

@@ -1,0 +1,10 @@
+@use '../configuracoes-child';
+.mesas-container { max-width: 680px; }
+.tables-card { border-radius: 12px; background-color: var(--plato-surface); padding: 24px; text-align: center;
+  p { margin: 0; color: var(--plato-text-secondary); }
+  strong { display: block; margin: 8px 0 24px; color: var(--plato-purple-dark); font-size: var(--ts-48); }
+  form { display: grid; gap: 8px; text-align: left; }
+  input { border: 1px solid var(--plato-border); border-radius: 8px; padding: 12px; font: inherit; }
+  small { color: var(--plato-error); }
+  .action-button { justify-self: center; margin-top: 8px; }
+}
