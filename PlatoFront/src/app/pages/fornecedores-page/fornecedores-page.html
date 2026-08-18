@@ -5,13 +5,21 @@
       <div><h1 id="suppliers-title">Fornecedores</h1><p>Consulte os parceiros cadastrados.</p></div>
       <button class="action-button" type="button" (click)="isModalOpen = true">Adicionar fornecedor</button>
     </header>
-    <div class="table-wrapper">
+    @if (errorMessage) { <p class="error-message" role="alert">{{ errorMessage }}</p> }
+    @if (successMessage) { <p class="feedback-message" role="status">{{ successMessage }}</p> }
+    @if (isLoading) {
+      <p class="state-message" aria-live="polite">Carregando fornecedores...</p>
+    } @else if (fornecedores.length === 0) {
+      <p class="state-message">Nenhum fornecedor cadastrado.</p>
+    } @else {
+      <div class="table-wrapper">
       <table><thead><tr><th>Nome</th><th>CNPJ</th></tr></thead><tbody>
         @for (fornecedor of fornecedores; track fornecedor.id) {
           <tr><td>{{ fornecedor.nome }}</td><td>{{ fornecedor.cnpj || 'Não informado' }}</td></tr>
         }
       </tbody></table>
-    </div>
+      </div>
+    }
   </section>
 </main>
 @if (isModalOpen) { <app-modal-fornecedor-form (closed)="isModalOpen = false" (saved)="addFornecedor($event)" /> }

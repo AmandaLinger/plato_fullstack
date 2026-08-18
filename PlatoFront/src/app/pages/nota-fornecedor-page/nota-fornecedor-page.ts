@@ -32,7 +32,10 @@ export class NotaFornecedorPage implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    forkJoin({ fornecedores: this.fornecedoresService.listar(), notas: this.notasService.listar() })
+    forkJoin({
+      fornecedores: this.fornecedoresService.listarFornecedores(),
+      notas: this.notasService.listar(),
+    })
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: ({ fornecedores, notas }) => {
@@ -47,7 +50,7 @@ export class NotaFornecedorPage implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.notasService.criar(nota).subscribe({
+    this.notasService.salvarNota(nota).subscribe({
       next: (notaCriada) => {
         this.notas = [...this.notas, notaCriada];
         this.isModalOpen = false;

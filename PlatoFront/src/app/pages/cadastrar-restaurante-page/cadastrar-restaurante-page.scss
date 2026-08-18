@@ -1,0 +1,25 @@
+:host { display: block; }
+main { min-height: 100vh; box-sizing: border-box; display: grid; place-items: center; padding: 88px 16px 40px; background: var(--purple-gradient); }
+.brand { position: absolute; top: 28px; color: var(--plato-surface); font: 700 var(--ts-48) 'Ubuntu', sans-serif; text-decoration: none; }
+.request-card { width: min(100%, 520px); box-sizing: border-box; border-radius: 20px; background: var(--plato-surface); padding: 28px 22px; box-shadow: 0 24px 60px rgb(24 24 27 / 24%); }
+.logo { display: block; width: 96px; height: 96px; margin: 0 auto; }
+header { margin: 12px 0 24px; text-align: center;
+  .eyebrow { margin-bottom: 6px; color: var(--plato-orange-dark); font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  h1 { color: var(--plato-purple-dark); font-family: 'Ubuntu', sans-serif; font-size: var(--ts-32); }
+  p:last-child { margin-top: 8px; color: var(--plato-text-secondary); line-height: 1.5; }
+}
+form { display: grid; gap: 16px; }
+.field { display: grid; gap: 6px;
+  label { color: var(--plato-purple-dark); font-weight: 700; }
+  input { box-sizing: border-box; width: 100%; border: 1px solid var(--plato-border); border-radius: 10px; background: var(--plato-background); padding: 12px 14px; color: var(--plato-text); font: inherit;
+    &:focus { border-color: var(--plato-purple); outline: 3px solid rgb(139 92 246 / 16%); }
+  }
+  small { color: var(--plato-error); }
+}
+.feedback { border-radius: 8px; padding: 10px 12px; font-size: 14px;
+  &.success { background: rgb(34 197 94 / 12%); color: #15803d; }
+  &.error { background: rgb(239 68 68 / 10%); color: var(--plato-error); }
+}
+app-btn-orange { display: flex; justify-content: center; margin-top: 4px; }
+.login-link { display: block; margin-top: 22px; color: var(--plato-purple-dark); text-align: center; font-weight: 600; }
+@media (min-width: 700px) { main { padding-inline: 32px; } .request-card { padding: 36px 40px; } }

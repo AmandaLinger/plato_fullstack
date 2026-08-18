@@ -31,7 +31,7 @@ export class ModalNotaFornecedor {
 
     const value = this.form.getRawValue();
     this.saved.emit({
-      fornecedorId: value.fornecedorId ?? '',
+      fornecedorId: Number(value.fornecedorId),
       dataEmissao: value.dataEmissao ?? '',
       numeroNota: value.numeroNota?.trim() ?? '',
       valorTotal: value.valorTotal,

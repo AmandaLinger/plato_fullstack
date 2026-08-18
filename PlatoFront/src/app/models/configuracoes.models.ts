@@ -26,8 +26,8 @@ export interface Usuario {
 export type UsuarioPayload = Omit<Usuario, 'id'>;
 
 export interface NotaFornecedor {
-  readonly id: string;
-  readonly fornecedorId: string;
+  readonly id: number;
+  readonly fornecedorId: number;
   readonly fornecedorNome: string;
   readonly dataEmissao: string;
   readonly numeroNota: string;

@@ -10,6 +10,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 @AllArgsConstructor
 public class FornecedorDto {
 
+    Long id;
+
     @NotNull
     String nome;
 

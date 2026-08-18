@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 import { CadastrarRestaurantePage } from './cadastrar-restaurante-page';
 
@@ -8,7 +9,8 @@ describe('CadastrarRestaurantePage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CadastrarRestaurantePage]
+      imports: [CadastrarRestaurantePage],
+      providers: [provideHttpClient()],
     })
     .compileComponents();
 

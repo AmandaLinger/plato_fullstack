@@ -22,11 +22,11 @@ public class FornecedorService {
         return fornecedorRepository.findAll();
     }
 
-    public void cadastrarFornecedor(FornecedorDto fornecedorDto) {
+    public Fornecedor cadastrarFornecedor(FornecedorDto fornecedorDto) {
         Fornecedor fornecedor = new Fornecedor();
         fornecedor.setNome(fornecedorDto.getNome());
         fornecedor.setCnpj(fornecedorDto.getCnpj());
-        fornecedorRepository.save(fornecedor);
+        return fornecedorRepository.save(fornecedor);
     }
 
     @Transactional

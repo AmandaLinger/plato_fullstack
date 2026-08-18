@@ -2,9 +2,7 @@ package com.plato.platoBack.controller;
 
 
 import com.plato.platoBack.dto.FornecedorDto;
-import com.plato.platoBack.dto.PedidoDto;
 import com.plato.platoBack.entity.Fornecedor;
-import com.plato.platoBack.repository.FornecedorRepository;
 import com.plato.platoBack.service.FornecedorService;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -17,7 +15,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/fornecedor")
+@RequestMapping({"/fornecedor", "/api/fornecedores"})
 @AllArgsConstructor
 public class FornecedorController {
 
@@ -30,14 +28,13 @@ public class FornecedorController {
     }
 
     @GetMapping("/{id}")
-    public Fornecedor getFornecedor(Long id) throws BadRequestException {
+    public Fornecedor getFornecedor(@PathVariable Long id) throws BadRequestException {
         return fornecedorService.buscaFornecedor(id);
     }
 
     @PostMapping
     public ResponseEntity<Fornecedor> postFornecedor(@RequestBody FornecedorDto fornecedorDto) {
-        fornecedorService.cadastrarFornecedor(fornecedorDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(201).body(fornecedorService.cadastrarFornecedor(fornecedorDto));
     }
 
     @PutMapping("/{id}")

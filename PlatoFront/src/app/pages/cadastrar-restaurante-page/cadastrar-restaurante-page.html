@@ -1,1 +1,37 @@
-<p>cadastrar-restaurante-page works!</p>
+<main>
+  <a class="brand" routerLink="/" aria-label="Voltar ao início">plato</a>
+  <section class="request-card" aria-labelledby="request-title">
+    <img class="logo" src="/logo_plato.svg" alt="">
+    <header>
+      <p class="eyebrow">Faça parte do Plato</p>
+      <h1 id="request-title">Solicite seu acesso</h1>
+      <p>Preencha seus dados e nossa equipe entrará em contato.</p>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label for="estabelecimento">Nome do estabelecimento</label>
+        <input id="estabelecimento" formControlName="nomeEstabelecimento" autocomplete="organization" placeholder="Ex.: Restaurante Sabor da Casa">
+        @if (form.controls.nomeEstabelecimento.touched && form.controls.nomeEstabelecimento.invalid) { <small>Informe o nome do estabelecimento.</small> }
+      </div>
+      <div class="field">
+        <label for="responsavel">Nome do responsável</label>
+        <input id="responsavel" formControlName="nomeResponsavel" autocomplete="name" placeholder="Nome completo">
+        @if (form.controls.nomeResponsavel.touched && form.controls.nomeResponsavel.invalid) { <small>Informe o nome do responsável.</small> }
+      </div>
+      <div class="field">
+        <label for="telefone">Telefone</label>
+        <input id="telefone" type="tel" formControlName="telefone" autocomplete="tel" inputmode="tel" maxlength="15" placeholder="(00) 00000-0000" (input)="formatPhone($event)">
+        @if (form.controls.telefone.touched && form.controls.telefone.invalid) { <small>Informe um telefone válido com DDD.</small> }
+      </div>
+
+      @if (successMessage) { <p class="feedback success" role="status">{{ successMessage }}</p> }
+      @if (errorMessage) { <p class="feedback error" role="alert">{{ errorMessage }}</p> }
+
+      <app-btn-orange type="submit" [disabled]="form.invalid || isSubmitting" fontSize="var(--ts-16)">
+        {{ isSubmitting ? 'Enviando...' : 'Solicitar Login' }}
+      </app-btn-orange>
+    </form>
+    <a class="login-link" routerLink="/login">Já possui acesso? Entrar</a>
+  </section>
+</main>

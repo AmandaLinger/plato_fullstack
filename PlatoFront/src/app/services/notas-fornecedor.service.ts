@@ -7,13 +7,17 @@ import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class NotasFornecedorService {
   private readonly http = inject(HttpClient);
-  private readonly endpoint = `${environment.apiUrl}/fornecedor`;
+  private readonly endpoint = `${environment.apiUrl}/api/notas-fornecedores`;
 
   listar(): Observable<readonly NotaFornecedor[]> {
     return this.http.get<readonly NotaFornecedor[]>(this.endpoint);
   }
 
-  criar(nota: NotaFornecedorCadastro): Observable<NotaFornecedor> {
+  salvarNota(nota: NotaFornecedorCadastro): Observable<NotaFornecedor> {
     return this.http.post<NotaFornecedor>(this.endpoint, nota);
+  }
+
+  criar(nota: NotaFornecedorCadastro): Observable<NotaFornecedor> {
+    return this.salvarNota(nota);
   }
 }
