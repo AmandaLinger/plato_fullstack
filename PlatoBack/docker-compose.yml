@@ -1,0 +1,13 @@
+services:
+  postgres-db:
+    image: postgres:16
+    container_name: plato_bd
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: plato
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:
