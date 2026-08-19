@@ -45,4 +45,12 @@ export class NotasFiscaisService {
         ),
       );
   }
+
+  exportarPorPeriodo(inicio: string, fim: string): Observable<Blob> {
+    const params = new HttpParams().set('inicio', inicio).set('fim', fim);
+    return this.http.get(`${this.endpoint}/finalizados/relatorio`, {
+      params,
+      responseType: 'blob',
+    });
+  }
 }

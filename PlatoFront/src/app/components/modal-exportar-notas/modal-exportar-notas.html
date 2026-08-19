@@ -1,0 +1,53 @@
+<div class="overlay" (click)="close()">
+  <section
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="export-invoices-title"
+    (click)="$event.stopPropagation()"
+  >
+    <button
+      class="close-button"
+      type="button"
+      aria-label="Fechar"
+      [disabled]="isDownloading"
+      (click)="close()"
+    >×</button>
+
+    <p class="eyebrow">Relatório financeiro</p>
+    <h2 id="export-invoices-title">Exportar notas fiscais</h2>
+    <p class="description">Selecione o período das notas que deseja incluir no relatório.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label for="report-start-date">Data inicial</label>
+        <input id="report-start-date" type="date" formControlName="inicio" [disabled]="isDownloading" />
+      </div>
+
+      <div class="field">
+        <label for="report-end-date">Data final</label>
+        <input id="report-end-date" type="date" formControlName="fim" [disabled]="isDownloading" />
+      </div>
+
+      @if (hasInvalidPeriod) {
+        <small class="field-error" role="alert">A data final não pode ser anterior à data inicial.</small>
+      }
+      @if (errorMessage) {
+        <small class="field-error" role="alert">{{ errorMessage }}</small>
+      }
+
+      <div class="actions">
+        <button class="secondary-button" type="button" [disabled]="isDownloading" (click)="close()">
+          Cancelar
+        </button>
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="form.invalid || hasInvalidPeriod || isDownloading"
+        >
+          {{ isDownloading ? 'Gerando relatório...' : 'Download' }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

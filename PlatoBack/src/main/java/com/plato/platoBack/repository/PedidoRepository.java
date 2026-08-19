@@ -12,4 +12,9 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     List<Pedido> findByPedidoAbertoTrue();
 
     List<Pedido> findByPedidoAbertoFalseAndDataPedidoOrderByIdDesc(LocalDate dataPedido);
+
+    List<Pedido> findByPedidoAbertoFalseAndDataPedidoBetweenOrderByDataPedidoAscIdAsc(
+            LocalDate inicio,
+            LocalDate fim
+    );
 }

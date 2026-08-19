@@ -1,0 +1,22 @@
+@use '../modal-detalhe-produto/modal-detalhe-produto.scss' as *;
+
+.modal { width: min(100%, 520px); }
+.description { margin-bottom: 20px; }
+form { display: grid; gap: 16px; }
+.field { display: grid; gap: 6px; }
+.field label { margin: 0; }
+.field input {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid var(--plato-border);
+  border-radius: 8px;
+  background-color: var(--plato-surface);
+  padding: 12px;
+  color: var(--plato-text);
+  font: inherit;
+}
+.field input:focus { border-color: var(--plato-purple); outline: 3px solid rgb(139 92 246 / 16%); }
+.field-error { color: var(--plato-error); }
+.primary-button:disabled,
+.secondary-button:disabled,
+.close-button:disabled { cursor: not-allowed; opacity: .55; }

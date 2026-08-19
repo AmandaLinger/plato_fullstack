@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +53,20 @@ public class PedidoController {
     public List<Pedido> chamaPedidosFinalizadosPorData(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
         return pedidoService.chamaPedidosFinalizadosPorData(data);
+    }
+
+    @GetMapping("/finalizados/relatorio")
+    public ResponseEntity<byte[]> exportarNotasFiscais(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim
+    ) throws BadRequestException {
+        byte[] relatorio = pedidoService.gerarRelatorioNotasFiscais(inicio, fim);
+        String filename = "notas-fiscais_" + inicio + "_a_" + fim + ".csv";
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .contentType(MediaType.parseMediaType("text/csv;charset=UTF-8"))
+                .body(relatorio);
     }
 
     @PatchMapping("/{id}/finalizar")

@@ -7,6 +7,13 @@
       <p>Consulte os pedidos finalizados em uma data específica.</p>
     </header>
 
+    <div class="page-actions">
+      <button type="button" class="export-button" (click)="openExportModal()">
+        <span aria-hidden="true">↓</span>
+        Exportar Notas Fiscais
+      </button>
+    </div>
+
     <form class="date-filter" (ngSubmit)="loadNotasFiscais()">
       <label for="data-notas">Data dos pedidos</label>
       <div>
@@ -67,3 +74,12 @@
     }
   </section>
 </main>
+
+@if (isExportModalOpen) {
+  <app-modal-exportar-notas
+    [isDownloading]="isDownloading"
+    [errorMessage]="downloadError"
+    (closed)="closeExportModal()"
+    (download)="exportNotas($event)"
+  />
+}
