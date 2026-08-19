@@ -13,6 +13,9 @@ export interface PeriodoRelatorio {
   styleUrl: './modal-exportar-notas.scss',
 })
 export class ModalExportarNotas {
+  @Input() eyebrow = 'Relatório financeiro';
+  @Input() title = 'Exportar notas fiscais';
+  @Input() description = 'Selecione o período das notas que deseja incluir no relatório.';
   @Input() isDownloading = false;
   @Input() errorMessage = '';
   @Output() readonly closed = new EventEmitter<void>();

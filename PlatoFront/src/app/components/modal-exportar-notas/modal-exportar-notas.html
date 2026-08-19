@@ -14,9 +14,9 @@
       (click)="close()"
     >×</button>
 
-    <p class="eyebrow">Relatório financeiro</p>
-    <h2 id="export-invoices-title">Exportar notas fiscais</h2>
-    <p class="description">Selecione o período das notas que deseja incluir no relatório.</p>
+    <p class="eyebrow">{{ eyebrow }}</p>
+    <h2 id="export-invoices-title">{{ title }}</h2>
+    <p class="description">{{ description }}</p>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="field">

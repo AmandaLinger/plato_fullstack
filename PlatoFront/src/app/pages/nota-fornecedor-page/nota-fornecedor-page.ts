@@ -3,13 +3,17 @@ import { Component, OnInit, inject } from '@angular/core';
 import { finalize, forkJoin } from 'rxjs';
 import { BtnBack } from '../../components/btn-back/btn-back';
 import { ModalNotaFornecedor } from '../../components/modal-nota-fornecedor/modal-nota-fornecedor';
+import {
+  ModalExportarNotas,
+  PeriodoRelatorio,
+} from '../../components/modal-exportar-notas/modal-exportar-notas';
 import { Fornecedor, NotaFornecedor, NotaFornecedorCadastro } from '../../models/configuracoes.models';
 import { FornecedoresService } from '../../services/fornecedores.service';
 import { NotasFornecedorService } from '../../services/notas-fornecedor.service';
 
 @Component({
   selector: 'app-nota-fornecedor-page',
-  imports: [CurrencyPipe, DatePipe, BtnBack, ModalNotaFornecedor],
+  imports: [CurrencyPipe, DatePipe, BtnBack, ModalNotaFornecedor, ModalExportarNotas],
   templateUrl: './nota-fornecedor-page.html',
   styleUrl: './nota-fornecedor-page.scss',
 })
@@ -23,6 +27,9 @@ export class NotaFornecedorPage implements OnInit {
   isModalOpen = false;
   errorMessage = '';
   successMessage = '';
+  isExportModalOpen = false;
+  isDownloading = false;
+  downloadError = '';
 
   ngOnInit(): void {
     this.loadData();
@@ -58,5 +65,52 @@ export class NotaFornecedorPage implements OnInit {
       },
       error: () => (this.errorMessage = 'Não foi possível salvar a nota de fornecedor.'),
     });
+  }
+
+  openExportModal(): void {
+    this.downloadError = '';
+    this.isExportModalOpen = true;
+  }
+
+  closeExportModal(): void {
+    if (!this.isDownloading) {
+      this.isExportModalOpen = false;
+      this.downloadError = '';
+    }
+  }
+
+  exportNotas(periodo: PeriodoRelatorio): void {
+    if (this.isDownloading) {
+      return;
+    }
+
+    this.isDownloading = true;
+    this.downloadError = '';
+    this.notasService
+      .exportarPorPeriodo(periodo.inicio, periodo.fim)
+      .pipe(finalize(() => (this.isDownloading = false)))
+      .subscribe({
+        next: (report) => {
+          this.downloadFile(
+            report,
+            `notas-fornecedores_${periodo.inicio}_a_${periodo.fim}.csv`,
+          );
+          this.isExportModalOpen = false;
+        },
+        error: () => {
+          this.downloadError = 'Não foi possível gerar o relatório. Tente novamente.';
+        },
+      });
+  }
+
+  private downloadFile(file: Blob, filename: string): void {
+    const url = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
   }
 }

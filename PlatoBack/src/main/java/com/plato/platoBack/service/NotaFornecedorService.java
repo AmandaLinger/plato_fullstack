@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +51,43 @@ public class NotaFornecedorService {
     @Transactional(readOnly = true)
     public List<NotaFornecedorDto> listar() {
         return notaFornecedorRepository.findAll().stream().map(this::toDto).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] gerarRelatorio(LocalDate inicio, LocalDate fim) {
+        if (fim.isBefore(inicio)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A data final não pode ser anterior à data inicial"
+            );
+        }
+
+        List<NotaFornecedor> notas = notaFornecedorRepository
+                .findByDataEmissaoBetweenOrderByDataEmissaoAscIdAsc(inicio, fim);
+        StringBuilder csv = new StringBuilder(
+                "\uFEFFNúmero da Nota;Data de Emissão;Fornecedor;CNPJ;Chave de Acesso;Valor Total (R$);Observações\r\n"
+        );
+
+        for (NotaFornecedor nota : notas) {
+            csv.append(csvCell(nota.getNumeroNota())).append(';')
+                    .append(csvCell(nota.getDataEmissao().toString())).append(';')
+                    .append(csvCell(nota.getFornecedor().getNome())).append(';')
+                    .append(csvCell(nota.getFornecedor().getCnpj())).append(';')
+                    .append(csvCell(nota.getChaveAcesso())).append(';')
+                    .append(csvCell(nota.getValorTotal() == null ? "" : nota.getValorTotal().toPlainString().replace('.', ','))).append(';')
+                    .append(csvCell(nota.getObservacoes()))
+                    .append("\r\n");
+        }
+
+        return csv.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    private String csvCell(String value) {
+        String safeValue = value == null ? "" : value;
+        if (!safeValue.isEmpty() && "=+-@".indexOf(safeValue.charAt(0)) >= 0) {
+            safeValue = "'" + safeValue;
+        }
+        return "\"" + safeValue.replace("\"", "\"\"") + "\"";
     }
 
     private NotaFornecedorDto toDto(NotaFornecedor nota) {

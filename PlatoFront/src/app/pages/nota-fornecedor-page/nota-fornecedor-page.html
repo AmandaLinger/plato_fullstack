@@ -14,6 +14,13 @@
       </div>
     </header>
 
+    <div class="page-actions">
+      <button type="button" class="export-button" (click)="openExportModal()">
+        <span aria-hidden="true">↓</span>
+        Exportar Notas de Fornecedores
+      </button>
+    </div>
+
     @if (errorMessage) { <p class="error-message" role="alert">{{ errorMessage }}</p> }
     @if (successMessage) { <p class="feedback-message" role="status">{{ successMessage }}</p> }
 
@@ -46,4 +53,16 @@
 
 @if (isModalOpen) {
   <app-modal-nota-fornecedor [fornecedores]="fornecedores" (closed)="isModalOpen = false" (saved)="saveNota($event)" />
+}
+
+@if (isExportModalOpen) {
+  <app-modal-exportar-notas
+    eyebrow="Relatório de compras"
+    title="Exportar notas de fornecedores"
+    description="Selecione o período das notas de fornecedores que deseja incluir no relatório."
+    [isDownloading]="isDownloading"
+    [errorMessage]="downloadError"
+    (closed)="closeExportModal()"
+    (download)="exportNotas($event)"
+  />
 }
