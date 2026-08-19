@@ -4,7 +4,7 @@
     plato
   </div>
 
-  <form class="container">
+  <form class="container" [formGroup]="form" (ngSubmit)="submit()">
     <div class="img-container">
       <img src="/logo_plato.svg" alt="ícone de login">
     </div>
@@ -12,18 +12,22 @@
     <div class="inputs">
       <div class="flex-column mb-8px">
         <label for="usuario" class="mb-4px">Usuario</label>
-        <input name="usuario" placeholder="usuario" />
+        <input id="usuario" formControlName="nome" autocomplete="username" placeholder="usuario" />
       </div>
 
       <div class="flex-column mb-8px">
         <label for="senha" class="mb-4px">Senha</label>
-        <input name="senha" type="password" placeholder="********" />
+        <input id="senha" formControlName="senha" type="password" autocomplete="current-password" placeholder="********" />
       </div>
     </div>
 
+    @if (errorMessage) {
+      <p class="login-error" role="alert">{{ errorMessage }}</p>
+    }
+
     <div class="container-btn">
-      <app-btn-orange routerLink="/home">
-        login
+      <app-btn-orange type="submit">
+        {{ isLoading ? 'Entrando...' : 'Login' }}
       </app-btn-orange>
     </div>
     <a routerLink="/cadastrar-restaurante" class="link-cadastro">

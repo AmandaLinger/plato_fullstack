@@ -1,5 +1,6 @@
 package com.plato.platoBack.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -21,5 +22,6 @@ public class Usuario {
     String nome;
 
     @NotNull
+    @JsonIgnore
     String senha;
 }

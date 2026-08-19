@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByNome(String nome);
 
+    boolean existsByNomeAndIdNot(String nome, Long id);
+
     List<Usuario> findAll();
 }

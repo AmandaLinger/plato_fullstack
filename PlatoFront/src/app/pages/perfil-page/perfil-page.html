@@ -1,23 +1,73 @@
 <main>
-
-  <div class="container ">
+  <section class="profile-card" aria-labelledby="profile-title">
     <div class="btn-back">
-      <app-btn-back/>
+      <app-btn-back />
     </div>
+
     <div class="img-container">
-      <img src="icon_person.png" alt="ícone de pessoa">
+      <img src="icon_person.png" alt="" />
     </div>
-    <div class="infos">
-      <div class="input-container flex">
-        <label for="nome">Nome</label>
-        <input type="text" placeholder="exemplo">
+
+    <header>
+      <p class="eyebrow">Minha conta</p>
+      <h1 id="profile-title">Perfil de login</h1>
+      <p>Atualize as credenciais usadas para acessar o Plato.</p>
+    </header>
+
+    @if (isLoading) {
+      <p class="state-message" role="status">Carregando perfil...</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="input-container">
+        <label for="login">Login</label>
+        <input
+          id="login"
+          type="text"
+          formControlName="nome"
+          autocomplete="username"
+          maxlength="120"
+          placeholder="Seu login"
+        />
+        @if (form.controls.nome.touched && form.controls.nome.invalid) {
+          <small>Informe um login válido.</small>
+        }
       </div>
 
-      <div class="input-container flex">
-        <label for="nome">Senha</label>
-        <input type="password" placeholder="*********">
+      <div class="input-container">
+        <label for="password">Nova senha</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="senha"
+          autocomplete="new-password"
+          maxlength="72"
+          placeholder="Deixe em branco para manter a senha atual"
+        />
+        @if (form.controls.senha.touched && form.controls.senha.invalid) {
+          <small>A nova senha deve ter entre 8 e 72 caracteres.</small>
+        }
       </div>
-    </div>
-  </div>
 
+      @if (successMessage) {
+        <p class="feedback success" role="status">{{ successMessage }}</p>
+      }
+      @if (errorMessage) {
+        <p class="feedback error" role="alert">{{ errorMessage }}</p>
+      }
+
+      <div class="form-actions">
+        <button class="secondary-button" type="button" [disabled]="isSaving" (click)="cancel()">
+          Cancelar
+        </button>
+        <button
+          class="primary-button"
+          type="submit"
+          [disabled]="form.invalid || isLoading || isSaving"
+        >
+          {{ isSaving ? 'Salvando...' : 'Salvar alterações' }}
+        </button>
+      </div>
+    </form>
+  </section>
 </main>

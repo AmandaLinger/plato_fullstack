@@ -70,6 +70,13 @@ main{
   justify-content: center;
 }
 
+.login-error {
+  margin-top: 12px;
+  color: var(--plato-error);
+  font-size: 14px;
+  text-align: center;
+}
+
 .link-cadastro{
   position: absolute;
   left: 0;

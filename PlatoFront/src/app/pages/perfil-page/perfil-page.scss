@@ -1,54 +1,86 @@
-main{
+:host { display: block; }
+
+main {
+  box-sizing: border-box;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
   background-image: var(--purple-gradient);
-  height: 100vh;
+  padding: 24px 16px;
+}
+
+.profile-card {
+  box-sizing: border-box;
+  width: min(100%, 520px);
+  border-radius: 20px;
+  background-color: var(--plato-surface);
+  padding: 24px 22px 28px;
+  box-shadow: 0 24px 60px rgb(24 24 27 / 24%);
+}
+
+.btn-back { width: 100%; }
+.btn-back app-btn-back { display: block; height: 28px; }
+
+.img-container {
   display: flex;
-  align-items: center;
   justify-content: center;
+  margin-bottom: 12px;
 
-
-  .container{
-    background-color: var(--plato-surface);
-    padding: 24px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    border-radius: 16px;
-
-    margin: 24px;
-  }
-
-  .img-container{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 24px;
-  }
-
-  img{
-    height: 150px;
-  }
+  img { width: 112px; height: 112px; object-fit: contain; }
 }
 
+header {
+  margin-bottom: 24px;
+  text-align: center;
 
-.input-container{
-  flex-direction: column;
-  margin-bottom: 16px;
-
-  label{
-    font-size: var(--ts-20);
-    color: var(--plato-purple);
+  .eyebrow {
+    margin-bottom: 6px;
+    color: var(--plato-text-secondary);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
   }
-  input{
-    padding: 8px;
-    border-radius: 8px;
-    border: none;
-    font-size: var(--ts-20);
-  }
+  h1 { color: var(--plato-purple-dark); font-family: 'Ubuntu', sans-serif; font-size: var(--ts-32); }
+  p:last-child { margin-top: 8px; color: var(--plato-text-secondary); line-height: 1.5; }
 }
 
-.btn-back{
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
+form { display: grid; gap: 16px; }
+
+.input-container {
+  display: grid;
+  gap: 6px;
+
+  label { color: var(--plato-purple-dark); font-weight: 700; }
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid var(--plato-border);
+    border-radius: 10px;
+    background: var(--plato-background);
+    padding: 12px 14px;
+    color: var(--plato-text);
+    font: inherit;
+
+    &:focus { border-color: var(--plato-purple); outline: 3px solid rgb(139 92 246 / 16%); }
+  }
+  small { color: var(--plato-error); }
+}
+
+.state-message { color: var(--plato-text-secondary); text-align: center; }
+.feedback { border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+.feedback.success { background: rgb(34 197 94 / 12%); color: #15803d; }
+.feedback.error { background: rgb(239 68 68 / 10%); color: var(--plato-error); }
+
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+.secondary-button,
+.primary-button { border: 0; border-radius: 8px; padding: 12px 16px; cursor: pointer; font: inherit; font-weight: 700; }
+.secondary-button { background-color: var(--plato-border); color: var(--plato-text); }
+.primary-button { background-image: var(--orange-gradient); color: var(--plato-surface); }
+.secondary-button:disabled,
+.primary-button:disabled { cursor: not-allowed; opacity: .55; }
+
+@media (min-width: 700px) {
+  main { padding-inline: 32px; }
+  .profile-card { padding: 28px 40px 36px; }
 }
