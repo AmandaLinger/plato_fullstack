@@ -21,6 +21,7 @@
   font-weight: bold;
   color: var(--plato-surface);
   font-size: var(--ts-16);
+  cursor: pointer;
 
   padding: 16px;
 }
@@ -32,6 +33,9 @@
 }
 
 .table-card {
+  box-sizing: border-box;
+  min-width: 0;
+  height: 136px;
   border: 1px solid var(--plato-border);
   border-radius: 12px;
   background-color: var(--plato-surface);
@@ -80,16 +84,29 @@
   &.reservada p {
     color: var(--plato-warning);
   }
+
+  &.reservada {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+    align-items: center;
+    gap: 12px;
+  }
 }
 
 .reservation-details {
   display: grid;
   gap: 6px;
-  margin-top: 12px;
+  min-width: 0;
+  justify-items: end;
+  text-align: right;
 
   span,
   time {
+    max-width: 100%;
+    overflow: hidden;
     color: var(--plato-text);
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   button {
@@ -102,6 +119,20 @@
     cursor: pointer;
     font: inherit;
     font-size: var(--ts-12);
+  }
+}
+
+.btn-cancelar-reserva{
+  border-radius:100% ;
+  height: 24px;
+  width: 24px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  :hover{
+    background-color: var(--plato-error);
   }
 }
 

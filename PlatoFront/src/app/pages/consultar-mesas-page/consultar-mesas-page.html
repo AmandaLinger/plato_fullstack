@@ -27,15 +27,20 @@
           (click)="selectMesa(mesa)"
           (keydown.enter)="selectMesa(mesa)"
         >
-          <span>Mesa</span>
-          <strong>{{ mesa.numero | number: '2.0-0' }}</strong>
-          <p>{{ mesa.status }}</p>
+          <div class="table-summary">
+            <span>Mesa</span>
+            <strong>{{ mesa.numero | number: '2.0-0' }}</strong>
+            <p>{{ mesa.status }}</p>
+          </div>
           @if (mesa.reserva; as reserva) {
             <div class="reservation-details">
               <span>{{ reserva.clienteNome }}</span>
               <time [attr.datetime]="reserva.horario">{{ reserva.horario }}</time>
-              <button type="button" (click)="$event.stopPropagation(); cancelReservation(mesa.numero)">
-                Cancelar reserva
+              <button type="button"
+                      (click)="$event.stopPropagation();
+                      cancelReservation(mesa.numero)"
+                      class="btn-cancelar-reserva">
+                x
               </button>
             </div>
           }

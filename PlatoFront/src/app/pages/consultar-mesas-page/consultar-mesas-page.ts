@@ -98,6 +98,12 @@ export class ConsultarMesasPage implements OnInit, OnDestroy {
   }
 
   cancelReservation(mesaNumero: number): void {
+    const confirmed = window.confirm('Tem certeza que deseja cancelar esta reserva?');
+
+    if (!confirmed) {
+      return;
+    }
+
     this.mesasService.cancelarReserva(mesaNumero);
   }
 

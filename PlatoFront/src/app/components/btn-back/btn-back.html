@@ -1,1 +1,8 @@
-<a class="back-link" routerLink="/home">←</a>
+<a
+  class="back-link"
+  role="button"
+  tabindex="0"
+  aria-label="Voltar para a página anterior"
+  (click)="goBack()"
+  (keydown.enter)="goBack()"
+>←</a>
