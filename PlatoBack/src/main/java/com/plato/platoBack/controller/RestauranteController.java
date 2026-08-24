@@ -1,6 +1,8 @@
 package com.plato.platoBack.controller;
 
 import com.plato.platoBack.dto.RestauranteDto;
+import com.plato.platoBack.dto.PrimeiroGerenteDto;
+import com.plato.platoBack.entity.Usuario;
 import com.plato.platoBack.entity.Restaurante;
 import com.plato.platoBack.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +33,13 @@ public class RestauranteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inativarRestaurante(@PathVariable Long id) {
         restauranteService.inativarRestaurante(id);
+    }
+
+    @PostMapping("/{id}/primeiro-gerente")
+    public ResponseEntity<Usuario> criarPrimeiroGerente(
+            @PathVariable Long id,
+            @RequestBody PrimeiroGerenteDto dto
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(restauranteService.criarPrimeiroGerente(id, dto));
     }
 }

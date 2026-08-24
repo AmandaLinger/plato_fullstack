@@ -2,6 +2,7 @@ package com.plato.platoBack.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.plato.platoBack.enuns.NivelAcesso;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
@@ -27,6 +28,10 @@ public class Funcionario {
     String telefone;
 
     String cargo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    NivelAcesso acesso;
 
     @Builder.Default
     @Column(nullable = false, columnDefinition = "boolean default true")

@@ -7,6 +7,7 @@ import {
   LoginPayload,
   LoginResponse,
   PerfilUsuario,
+  NivelAcesso,
 } from '../models/auth.models';
 
 @Injectable({ providedIn: 'root' })
@@ -40,6 +41,23 @@ export class AuthService {
   getRestauranteId(): number | null {
     const value = localStorage.getItem(this.restauranteKey);
     return value === null || !Number.isInteger(Number(value)) ? null : Number(value);
+  }
+
+  getNivelAcesso(): NivelAcesso | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const encoded = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(atob(encoded + '='.repeat((4 - encoded.length % 4) % 4))) as { acesso?: NivelAcesso };
+      return payload.acesso ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  hasAnyRole(roles: readonly NivelAcesso[]): boolean {
+    const acesso = this.getNivelAcesso();
+    return acesso !== null && roles.includes(acesso);
   }
 
   isAuthenticated(): boolean {

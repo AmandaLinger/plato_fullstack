@@ -1,6 +1,10 @@
+export type NivelAcesso = 'ROOT' | 'GERENTE' | 'ATENDENTE' | 'CAIXA';
+
 export interface PerfilUsuario {
   readonly id: number;
   readonly nome: string;
+  readonly acesso: NivelAcesso;
+  readonly restauranteId: number | null;
 }
 
 export interface LoginPayload {

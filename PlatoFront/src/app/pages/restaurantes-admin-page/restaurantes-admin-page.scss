@@ -1,0 +1,64 @@
+main {
+  min-height: 100vh;
+  padding: 16px;
+  background-image: var(--purple-gradient);
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+nav{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+section {
+  width: min(100%, 760px);
+  box-sizing: border-box;
+  margin: auto;
+  border-radius: 16px;
+  background: var(--plato-background);
+  padding: 28px;
+}
+
+h1 {
+  color: var(--plato-purple);
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+input, select, button {
+  border: 1px solid var(--plato-border);
+  border-radius: 8px;
+  padding: 11px;
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: var(--plato-purple);
+  color: white;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--plato-border);
+  padding: 12px 0;
+}

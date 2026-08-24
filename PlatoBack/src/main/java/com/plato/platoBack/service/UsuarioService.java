@@ -31,6 +31,9 @@ public class UsuarioService {
     private RestauranteRepository restauranteRepository;
 
     public void criarUsuario(UsuarioDto usuario) throws BadRequestException {
+        if (usuario.getAcesso() == com.plato.platoBack.enuns.NivelAcesso.ROOT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Acesso ROOT não pode ser atribuído");
+        }
         Long restauranteId = restauranteContext.getId();
         Usuario u = usuarioRepository.findByNomeAndRestauranteIdAndAtivoTrue(usuario.getNome(), restauranteId)
                 .orElse(null);
@@ -43,6 +46,7 @@ public class UsuarioService {
                 .nome(usuario.getNome())
                 .senha(encodeSenha(usuario.getSenha()))
                 .ativo(true)
+                .acesso(usuario.getAcesso() == null ? com.plato.platoBack.enuns.NivelAcesso.ATENDENTE : usuario.getAcesso())
                 .restaurante(restauranteContext.getRestaurante())
                 .build()
         );
@@ -52,7 +56,8 @@ public class UsuarioService {
     public void atualizarUsuario(Long id,UsuarioDto usuario) throws BadRequestException {
         Usuario u = buscarAtivo(id);
 
-        if (usuarioRepository.existsByNomeAndRestauranteIdAndAtivoTrueAndIdNot(usuario.getNome(), restauranteContext.getId(), id)) {
+        if (u.getAcesso() != com.plato.platoBack.enuns.NivelAcesso.ROOT
+                && usuarioRepository.existsByNomeAndRestauranteIdAndAtivoTrueAndIdNot(usuario.getNome(), restauranteContext.getId(), id)) {
             throw new BadRequestException("Nome de usuário já cadastrado no banco");
         }
 
@@ -60,10 +65,25 @@ public class UsuarioService {
         if (usuario.getSenha() != null && !usuario.getSenha().isBlank()) {
             u.setSenha(encodeSenha(usuario.getSenha()));
         }
+        if (usuario.getAcesso() != null && u.getAcesso() != com.plato.platoBack.enuns.NivelAcesso.ROOT) {
+            if (usuario.getAcesso() == com.plato.platoBack.enuns.NivelAcesso.ROOT) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Acesso ROOT não pode ser atribuído");
+            }
+            u.setAcesso(usuario.getAcesso());
+        }
         usuarioRepository.save(u);
     }
 
     public Usuario autenticar(Long restauranteId, String nome, String senha) throws BadRequestException {
+        if (restauranteId == null || restauranteId == 0) {
+            Usuario root = usuarioRepository.findByNomeAndRestauranteIsNullAndAtivoTrue(nome)
+                    .filter(usuario -> usuario.getAcesso() == com.plato.platoBack.enuns.NivelAcesso.ROOT)
+                    .orElseThrow(() -> new BadRequestException("Login ou senha inválidos"));
+            if (!passwordEncoder.matches(senha, root.getSenha())) {
+                throw new BadRequestException("Login ou senha inválidos");
+            }
+            return root;
+        }
         if (!restauranteRepository.existsById(restauranteId)
                 || restauranteRepository.findByIdAndAtivoTrue(restauranteId).isEmpty()) {
             throw new BadRequestException("Login ou senha inválidos");
@@ -101,6 +121,10 @@ public class UsuarioService {
     }
 
     private Usuario buscarAtivo(Long id) {
+        if (AcessoContext.get() == com.plato.platoBack.enuns.NivelAcesso.ROOT) {
+            return usuarioRepository.findByIdAndRestauranteIsNullAndAtivoTrue(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum usuário encontrado"));
+        }
         return usuarioRepository.findByIdAndRestauranteIdAndAtivoTrue(id, restauranteContext.getId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,

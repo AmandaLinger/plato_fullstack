@@ -18,6 +18,7 @@ export class ModalFuncionarioForm implements OnChanges {
     nome: ['', [Validators.required, Validators.maxLength(100)]],
     telefone: ['', [Validators.required, Validators.maxLength(30)]],
     cargo: ['', [Validators.required, Validators.maxLength(80)]],
+    acesso: ['ATENDENTE' as 'GERENTE' | 'ATENDENTE' | 'CAIXA', Validators.required],
   });
   isSaving = false;
   isDeleting = false;
@@ -28,7 +29,7 @@ export class ModalFuncionarioForm implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['funcionario']) {
       this.saveError = '';
-      this.form.reset({ nome: this.funcionario?.nome ?? '', telefone: this.funcionario?.telefone ?? '', cargo: this.funcionario?.cargo ?? '' });
+      this.form.reset({ nome: this.funcionario?.nome ?? '', telefone: this.funcionario?.telefone ?? '', cargo: this.funcionario?.cargo ?? '', acesso: this.funcionario?.acesso ?? 'ATENDENTE' });
     }
   }
 
@@ -40,7 +41,7 @@ export class ModalFuncionarioForm implements OnChanges {
       return;
     }
     const value = this.form.getRawValue();
-    const payload: FuncionarioCadastro = { nome: value.nome.trim(), telefone: value.telefone.trim(), cargo: value.cargo.trim() };
+    const payload: FuncionarioCadastro = { nome: value.nome.trim(), telefone: value.telefone.trim(), cargo: value.cargo.trim(), acesso: value.acesso };
     const request: Observable<Funcionario> = this.funcionario
       ? this.funcionariosService
           .atualizar(this.funcionario.id, payload)

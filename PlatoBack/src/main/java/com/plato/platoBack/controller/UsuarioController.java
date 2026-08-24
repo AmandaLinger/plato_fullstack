@@ -71,7 +71,7 @@ public class UsuarioController {
         Long usuarioId = jwtService.obterUsuarioId(authorization);
         usuarioService.atualizarUsuario(
                 usuarioId,
-                new UsuarioDto(request.nome().trim(), request.senha())
+                new UsuarioDto(request.nome().trim(), request.senha(), null)
         );
         return PerfilResponse.from(usuarioService.buscarPorId(usuarioId));
     }

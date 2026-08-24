@@ -11,6 +11,12 @@
       @if (form.controls.telefone.touched && form.controls.telefone.invalid) { <small>Informe o telefone.</small> }
       <label for="employee-role">Cargo / Função</label><input id="employee-role" formControlName="cargo" placeholder="Ex.: Garçom">
       @if (form.controls.cargo.touched && form.controls.cargo.invalid) { <small>Informe o cargo.</small> }
+      <label for="employee-access">Acesso</label>
+      <select id="employee-access" formControlName="acesso">
+        <option value="GERENTE">Gerente</option>
+        <option value="ATENDENTE">Atendente</option>
+        <option value="CAIXA">Caixa</option>
+      </select>
       @if (saveError) { <small role="alert">{{ saveError }}</small> }
       <div class="actions"><button class="secondary-button" type="button" [disabled]="isSaving || isDeleting" (click)="close()">Cancelar</button><button class="primary-button" type="submit" [disabled]="form.invalid || isSaving || isDeleting">{{ isSaving ? 'Salvando...' : 'Salvar' }}</button></div>
     </form>

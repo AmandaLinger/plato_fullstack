@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {ItemHome} from '../../components/item-home/item-home';
 import {BtnConfig} from '../../components/btn-config/btn-config';
 import {TelaConfig} from '../../components/tela-config/tela-config';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home-page',
@@ -16,6 +17,7 @@ import {TelaConfig} from '../../components/tela-config/tela-config';
   styleUrl: './home-page.scss',
 })
 export class HomePage {
+  readonly auth = inject(AuthService);
   isConfigOpen = false;
 
   openConfig(): void {

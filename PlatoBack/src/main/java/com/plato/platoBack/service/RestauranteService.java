@@ -10,11 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import com.plato.platoBack.dto.PrimeiroGerenteDto;
+import com.plato.platoBack.entity.Usuario;
+import com.plato.platoBack.repository.UsuarioRepository;
+import com.plato.platoBack.enuns.NivelAcesso;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 @RequiredArgsConstructor
 public class RestauranteService {
     private final RestauranteRepository restauranteRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
     @Transactional(readOnly = true)
     public List<Restaurante> listarAtivos() {
@@ -23,6 +30,7 @@ public class RestauranteService {
 
     @Transactional
     public Restaurante cadastrarRestaurante(RestauranteDto restauranteDto) {
+        exigirRoot();
         String nome = validarNome(restauranteDto);
         if (restauranteRepository.existsByNomeIgnoreCaseAndAtivoTrue(nome)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Restaurante já cadastrado");
@@ -36,6 +44,7 @@ public class RestauranteService {
 
     @Transactional
     public void inativarRestaurante(Long id) {
+        exigirRoot();
         Restaurante restaurante = restauranteRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -44,6 +53,36 @@ public class RestauranteService {
 
         restaurante.setAtivo(false);
         restauranteRepository.save(restaurante);
+    }
+
+    @Transactional
+    public Usuario criarPrimeiroGerente(Long restauranteId, PrimeiroGerenteDto dto) {
+        exigirRoot();
+        Restaurante restaurante = restauranteRepository.findByIdAndAtivoTrue(restauranteId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Restaurante não encontrado"));
+        if (usuarioRepository.existsByRestauranteIdAndAcessoAndAtivoTrue(restauranteId, NivelAcesso.GERENTE)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "O restaurante já possui um gerente");
+        }
+        if (dto == null || dto.nome() == null || dto.nome().isBlank()
+                || dto.senha() == null || dto.senha().length() < 8 || dto.senha().length() > 72) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nome e senha de 8 a 72 caracteres são obrigatórios");
+        }
+        if (usuarioRepository.findByNomeAndRestauranteIdAndAtivoTrue(dto.nome().trim(), restauranteId).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Nome de usuário já cadastrado no restaurante");
+        }
+        return usuarioRepository.save(Usuario.builder()
+                .nome(dto.nome().trim())
+                .senha(passwordEncoder.encode(dto.senha()))
+                .acesso(NivelAcesso.GERENTE)
+                .ativo(true)
+                .restaurante(restaurante)
+                .build());
+    }
+
+    private void exigirRoot() {
+        if (AcessoContext.get() != NivelAcesso.ROOT) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso exclusivo do usuário Root");
+        }
     }
 
     private String validarNome(RestauranteDto restauranteDto) {

@@ -14,6 +14,8 @@ export interface Restaurante {
   readonly nome: string;
 }
 
+export interface PrimeiroGerentePayload { readonly nome: string; readonly senha: string; }
+
 @Injectable({ providedIn: 'root' })
 export class RestauranteService {
   private readonly http = inject(HttpClient);
@@ -25,5 +27,17 @@ export class RestauranteService {
 
   listarAtivos(): Observable<readonly Restaurante[]> {
     return this.http.get<readonly Restaurante[]>(`${environment.apiUrl}/api/restaurantes`);
+  }
+
+  criar(nome: string): Observable<Restaurante> {
+    return this.http.post<Restaurante>(`${environment.apiUrl}/api/restaurantes`, { nome });
+  }
+
+  inativar(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/api/restaurantes/${id}`);
+  }
+
+  criarPrimeiroGerente(id: number, payload: PrimeiroGerentePayload): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/api/restaurantes/${id}/primeiro-gerente`, payload);
   }
 }

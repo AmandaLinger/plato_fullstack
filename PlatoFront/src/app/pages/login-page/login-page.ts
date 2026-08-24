@@ -22,7 +22,7 @@ export class LoginPage implements OnInit {
   private readonly restauranteService = inject(RestauranteService);
 
   readonly form = this.formBuilder.nonNullable.group({
-    restauranteId: [0, [Validators.required, Validators.min(1)]],
+    restauranteId: [-1, [Validators.required, Validators.min(0)]],
     nome: ['', Validators.required],
     senha: ['', Validators.required],
   });
@@ -58,10 +58,11 @@ export class LoginPage implements OnInit {
       .login({ restauranteId: value.restauranteId, nome: value.nome.trim(), senha: value.senha })
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: () => {
+        next: (response) => {
           const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-          const destination =
-            returnUrl?.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/home';
+          const destination = returnUrl?.startsWith('/') && !returnUrl.startsWith('//')
+            ? returnUrl
+            : response.usuario.acesso === 'ROOT' ? '/admin/restaurantes' : '/home';
           void this.router.navigateByUrl(destination);
         },
         error: () => (this.errorMessage = 'Login ou senha inválidos.'),

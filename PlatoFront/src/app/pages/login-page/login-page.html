@@ -13,7 +13,8 @@
       <div class="flex-column mb-8px">
         <label for="restaurante" class="mb-4px">Restaurante</label>
         <select id="restaurante" formControlName="restauranteId">
-          <option [ngValue]="0" disabled>{{ isLoadingRestaurantes ? 'Carregando restaurantes...' : 'Selecione o restaurante' }}</option>
+          <option [ngValue]="0">Administração global (Root)</option>
+          <option [ngValue]="-1" disabled>{{ isLoadingRestaurantes ? 'Carregando restaurantes...' : 'Selecione o restaurante' }}</option>
           @for (restaurante of restaurantes; track restaurante.id) {
             <option [ngValue]="restaurante.id">{{ restaurante.nome }}</option>
           }

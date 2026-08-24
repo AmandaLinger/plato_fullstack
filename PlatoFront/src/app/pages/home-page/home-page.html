@@ -1,8 +1,6 @@
 <main>
 
-  <div class="position-config">
-    <app-btn-config (configClick)="openConfig()" />
-  </div>
+  <div class="position-config"><app-btn-config (configClick)="openConfig()" /></div>
 
   <div class="container">
     <app-item-home routerLink="/fazer-pedido">
@@ -17,9 +15,8 @@
       Consultar mesas
     </app-item-home>
 
-    <app-item-home routerLink="/notas-do-dia">
-      Notas do dia
-    </app-item-home>
+    @if (auth.hasAnyRole(['GERENTE', 'CAIXA'])) { <app-item-home routerLink="/notas-do-dia">Notas do dia</app-item-home> }
+    @if (auth.hasAnyRole(['GERENTE', 'ATENDENTE'])) { <app-item-home routerLink="/cozinha">Cozinha</app-item-home> }
   </div>
 
   @if (isConfigOpen) {

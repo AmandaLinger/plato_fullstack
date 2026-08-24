@@ -1,0 +1,53 @@
+<main>
+  <section>
+    <nav>
+      <a routerLink="/perfil">
+        Editar meu perfil
+      </a>
+
+      <button type="button" (click)="sair()">Sair</button>
+
+    </nav>
+
+    <h1>Administração global</h1>
+    <h2>Novo restaurante</h2>
+
+    <form [formGroup]="restauranteForm" (ngSubmit)="criar()">
+      <input formControlName="nome" placeholder="Nome do restaurante">
+      <button type="submit">Cadastrar</button>
+
+    </form>
+
+
+<h2>Primeiro gerente</h2>
+    <form [formGroup]="gerenteForm" (ngSubmit)="criarGerente()">
+      <select formControlName="restauranteId">
+        <option [ngValue]="0" disabled>Selecione</option>
+
+        @for (item of restaurantes; track item.id) {
+          <option [ngValue]="item.id">{{ item.nome }}
+          </option> }
+      </select>
+
+      <input formControlName="nome" placeholder="Login do gerente">
+      <input type="password" formControlName="senha" placeholder="Senha">
+
+      <button type="submit">Criar gerente</button>
+    </form>
+
+
+<h2>Restaurantes ativos</h2>
+
+    <ul>@for (item of restaurantes; track item.id) {
+      <li>
+        <span>{{ item.nome }}</span>
+        <button type="button" (click)="inativar(item.id)">Inativar</button>
+      </li>
+    }</ul>
+  </section>
+</main>
+@if (errorMessage) {
+  <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
+} @else if (successMessage) {
+  <app-feedback-toast type="success" [message]="successMessage" (dismissed)="successMessage = ''" />
+}

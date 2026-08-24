@@ -13,6 +13,8 @@ import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Map;
+import java.util.HashMap;
+import com.plato.platoBack.enuns.NivelAcesso;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -39,13 +41,13 @@ public class JwtService {
     public String gerarToken(Usuario usuario) {
         try {
             long issuedAt = Instant.now().getEpochSecond();
-            Map<String, Object> claims = Map.of(
-                    "sub", usuario.getNome(),
-                    "uid", usuario.getId(),
-                    "rid", usuario.getRestaurante().getId(),
-                    "iat", issuedAt,
-                    "exp", issuedAt + expirationSeconds
-            );
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("sub", usuario.getNome());
+            claims.put("uid", usuario.getId());
+            claims.put("acesso", usuario.getAcesso().name());
+            claims.put("iat", issuedAt);
+            claims.put("exp", issuedAt + expirationSeconds);
+            if (usuario.getRestaurante() != null) claims.put("rid", usuario.getRestaurante().getId());
             String header = encode(HEADER.getBytes(StandardCharsets.UTF_8));
             String payload = encode(objectMapper.writeValueAsBytes(claims));
             String content = header + "." + payload;
@@ -63,7 +65,28 @@ public class JwtService {
         return getNumberClaim(authorizationHeader, "rid");
     }
 
+    public NivelAcesso obterNivelAcesso(String authorizationHeader) {
+        String value = getStringClaim(authorizationHeader, "acesso");
+        try {
+            return NivelAcesso.valueOf(value);
+        } catch (Exception exception) {
+            throw unauthorized();
+        }
+    }
+
+    private String getStringClaim(String authorizationHeader, String claimName) {
+        Object value = getClaims(authorizationHeader).get(claimName);
+        if (!(value instanceof String stringValue)) throw unauthorized();
+        return stringValue;
+    }
+
     private Long getNumberClaim(String authorizationHeader, String claimName) {
+        Object value = getClaims(authorizationHeader).get(claimName);
+        if (!(value instanceof Number number)) throw unauthorized();
+        return number.longValue();
+    }
+
+    private Map<String, Object> getClaims(String authorizationHeader) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw unauthorized();
         }
@@ -85,12 +108,11 @@ public class JwtService {
                     new TypeReference<>() { }
             );
             Number expiration = (Number) claims.get("exp");
-            Number claim = (Number) claims.get(claimName);
-            if (expiration == null || claim == null || expiration.longValue() <= Instant.now().getEpochSecond()) {
+            if (expiration == null || expiration.longValue() <= Instant.now().getEpochSecond()) {
                 throw unauthorized();
             }
 
-            return claim.longValue();
+            return claims;
         } catch (ResponseStatusException exception) {
             throw exception;
         } catch (Exception exception) {

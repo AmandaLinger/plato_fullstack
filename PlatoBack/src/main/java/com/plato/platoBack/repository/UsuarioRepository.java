@@ -9,6 +9,9 @@ import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+    Optional<Usuario> findByNomeAndRestauranteIsNullAndAtivoTrue(String nome);
+    Optional<Usuario> findByIdAndRestauranteIsNullAndAtivoTrue(Long id);
+    boolean existsByRestauranteIdAndAcessoAndAtivoTrue(Long restauranteId, com.plato.platoBack.enuns.NivelAcesso acesso);
     Optional<Usuario> findByNomeAndRestauranteIdAndAtivoTrue(String nome, Long restauranteId);
 
     boolean existsByNomeAndRestauranteIdAndAtivoTrueAndIdNot(String nome, Long restauranteId, Long id);

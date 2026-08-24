@@ -3,6 +3,7 @@ export interface Funcionario {
   readonly nome: string;
   readonly telefone: string;
   readonly cargo: string;
+  readonly acesso: 'GERENTE' | 'ATENDENTE' | 'CAIXA';
 }
 
 export type FuncionarioCadastro = Omit<Funcionario, 'id'>;

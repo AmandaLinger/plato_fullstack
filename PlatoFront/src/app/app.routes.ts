@@ -16,6 +16,11 @@ import { CozinhaPage } from './pages/cozinha-page/cozinha-page';
 import { NotaFornecedorPage } from './pages/nota-fornecedor-page/nota-fornecedor-page';
 import { CadastrarRestaurantePage } from './pages/cadastrar-restaurante-page/cadastrar-restaurante-page';
 import { authGuard } from './guards/auth.guard';
+import { roleGuard } from './guards/role.guard';
+import { RestaurantesAdminPage } from './pages/restaurantes-admin-page/restaurantes-admin-page';
+
+const gerente = { roles: ['GERENTE'] };
+const operacao = { roles: ['GERENTE', 'ATENDENTE', 'CAIXA'] };
 
 export const routes: Routes = [
   { path: '', component: InitialPage, pathMatch: 'full' },
@@ -25,19 +30,21 @@ export const routes: Routes = [
     path: '',
     canActivateChild: [authGuard],
     children: [
-      { path: 'home', component: HomePage },
-      { path: 'perfil', component: PerfilPage },
-      { path: 'cardapioEdit', component: CardapioEditPage },
-      { path: 'configuracoes', component: ConfiguracoesPage },
-      { path: 'fazer-pedido', component: FazerPedidoPage },
-      { path: 'finalizar-pedido', component: FinalizarPedidoPage },
-      { path: 'consultar-mesas', component: ConsultarMesasPage },
-      { path: 'notas-do-dia', component: NotasDoDiaPage },
-      { path: 'configuracoes/funcionarios', component: FuncionariosPage },
-      { path: 'configuracoes/fornecedores', component: FornecedoresPage },
-      { path: 'configuracoes/mesas', component: MesasPage },
-      { path: 'configuracoes/cozinha', component: CozinhaPage },
-      { path: 'nota-fornecedor', component: NotaFornecedorPage },
+      { path: 'admin/restaurantes', component: RestaurantesAdminPage, canActivate: [roleGuard], data: { roles: ['ROOT'] } },
+      { path: 'home', component: HomePage, canActivate: [roleGuard], data: operacao },
+      { path: 'perfil', component: PerfilPage, canActivate: [roleGuard], data: { roles: ['ROOT', 'GERENTE', 'ATENDENTE', 'CAIXA'] } },
+      { path: 'cardapioEdit', component: CardapioEditPage, canActivate: [roleGuard], data: gerente },
+      { path: 'configuracoes', component: ConfiguracoesPage, canActivate: [roleGuard], data: gerente },
+      { path: 'fazer-pedido', component: FazerPedidoPage, canActivate: [roleGuard], data: operacao },
+      { path: 'finalizar-pedido', component: FinalizarPedidoPage, canActivate: [roleGuard], data: operacao },
+      { path: 'consultar-mesas', component: ConsultarMesasPage, canActivate: [roleGuard], data: operacao },
+      { path: 'notas-do-dia', component: NotasDoDiaPage, canActivate: [roleGuard], data: { roles: ['GERENTE', 'CAIXA'] } },
+      { path: 'configuracoes/funcionarios', component: FuncionariosPage, canActivate: [roleGuard], data: gerente },
+      { path: 'configuracoes/fornecedores', component: FornecedoresPage, canActivate: [roleGuard], data: gerente },
+      { path: 'configuracoes/mesas', component: MesasPage, canActivate: [roleGuard], data: gerente },
+      { path: 'configuracoes/cozinha', component: CozinhaPage, canActivate: [roleGuard], data: { roles: ['GERENTE', 'ATENDENTE'] } },
+      { path: 'cozinha', component: CozinhaPage, canActivate: [roleGuard], data: { roles: ['GERENTE', 'ATENDENTE'] } },
+      { path: 'nota-fornecedor', component: NotaFornecedorPage, canActivate: [roleGuard], data: gerente },
     ],
   },
   { path: '**', redirectTo: '' }

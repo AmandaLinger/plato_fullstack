@@ -1,6 +1,7 @@
 package com.plato.platoBack.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.plato.platoBack.enuns.NivelAcesso;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -28,6 +29,10 @@ public class Usuario {
     @NotNull
     @JsonIgnore
     String senha;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    NivelAcesso acesso;
 
     @Builder.Default
     @Column(nullable = false, columnDefinition = "boolean default true")

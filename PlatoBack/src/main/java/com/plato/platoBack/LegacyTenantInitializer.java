@@ -7,8 +7,11 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.core.annotation.Order;
+import com.plato.platoBack.enuns.NivelAcesso;
 
 @Component
+@Order(1)
 @RequiredArgsConstructor
 public class LegacyTenantInitializer implements ApplicationRunner {
     private final RestauranteRepository restauranteRepository;
@@ -29,14 +32,19 @@ public class LegacyTenantInitializer implements ApplicationRunner {
                         .ativo(true)
                         .build()));
 
-        usuarioRepository.findAll().stream().filter(item -> item.getRestaurante() == null)
+        usuarioRepository.findAll().stream()
+                .filter(item -> item.getRestaurante() == null && item.getAcesso() != NivelAcesso.ROOT)
                 .forEach(item -> item.setRestaurante(restaurante));
+        usuarioRepository.findAll().stream().filter(item -> item.getAcesso() == null)
+                .forEach(item -> item.setAcesso(NivelAcesso.GERENTE));
         produtoRepository.findAll().stream().filter(item -> item.getRestaurante() == null)
                 .forEach(item -> item.setRestaurante(restaurante));
         fornecedorRepository.findAll().stream().filter(item -> item.getRestaurante() == null)
                 .forEach(item -> item.setRestaurante(restaurante));
         funcionarioRepository.findAll().stream().filter(item -> item.getRestaurante() == null)
                 .forEach(item -> item.setRestaurante(restaurante));
+        funcionarioRepository.findAll().stream().filter(item -> item.getAcesso() == null)
+                .forEach(item -> item.setAcesso(NivelAcesso.ATENDENTE));
         mesaRepository.findAll().stream().filter(item -> item.getRestaurante() == null)
                 .forEach(item -> item.setRestaurante(restaurante));
         pedidoRepository.findAll().stream().filter(item -> item.getRestaurante() == null)

@@ -32,10 +32,12 @@ public class FuncionarioService {
     }
 
     public Funcionario cadastrarFuncionario(FuncionarioDto funcionarioDto){
+        validarAcesso(funcionarioDto);
         Funcionario funcionario = new Funcionario();
         funcionario.setNome(funcionarioDto.getNome());
         funcionario.setTelefone(funcionarioDto.getTelefone());
         funcionario.setCargo(funcionarioDto.getCargo());
+        funcionario.setAcesso(funcionarioDto.getAcesso());
         funcionario.setAtivo(true);
         funcionario.setRestaurante(restauranteContext.getRestaurante());
 
@@ -51,11 +53,13 @@ public class FuncionarioService {
 
     @Transactional
     public void atualizaFuncionario(Long id, FuncionarioDto funcionarioDto) throws BadRequestException {
+        validarAcesso(funcionarioDto);
         Funcionario funcionario = buscarAtivo(id);
 
         funcionario.setNome(funcionarioDto.getNome());
         funcionario.setTelefone(funcionarioDto.getTelefone());
         funcionario.setCargo(funcionarioDto.getCargo());
+        funcionario.setAcesso(funcionarioDto.getAcesso());
 
         funcionarioRepository.save(funcionario);
     }
@@ -66,5 +70,11 @@ public class FuncionarioService {
                         HttpStatus.NOT_FOUND,
                         "Nenhum funcionário encontrado"
                 ));
+    }
+
+    private void validarAcesso(FuncionarioDto dto) {
+        if (dto.getAcesso() == null || dto.getAcesso() == com.plato.platoBack.enuns.NivelAcesso.ROOT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Acesso deve ser GERENTE, ATENDENTE ou CAIXA");
+        }
     }
 }

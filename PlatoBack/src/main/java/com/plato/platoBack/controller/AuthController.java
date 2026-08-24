@@ -24,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
-        if (request.restauranteId() == null || request.nome() == null || request.nome().isBlank()
+        if (request.nome() == null || request.nome().isBlank()
                 || request.senha() == null || request.senha().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Login e senha são obrigatórios");
         }

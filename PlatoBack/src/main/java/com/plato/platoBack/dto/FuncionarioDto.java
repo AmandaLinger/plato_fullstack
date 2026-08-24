@@ -1,6 +1,7 @@
 package com.plato.platoBack.dto;
 
 import lombok.*;
+import com.plato.platoBack.enuns.NivelAcesso;
 
 @Getter
 @Setter
@@ -12,4 +13,6 @@ public class FuncionarioDto {
     String telefone;
 
     String cargo;
+
+    NivelAcesso acesso;
 }
