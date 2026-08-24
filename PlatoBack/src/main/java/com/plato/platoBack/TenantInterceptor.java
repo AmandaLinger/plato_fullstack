@@ -26,6 +26,10 @@ public class TenantInterceptor implements HandlerInterceptor {
                 && "/api/restaurantes".equals(request.getRequestURI())) {
             return true;
         }
+        if ("POST".equalsIgnoreCase(request.getMethod())
+                && "/api/solicitacoes-cadastro".equals(request.getRequestURI())) {
+            return true;
+        }
         String authorization = request.getHeader("Authorization");
         NivelAcesso acesso = jwtService.obterNivelAcesso(authorization);
         try {
@@ -51,7 +55,9 @@ public class TenantInterceptor implements HandlerInterceptor {
     private void autorizar(HttpServletRequest request, NivelAcesso acesso) {
         String path = request.getRequestURI();
         if (acesso == NivelAcesso.ROOT) {
-            if (!path.startsWith("/api/restaurantes") && !path.startsWith("/usuario/perfil")) negar();
+            if (!path.startsWith("/api/restaurantes")
+                    && !path.startsWith("/api/solicitacoes-cadastro")
+                    && !path.startsWith("/usuario/perfil")) negar();
             return;
         }
         if (acesso == NivelAcesso.GERENTE || path.startsWith("/usuario/perfil")) return;

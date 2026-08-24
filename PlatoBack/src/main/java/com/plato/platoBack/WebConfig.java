@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tenantInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/login", "/api/solicitacoes-cadastro", "/error");
+                .excludePathPatterns("/auth/login", "/error");
     }
 
     @Override

@@ -6,7 +6,7 @@
           <img src="icon_person.png" alt="ícone de pessoa">
         </a>
 
-        <button type="button" class="btn-consulta">
+        <button type="button" class="btn-consulta" (click)="abrirSolicitacoes()">
           Consultar solicitações
         </button>
       </div>
@@ -31,7 +31,7 @@
       <select formControlName="restauranteId">
         <option [ngValue]="0" disabled>Selecione</option>
 
-        @for (item of restaurantes; track item.id) {
+        @for (item of restaurantesSemGerente; track item.id) {
           <option [ngValue]="item.id">{{ item.nome }}
           </option> }
       </select>
@@ -43,7 +43,13 @@
     </form>
 
 
-<h2>Restaurantes ativos</h2>
+<div class="style-div">
+  <h2>Restaurantes ativos</h2>
+
+  <button>
+    {{restaurantes.length}}
+  </button>
+</div>
 
     <ul>@for (item of restaurantes; track item.id) {
       <li>
@@ -57,4 +63,40 @@
   <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
 } @else if (successMessage) {
   <app-feedback-toast type="success" [message]="successMessage" (dismissed)="successMessage = ''" />
+}
+@if (isSolicitacoesModalOpen) {
+  <div class="requests-overlay" (click)="fecharSolicitacoes()">
+    <section class="requests-modal" role="dialog" aria-modal="true" aria-labelledby="requests-title" (click)="$event.stopPropagation()">
+      <button class="modal-close" type="button" aria-label="Fechar solicitações" [disabled]="isLoadingSolicitacoes" (click)="fecharSolicitacoes()">×</button>
+      <p class="modal-eyebrow">Cadastros</p>
+      <h2 id="requests-title">Solicitações pendentes</h2>
+
+      @if (isLoadingSolicitacoes) {
+        <p class="modal-state" aria-live="polite">Carregando solicitações...</p>
+      } @else if (solicitacoesError) {
+        <p class="modal-state modal-error" role="alert">{{ solicitacoesError }}</p>
+      } @else if (solicitacoes.length === 0) {
+        <p class="modal-state">Nenhuma solicitação encontrada.</p>
+      } @else {
+        <div class="requests-table-wrapper">
+          <table>
+            <thead><tr><th>Restaurante</th><th>Responsável</th><th>Telefone</th><th><span class="visually-hidden">Ação</span></th></tr></thead>
+            <tbody>
+              @for (solicitacao of solicitacoes; track solicitacao.id) {
+                <tr>
+                  <td>{{ solicitacao.nomeEstabelecimento }}</td>
+                  <td>{{ solicitacao.nomeResponsavel }}</td>
+                  <td>{{ solicitacao.telefone }}</td>
+                  <td class="request-actions">
+                    <button class="select-request" type="button" [disabled]="solicitacaoEmExclusaoId !== null" (click)="selecionarSolicitacao(solicitacao)">Selecionar</button>
+                    <button class="delete-request" type="button" [disabled]="solicitacaoEmExclusaoId !== null" (click)="rejeitarSolicitacao(solicitacao.id)">{{ solicitacaoEmExclusaoId === solicitacao.id ? 'Excluindo...' : 'Excluir' }}</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </div>
 }

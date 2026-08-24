@@ -81,6 +81,16 @@ button {
   background: transparent;
 }
 
+.style-div{
+  display: flex;
+  justify-content: space-between;
+
+  button{
+    color: var(--plato-purple);
+    background: transparent;
+  }
+}
+
 ul {
   padding: 0;
   list-style: none;
@@ -92,4 +102,50 @@ li {
   justify-content: space-between;
   border-bottom: 1px solid var(--plato-border);
   padding: 12px 0;
+}
+
+.requests-overlay {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 20px;
+  background: rgb(24 24 27 / 56%);
+}
+
+.requests-modal {
+  position: relative;
+  width: min(100%, 760px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  border-radius: 16px;
+  background: var(--plato-background);
+  padding: 32px 24px 24px;
+}
+
+.modal-close { position: absolute; top: 12px; right: 12px; border: 0; background: transparent; color: var(--plato-text-secondary); font-size: var(--ts-24); }
+.modal-close:disabled { cursor: not-allowed; opacity: 0.55; }
+.modal-eyebrow { margin: 0 0 4px; color: var(--plato-purple); font-weight: 700; text-transform: uppercase; }
+.requests-modal h2 { margin: 0 0 20px; color: var(--plato-text); }
+.modal-state { margin: 32px 0; color: var(--plato-text-secondary); text-align: center; }
+.modal-error { color: var(--plato-error); }
+.requests-table-wrapper { overflow-x: auto; }
+.requests-modal table { width: 100%; border-collapse: collapse; }
+.requests-modal th, .requests-modal td { padding: 12px 10px; border-bottom: 1px solid var(--plato-border); text-align: left; }
+.requests-modal th { color: var(--plato-purple-dark); }
+.requests-modal td:last-child { text-align: right; }
+.select-request { white-space: nowrap; padding: 8px 12px; }
+.request-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.request-actions button:disabled { cursor: not-allowed; opacity: 0.55; }
+.delete-request { white-space: nowrap; padding: 8px 12px; background: var(--plato-error); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (max-width: 620px) {
+  .requests-modal thead { display: none; }
+  .requests-modal tr { display: grid; gap: 6px; padding: 12px 0; border-bottom: 1px solid var(--plato-border); }
+  .requests-modal td { padding: 0; border: 0; }
+  .requests-modal td:last-child { margin-top: 6px; text-align: left; }
 }

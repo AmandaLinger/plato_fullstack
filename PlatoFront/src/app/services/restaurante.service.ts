@@ -4,10 +4,15 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface SolicitacaoCadastro {
+  readonly id: number;
   readonly nomeEstabelecimento: string;
   readonly nomeResponsavel: string;
   readonly telefone: string;
+  readonly status: 'PENDENTE' | 'APROVADO' | 'REJEITADO';
+  readonly dataCriacao: string;
 }
+
+export type NovaSolicitacaoCadastro = Pick<SolicitacaoCadastro, 'nomeEstabelecimento' | 'nomeResponsavel' | 'telefone'>;
 
 export interface Restaurante {
   readonly id: number;
@@ -21,12 +26,24 @@ export class RestauranteService {
   private readonly http = inject(HttpClient);
   private readonly endpoint = `${environment.apiUrl}/api/solicitacoes-cadastro`;
 
-  solicitarLogin(solicitacao: SolicitacaoCadastro): Observable<void> {
+  solicitarLogin(solicitacao: NovaSolicitacaoCadastro): Observable<void> {
     return this.http.post<void>(this.endpoint, solicitacao);
+  }
+
+  listarSolicitacoesPendentes(): Observable<readonly SolicitacaoCadastro[]> {
+    return this.http.get<readonly SolicitacaoCadastro[]>(this.endpoint);
+  }
+
+  rejeitarSolicitacao(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.endpoint}/${id}`);
   }
 
   listarAtivos(): Observable<readonly Restaurante[]> {
     return this.http.get<readonly Restaurante[]>(`${environment.apiUrl}/api/restaurantes`);
+  }
+
+  listarAtivosSemGerente(): Observable<readonly Restaurante[]> {
+    return this.http.get<readonly Restaurante[]>(`${environment.apiUrl}/api/restaurantes/sem-gerente`);
   }
 
   criar(nome: string): Observable<Restaurante> {

@@ -23,6 +23,11 @@ public class RestauranteController {
         return ResponseEntity.ok(restauranteService.listarAtivos());
     }
 
+    @GetMapping("/sem-gerente")
+    public ResponseEntity<List<Restaurante>> listarAtivosSemGerente() {
+        return ResponseEntity.ok(restauranteService.listarAtivosSemGerente());
+    }
+
     @PostMapping
     public ResponseEntity<Restaurante> criarRestaurante(@RequestBody RestauranteDto restauranteDto) {
         Restaurante restaurante = restauranteService.cadastrarRestaurante(restauranteDto);

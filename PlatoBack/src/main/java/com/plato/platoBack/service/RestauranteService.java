@@ -28,6 +28,15 @@ public class RestauranteService {
         return restauranteRepository.findAllByAtivoTrueOrderByNomeAsc();
     }
 
+    @Transactional(readOnly = true)
+    public List<Restaurante> listarAtivosSemGerente() {
+        exigirRoot();
+        return restauranteRepository.findAllByAtivoTrueOrderByNomeAsc().stream()
+                .filter(restaurante -> !usuarioRepository.existsByRestauranteIdAndAcessoAndAtivoTrue(
+                        restaurante.getId(), NivelAcesso.GERENTE))
+                .toList();
+    }
+
     @Transactional
     public Restaurante cadastrarRestaurante(RestauranteDto restauranteDto) {
         exigirRoot();

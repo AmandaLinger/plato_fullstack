@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
-import { Restaurante, RestauranteService } from '../../services/restaurante.service';
+import { Restaurante, RestauranteService, SolicitacaoCadastro } from '../../services/restaurante.service';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -12,22 +13,61 @@ export class RestaurantesAdminPage implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   restaurantes: readonly Restaurante[] = [];
+  restaurantesSemGerente: readonly Restaurante[] = [];
   successMessage = '';
   errorMessage = '';
+  solicitacoes: readonly SolicitacaoCadastro[] = [];
+  isSolicitacoesModalOpen = false;
+  isLoadingSolicitacoes = false;
+  solicitacoesError = '';
+  solicitacaoEmExclusaoId: number | null = null;
   readonly restauranteForm = this.fb.nonNullable.group({ nome: ['', Validators.required] });
   readonly gerenteForm = this.fb.nonNullable.group({ restauranteId: [0, Validators.min(1)], nome: ['', Validators.required], senha: ['', [Validators.required, Validators.minLength(8)]] });
 
   ngOnInit(): void { this.carregar(); }
-  carregar(): void { this.service.listarAtivos().subscribe({ next: value => this.restaurantes = value, error: () => this.errorMessage = 'Não foi possível carregar os restaurantes.' }); }
+  abrirSolicitacoes(): void {
+    this.isSolicitacoesModalOpen = true;
+    this.isLoadingSolicitacoes = true;
+    this.solicitacoesError = '';
+    this.solicitacoes = [];
+    this.service.listarSolicitacoesPendentes()
+      .pipe(finalize(() => (this.isLoadingSolicitacoes = false)))
+      .subscribe({
+        next: solicitacoes => this.solicitacoes = solicitacoes,
+        error: () => this.solicitacoesError = 'Não foi possível carregar as solicitações.',
+      });
+  }
+  fecharSolicitacoes(): void {
+    if (!this.isLoadingSolicitacoes) this.isSolicitacoesModalOpen = false;
+  }
+  selecionarSolicitacao(solicitacao: SolicitacaoCadastro): void {
+    this.restauranteForm.patchValue({ nome: solicitacao.nomeEstabelecimento });
+    this.gerenteForm.patchValue({ nome: solicitacao.nomeResponsavel });
+    this.isSolicitacoesModalOpen = false;
+  }
+  rejeitarSolicitacao(id: number): void {
+    this.solicitacaoEmExclusaoId = id;
+    this.solicitacoesError = '';
+    this.service.rejeitarSolicitacao(id)
+      .pipe(finalize(() => (this.solicitacaoEmExclusaoId = null)))
+      .subscribe({
+        next: () => this.solicitacoes = this.solicitacoes.filter(item => item.id !== id),
+        error: () => this.solicitacoesError = 'Não foi possível excluir a solicitação.',
+      });
+  }
+  carregar(): void {
+    this.service.listarAtivos().subscribe({ next: value => this.restaurantes = value, error: () => this.errorMessage = 'Não foi possível carregar os restaurantes.' });
+    this.service.listarAtivosSemGerente().subscribe({ next: value => this.restaurantesSemGerente = value, error: () => this.errorMessage = 'Não foi possível carregar os restaurantes sem gerente.' });
+  }
   criar(): void {
     if (this.restauranteForm.invalid) return;
-    this.service.criar(this.restauranteForm.getRawValue().nome.trim()).subscribe({ next: item => { this.restaurantes = [...this.restaurantes, item]; this.restauranteForm.reset(); this.successMessage = 'Restaurante criado com sucesso.'; }, error: () => this.errorMessage = 'Não foi possível criar o restaurante.' });
+    this.service.criar(this.restauranteForm.getRawValue().nome.trim()).subscribe({ next: item => { this.restaurantes = [...this.restaurantes, item]; this.restaurantesSemGerente = [...this.restaurantesSemGerente, item]; this.restauranteForm.reset(); this.successMessage = 'Restaurante criado com sucesso.'; }, error: () => this.errorMessage = 'Não foi possível criar o restaurante.' });
   }
   criarGerente(): void {
     if (this.gerenteForm.invalid) return;
     const value = this.gerenteForm.getRawValue();
-    this.service.criarPrimeiroGerente(value.restauranteId, { nome: value.nome.trim(), senha: value.senha }).subscribe({ next: () => { this.gerenteForm.reset(); this.successMessage = 'Primeiro gerente criado com sucesso.'; }, error: () => this.errorMessage = 'Não foi possível criar o primeiro gerente.' });
+    this.service.criarPrimeiroGerente(value.restauranteId, { nome: value.nome.trim(), senha: value.senha }).subscribe({ next: () => { this.restaurantesSemGerente = this.restaurantesSemGerente.filter(item => item.id !== value.restauranteId); this.gerenteForm.reset(); this.successMessage = 'Primeiro gerente criado com sucesso.'; }, error: () => this.errorMessage = 'Não foi possível criar o primeiro gerente.' });
   }
-  inativar(id: number): void { this.service.inativar(id).subscribe({ next: () => { this.restaurantes = this.restaurantes.filter(item => item.id !== id); this.successMessage = 'Restaurante inativado.'; }, error: () => this.errorMessage = 'Não foi possível inativar o restaurante.' }); }
+  inativar(id: number): void { this.service.inativar(id).subscribe({ next: () => { this.restaurantes = this.restaurantes.filter(item => item.id !== id); this.restaurantesSemGerente = this.restaurantesSemGerente.filter(item => item.id !== id); this.successMessage = 'Restaurante inativado.'; }, error: () => this.errorMessage = 'Não foi possível inativar o restaurante.' }); }
   sair(): void { this.auth.clearToken(); void this.router.navigate(['/login']); }
 }
