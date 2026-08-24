@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import com.plato.platoBack.enuns.StatusCozinha;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
@@ -14,6 +15,11 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     java.util.Optional<Pedido> findByIdAndRestauranteId(Long id, Long restauranteId);
 
     List<Pedido> findByRestauranteIdAndPedidoAbertoTrue(Long restauranteId);
+
+    List<Pedido> findByRestauranteIdAndEnviarCozinhaTrueAndStatusCozinhaInOrderByCriadoEmAsc(
+            Long restauranteId,
+            List<StatusCozinha> status
+    );
 
     List<Pedido> findByRestauranteIdAndPedidoAbertoFalseAndDataPedidoOrderByIdDesc(Long restauranteId, LocalDate dataPedido);
 

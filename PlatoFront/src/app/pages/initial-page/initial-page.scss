@@ -23,7 +23,7 @@ main::before {
     margin-bottom: 4px;
     color: var(--plato-orange);
     background: var(--plato-surface);
-    padding: 16px 24px;
+    padding: 24px;
     width: fit-content;
     border-radius: 16px;
   }
@@ -64,7 +64,7 @@ main::before {
 
 @media screen and (min-width: 700px) {
   .cabecalho{
-    padding: 150px 0 0 0;
+    padding: 120px 0 0 0;
     h1{
       font-size: var(--ts-64);
     }

@@ -1,11 +1,18 @@
 main{
-  background-image: var(--purple-gradient);
+  background-color: var(--plato-purple);
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
+  background-image: url("/bg_logo.png");
+  background-size: 500px ;
+  background-repeat: no-repeat;
+  background-position-x: -160px;
+  background-position-y: 650px;
 }
+
 
 .position-config{
   position: absolute;
@@ -22,4 +29,18 @@ main{
   border-radius: 16px;
 
   padding: 24px;
+}
+
+@media (min-width: 700px){
+  main{
+    background-size: 600px ;
+  }
+}
+
+@media (min-width: 1700px){
+  main{
+    background-size: 800px ;
+    background-position-x: -160px;
+    background-position-y: 450px;
+  }
 }

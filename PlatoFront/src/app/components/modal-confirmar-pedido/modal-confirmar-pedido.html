@@ -41,6 +41,12 @@
         <small class="field-error">Selecione um garçom.</small>
       }
 
+      <label for="enviar-cozinha">Enviar pedido para a cozinha?</label>
+      <select id="enviar-cozinha" formControlName="enviarCozinha">
+        <option [ngValue]="true">Sim</option>
+        <option [ngValue]="false">Não</option>
+      </select>
+
       <div class="actions">
         <button class="secondary-button" type="button" (click)="closed.emit()">Voltar</button>
         <button class="primary-button" type="submit" [disabled]="form.invalid || isLoadingFuncionarios || funcionarios.length === 0 || itens.length === 0">Confirmar pedido</button>

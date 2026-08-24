@@ -1,6 +1,34 @@
-<main class="settings-page">
-  <section class="settings-container kitchen-container" aria-labelledby="kitchen-title">
+<main class="kitchen-page">
+  <section class="kitchen-container" aria-labelledby="kitchen-title">
     <app-btn-back />
-    <div class="placeholder"><p class="eyebrow">Configurações</p><h1 id="kitchen-title">Cozinha</h1><p>Configurações da Cozinha em breve.</p></div>
+    <header>
+      <div><p class="eyebrow">Produção</p><h1 id="kitchen-title">Cozinha</h1><p>Pedidos atualizados automaticamente a cada 5 segundos.</p></div>
+      <span class="live-indicator"><i></i> Ao vivo</span>
+    </header>
+    @if (errorMessage) { <p class="error-message" role="alert">{{ errorMessage }}</p> }
+    @if (isLoading) {
+      <section class="state" aria-live="polite"><span class="spinner"></span><p>Carregando pedidos...</p></section>
+    } @else if (pedidos.length === 0) {
+      <section class="state"><h2>Nenhum pedido na fila</h2><p>Novos pedidos enviados para a cozinha aparecerão aqui.</p></section>
+    } @else {
+      <section class="orders" aria-label="Pedidos ativos da cozinha">
+        @for (pedido of pedidos; track pedido.id) {
+          <article class="order-card" [class.preparing]="pedido.statusCozinha === 'EM_PREPARO'">
+            <header class="order-heading">
+              <div><span class="table">Mesa {{ pedido.numeroMesa }}</span><strong>Pedido #{{ pedido.id }}</strong></div>
+              <div class="order-meta"><time [attr.datetime]="pedido.criadoEm">{{ pedido.criadoEm ? (pedido.criadoEm | date: 'HH:mm') : '--:--' }}</time><span>{{ pedido.statusCozinha === 'PENDENTE' ? 'Pendente' : 'Em preparo' }}</span></div>
+            </header>
+            <ul>
+              @for (item of pedido.itens; track item.id) {
+                <li><strong>{{ item.quantidade }}x</strong><div><span>{{ item.produto.nome }}</span>@if (item.observacoes) { <p>{{ item.observacoes }}</p> }</div></li>
+              }
+            </ul>
+            <button type="button" [disabled]="pedidoEmAtualizacao !== null" (click)="avancarStatus(pedido)">
+              {{ pedidoEmAtualizacao === pedido.id ? 'Atualizando...' : pedido.statusCozinha === 'PENDENTE' ? 'Iniciar preparo' : 'Marcar como pronto' }}
+            </button>
+          </article>
+        }
+      </section>
+    }
   </section>
 </main>

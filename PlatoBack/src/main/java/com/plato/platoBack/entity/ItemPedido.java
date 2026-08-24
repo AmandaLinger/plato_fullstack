@@ -28,4 +28,7 @@ public class ItemPedido {
 
     Double quantidade;
 
+    @Column(length = 500)
+    String observacoes;
+
 }

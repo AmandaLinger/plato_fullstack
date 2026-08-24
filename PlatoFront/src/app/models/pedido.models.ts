@@ -31,13 +31,17 @@ export interface Pedido {
   readonly garcomId?: number;
   readonly itens: readonly ItemPedido[];
   readonly valorTotal: number;
+  readonly enviarCozinha: boolean;
 }
 
 export interface ItemPedidoRegistrado {
   readonly id: number;
   readonly produto: Produto;
   readonly quantidade: number;
+  readonly observacoes: string | null;
 }
+
+export type StatusCozinha = 'PENDENTE' | 'EM_PREPARO' | 'CONCLUIDO';
 
 export interface PedidoRegistrado {
   readonly id: number;
@@ -46,6 +50,9 @@ export interface PedidoRegistrado {
   readonly pedidoAberto: boolean;
   readonly dataPedido: string;
   readonly formaPagamento: FormaPagamento | null;
+  readonly enviarCozinha: boolean;
+  readonly statusCozinha: StatusCozinha | null;
+  readonly criadoEm: string | null;
 }
 
 export interface ProdutoNotaFiscal {

@@ -20,6 +20,8 @@ public class PedidoDto {
 
     Boolean pedidoAberto;
 
+    Boolean enviarCozinha;
+
     FormaPagamento formaPagamento;
 
     LocalDate dataPedido;

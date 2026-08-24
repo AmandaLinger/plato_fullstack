@@ -2,11 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { FormaPagamento, Pedido, Produto } from '../models/pedido.models';
+import { FormaPagamento, Pedido, PedidoRegistrado, Produto, StatusCozinha } from '../models/pedido.models';
 
 interface ItemPedidoPayload {
   readonly produto: Produto;
   readonly quantidade: number;
+  readonly observacoes: string;
 }
 
 interface PedidoPayload {
@@ -14,6 +15,7 @@ interface PedidoPayload {
   readonly itens: readonly ItemPedidoPayload[];
   readonly pedidoAberto: true;
   readonly dataPedido: string;
+  readonly enviarCozinha: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,12 +29,22 @@ export class PedidosService {
       itens: pedido.itens.map((item) => ({
         produto: item.produto,
         quantidade: item.quantidade,
+        observacoes: item.observacoes,
       })),
       pedidoAberto: true,
       dataPedido: this.getLocalDate(),
+      enviarCozinha: pedido.enviarCozinha,
     };
 
     return this.http.post<void>(this.endpoint, payload);
+  }
+
+  listarCozinha(): Observable<readonly PedidoRegistrado[]> {
+    return this.http.get<readonly PedidoRegistrado[]>(`${this.endpoint}/cozinha`);
+  }
+
+  atualizarStatusCozinha(id: number, status: StatusCozinha): Observable<void> {
+    return this.http.patch<void>(`${this.endpoint}/${id}/cozinha/status`, { status });
   }
 
   finalizar(ids: readonly number[], formaPagamento: FormaPagamento): Observable<void> {

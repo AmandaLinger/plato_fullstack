@@ -3,6 +3,7 @@ package com.plato.platoBack.service;
 import com.plato.platoBack.dto.PedidoDto;
 import com.plato.platoBack.entity.Pedido;
 import com.plato.platoBack.enuns.FormaPagamento;
+import com.plato.platoBack.enuns.StatusCozinha;
 import com.plato.platoBack.repository.PedidoRepository;
 import com.plato.platoBack.repository.ProdutoRepository;
 import org.apache.coyote.BadRequestException;
@@ -12,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -35,6 +37,11 @@ public class PedidoService {
         p.setNumeroMesa(pedidoDto.getNumeroMesa());
         p.setItens(pedidoDto.getItens());
         p.setPedidoAberto(true);
+        p.setEnviarCozinha(Boolean.TRUE.equals(pedidoDto.getEnviarCozinha()));
+        p.setStatusCozinha(Boolean.TRUE.equals(pedidoDto.getEnviarCozinha())
+                ? StatusCozinha.PENDENTE
+                : null);
+        p.setCriadoEm(LocalDateTime.now());
         p.setDataPedido(LocalDate.now());
         p.setRestaurante(restauranteContext.getRestaurante());
 
@@ -93,6 +100,34 @@ public class PedidoService {
 
     public List<Pedido> chamaPedidosAbertos() {
         return pedidoRepository.findByRestauranteIdAndPedidoAbertoTrue(restauranteContext.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Pedido> chamaPedidosCozinha() {
+        return pedidoRepository
+                .findByRestauranteIdAndEnviarCozinhaTrueAndStatusCozinhaInOrderByCriadoEmAsc(
+                        restauranteContext.getId(),
+                        List.of(StatusCozinha.PENDENTE, StatusCozinha.EM_PREPARO)
+                );
+    }
+
+    @Transactional
+    public void atualizarStatusCozinha(Long id, StatusCozinha status) throws BadRequestException {
+        if (status == null || status == StatusCozinha.PENDENTE) {
+            throw new BadRequestException("Status de cozinha inválido");
+        }
+        Pedido pedido = pedidoRepository.findByIdAndRestauranteId(id, restauranteContext.getId())
+                .orElseThrow(() -> new BadRequestException("Nenhum pedido encontrado"));
+        if (!Boolean.TRUE.equals(pedido.getEnviarCozinha())
+                || pedido.getStatusCozinha() == StatusCozinha.CONCLUIDO) {
+            throw new BadRequestException("Pedido não está disponível na cozinha");
+        }
+        if (status == StatusCozinha.CONCLUIDO
+                && pedido.getStatusCozinha() != StatusCozinha.EM_PREPARO) {
+            throw new BadRequestException("Inicie o preparo antes de concluir o pedido");
+        }
+        pedido.setStatusCozinha(status);
+        pedidoRepository.save(pedido);
     }
 
     public List<Pedido> chamaPedidosFinalizadosPorData(LocalDate dataPedido) {

@@ -3,6 +3,7 @@ package com.plato.platoBack.controller;
 
 import com.plato.platoBack.dto.PedidoDto;
 import com.plato.platoBack.dto.FinalizarPedidoDto;
+import com.plato.platoBack.dto.AtualizarStatusCozinhaDto;
 import com.plato.platoBack.entity.Pedido;
 import com.plato.platoBack.entity.Produto;
 import com.plato.platoBack.service.PedidoService;
@@ -48,6 +49,20 @@ public class PedidoController {
     @GetMapping("/abertos")
     public List<Pedido> chamaPedidosAbertos() {
         return pedidoService.chamaPedidosAbertos();
+    }
+
+    @GetMapping("/cozinha")
+    public List<Pedido> chamaPedidosCozinha() {
+        return pedidoService.chamaPedidosCozinha();
+    }
+
+    @PatchMapping("/{id}/cozinha/status")
+    public ResponseEntity<Void> atualizarStatusCozinha(
+            @PathVariable Long id,
+            @RequestBody AtualizarStatusCozinhaDto dto
+    ) throws BadRequestException {
+        pedidoService.atualizarStatusCozinha(id, dto == null ? null : dto.status());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/finalizados")

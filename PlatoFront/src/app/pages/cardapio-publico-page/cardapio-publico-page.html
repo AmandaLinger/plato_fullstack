@@ -23,7 +23,7 @@
                   @if (produto.imagemUrl) {
                     <img [src]="produto.imagemUrl" [alt]="produto.nome" loading="lazy">
                   }
-                  <div>
+                  <div class="style-text">
                     <h3>{{ produto.nome }}</h3>
                     @if (produto.descricao) { <p>{{ produto.descricao }}</p> }
                     <strong>{{ produto.preco | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>

@@ -1,6 +1,35 @@
-@use '../configuracoes-child';
-.kitchen-container { max-width: 680px; }
-.placeholder { border-radius: 12px; background-color: var(--plato-surface); padding: 56px 24px; text-align: center;
-  h1 { margin: 8px 0; color: var(--plato-purple); }
-  p:last-child { margin: 0; color: var(--plato-text-secondary); }
-}
+.kitchen-page { min-height: 100vh; box-sizing: border-box; background: #f6f2f8; padding: 16px; }
+.kitchen-container { width: min(100%, 1280px); margin: 0 auto; }
+.kitchen-container > header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 20px 0 24px; }
+.eyebrow { margin: 0; color: var(--plato-purple); font-size: var(--ts-14); font-weight: 800; text-transform: uppercase; }
+h1 { margin: 4px 0; color: var(--plato-purple-dark); font-size: clamp(2rem, 6vw, 3rem); }
+header p:last-child { margin: 0; color: var(--plato-text-secondary); }
+.live-indicator { display: flex; align-items: center; gap: 7px; border-radius: 999px; background: #e8f7ed; padding: 7px 11px; color: #237a3b; font-weight: 700; white-space: nowrap; }
+.live-indicator i { width: 8px; height: 8px; border-radius: 50%; background: #2cab50; animation: pulse 1.5s infinite; }
+.orders { display: grid; align-items: start; gap: 16px; }
+.order-card { overflow: hidden; border: 1px solid var(--plato-border); border-top: 5px solid var(--plato-orange); border-radius: 14px; background: var(--plato-surface); box-shadow: 0 8px 24px rgb(42 23 54 / 7%); }
+.order-card.preparing { border-top-color: var(--plato-purple); }
+.order-heading { display: flex; justify-content: space-between; gap: 12px; padding: 16px; border-bottom: 1px solid var(--plato-border); }
+.order-heading strong, .table { display: block; }
+.table { color: var(--plato-purple-dark); font-size: var(--ts-20); font-weight: 800; }
+.order-heading strong { margin-top: 3px; color: var(--plato-text-secondary); font-size: var(--ts-14); }
+.order-meta { text-align: right; }
+.order-meta time, .order-meta span { display: block; }
+.order-meta time { font-size: var(--ts-20); font-weight: 800; }
+.order-meta span { margin-top: 3px; color: var(--plato-text-secondary); }
+ul { display: grid; gap: 12px; margin: 0; padding: 16px; list-style: none; }
+li { display: grid; grid-template-columns: auto 1fr; gap: 10px; }
+li > strong { color: var(--plato-purple-dark); }
+li span { font-weight: 600; }
+li p { margin: 3px 0 0; color: var(--plato-error); font-size: var(--ts-14); }
+.order-card > button { width: calc(100% - 32px); margin: 0 16px 16px; border: 0; border-radius: 9px; background: var(--plato-purple); padding: 12px; color: white; cursor: pointer; font: inherit; font-weight: 800; }
+.order-card > button:disabled { cursor: not-allowed; opacity: .55; }
+.state { display: grid; min-height: 320px; place-content: center; justify-items: center; border: 1px solid var(--plato-border); border-radius: 14px; background: white; text-align: center; }
+.state h2, .state p { margin: 4px; }
+.state p { color: var(--plato-text-secondary); }
+.spinner { width: 30px; height: 30px; border: 3px solid var(--plato-border); border-top-color: var(--plato-purple); border-radius: 50%; animation: spin .8s linear infinite; }
+.error-message { border-radius: 9px; background: #fff0f0; padding: 12px; color: var(--plato-error); }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 50% { opacity: .35; } }
+@media (min-width: 700px) { .orders { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1080px) { .orders { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
