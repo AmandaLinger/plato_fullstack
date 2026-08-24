@@ -1,6 +1,7 @@
 package com.plato.platoBack.dto;
 
 import com.plato.platoBack.entity.ItemPedido;
+import com.plato.platoBack.enuns.FormaPagamento;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ public class PedidoDto {
 
     Boolean pedidoAberto;
 
+    FormaPagamento formaPagamento;
 
     LocalDate dataPedido;
 }

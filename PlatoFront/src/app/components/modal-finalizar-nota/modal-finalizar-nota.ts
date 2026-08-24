@@ -36,6 +36,7 @@ export class ModalFinalizarNota implements OnInit, OnChanges {
     { valor: 'dinheiro', rotulo: 'Dinheiro' },
     { valor: 'credito', rotulo: 'Cartão de crédito' },
     { valor: 'debito', rotulo: 'Cartão de débito' },
+    { valor: 'voucher', rotulo: 'Voucher' },
     { valor: 'pix', rotulo: 'PIX' },
   ];
 

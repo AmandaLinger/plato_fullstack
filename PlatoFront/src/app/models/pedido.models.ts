@@ -4,6 +4,7 @@ export interface Produto {
   readonly descricao: string;
   readonly imagemUrl: string;
   readonly preco: number;
+  readonly categoria: string;
 }
 
 export interface ProdutoPayload {
@@ -11,6 +12,7 @@ export interface ProdutoPayload {
   readonly descricao: string;
   readonly imagemUrl: string;
   readonly preco: number;
+  readonly categoria: string;
 }
 
 export interface SelecaoProduto {
@@ -43,6 +45,7 @@ export interface PedidoRegistrado {
   readonly itens: readonly ItemPedidoRegistrado[];
   readonly pedidoAberto: boolean;
   readonly dataPedido: string;
+  readonly formaPagamento: FormaPagamento | null;
 }
 
 export interface ProdutoNotaFiscal {
@@ -62,7 +65,7 @@ export interface OperadorCaixa {
   readonly nome: string;
 }
 
-export type FormaPagamento = 'dinheiro' | 'credito' | 'debito' | 'pix';
+export type FormaPagamento = 'dinheiro' | 'credito' | 'debito' | 'voucher' | 'pix';
 
 export interface FinalizacaoNota {
   readonly notaFiscalId: string;

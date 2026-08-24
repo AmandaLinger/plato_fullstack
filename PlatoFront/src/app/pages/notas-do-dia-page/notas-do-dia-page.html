@@ -54,7 +54,12 @@
                 <span class="invoice-number">NF {{ notaFiscal.numero }}</span>
                 <time [attr.datetime]="notaFiscal.emitidaEm">Pedido de {{ notaFiscal.emitidaEm + 'T12:00:00' | date: 'dd/MM/yyyy' }}</time>
               </div>
-              <strong>{{ notaFiscal.valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+
+              <div class="invoice-payment">
+                <strong>{{ notaFiscal.valorTotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+                <span>Forma de pagamento</span>
+                <p>{{ formatarFormaPagamento(notaFiscal.formaPagamento) }}</p>
+              </div>
             </div>
 
             <div class="products">

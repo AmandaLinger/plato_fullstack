@@ -10,9 +10,11 @@ import java.util.Optional;
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-    Optional<Produto> findByNomeAndRestauranteId(String nome, Long restauranteId);
+    Optional<Produto> findByNomeAndRestauranteIdAndAtivoTrue(String nome, Long restauranteId);
 
     List<Produto> findAllByRestauranteId(Long restauranteId);
+
+    List<Produto> findAllByRestauranteIdAndAtivoTrueOrderByCategoriaAscNomeAsc(Long restauranteId);
 
     Optional<Produto> findByIdAndRestauranteId(Long id, Long restauranteId);
 }

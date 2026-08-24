@@ -2,6 +2,7 @@ package com.plato.platoBack.controller;
 
 
 import com.plato.platoBack.dto.PedidoDto;
+import com.plato.platoBack.dto.FinalizarPedidoDto;
 import com.plato.platoBack.entity.Pedido;
 import com.plato.platoBack.entity.Produto;
 import com.plato.platoBack.service.PedidoService;
@@ -70,8 +71,11 @@ public class PedidoController {
     }
 
     @PatchMapping("/{id}/finalizar")
-    public ResponseEntity<Void> finalizarPedido(@PathVariable Long id) throws BadRequestException {
-        pedidoService.finalizarPedido(id);
+    public ResponseEntity<Void> finalizarPedido(
+            @PathVariable Long id,
+            @RequestBody FinalizarPedidoDto dto
+    ) throws BadRequestException {
+        pedidoService.finalizarPedido(id, dto == null ? null : dto.formaPagamento());
         return ResponseEntity.noContent().build();
     }
 

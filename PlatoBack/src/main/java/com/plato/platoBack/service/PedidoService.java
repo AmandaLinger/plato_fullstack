@@ -2,6 +2,7 @@ package com.plato.platoBack.service;
 
 import com.plato.platoBack.dto.PedidoDto;
 import com.plato.platoBack.entity.Pedido;
+import com.plato.platoBack.enuns.FormaPagamento;
 import com.plato.platoBack.repository.PedidoRepository;
 import com.plato.platoBack.repository.ProdutoRepository;
 import org.apache.coyote.BadRequestException;
@@ -69,6 +70,10 @@ public class PedidoService {
             p.setDataPedido(pedidoDto.getDataPedido());
         }
 
+        if (pedidoDto.getFormaPagamento() != null) {
+            p.setFormaPagamento(pedidoDto.getFormaPagamento());
+        }
+
         if (p.getItens() != null) {
             p.getItens().forEach(item -> {
                 Long produtoId = item.getProduto() == null ? null : item.getProduto().getId();
@@ -102,7 +107,7 @@ public class PedidoService {
 
         List<Pedido> pedidos = pedidoRepository
                 .findByRestauranteIdAndPedidoAbertoFalseAndDataPedidoBetweenOrderByDataPedidoAscIdAsc(restauranteContext.getId(), inicio, fim);
-        StringBuilder csv = new StringBuilder("\uFEFFNota Fiscal;Data de Emissão;Mesa;Produtos;Valor Total (R$)\r\n");
+        StringBuilder csv = new StringBuilder("\uFEFFNota Fiscal;Data de Emissão;Mesa;Forma de Pagamento;Produtos;Valor Total (R$)\r\n");
 
         for (Pedido pedido : pedidos) {
             String produtos = pedido.getItens() == null ? "" : pedido.getItens().stream()
@@ -115,6 +120,7 @@ public class PedidoService {
             csv.append(csvCell(String.format("%06d", pedido.getId()))).append(';')
                     .append(csvCell(pedido.getDataPedido().toString())).append(';')
                     .append(csvCell(String.valueOf(pedido.getNumeroMesa()))).append(';')
+                    .append(csvCell(pedido.getFormaPagamento() == null ? "" : pedido.getFormaPagamento().toValue())).append(';')
                     .append(csvCell(produtos)).append(';')
                     .append(csvCell(String.format(Locale.forLanguageTag("pt-BR"), "%.2f", valorTotal)))
                     .append("\r\n");
@@ -139,11 +145,16 @@ public class PedidoService {
     }
 
     @Transactional
-    public void finalizarPedido(Long id) throws BadRequestException {
+    public void finalizarPedido(Long id, FormaPagamento formaPagamento) throws BadRequestException {
         Pedido pedido = pedidoRepository.findByIdAndRestauranteId(id, restauranteContext.getId())
                 .orElseThrow(() -> new BadRequestException("Nenhum pedido encontrado"));
 
+        if (formaPagamento == null) {
+            throw new BadRequestException("Forma de pagamento é obrigatória");
+        }
+
         pedido.setPedidoAberto(false);
+        pedido.setFormaPagamento(formaPagamento);
         pedidoRepository.save(pedido);
     }
 

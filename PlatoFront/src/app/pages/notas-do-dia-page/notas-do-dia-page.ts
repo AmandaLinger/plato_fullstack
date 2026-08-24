@@ -8,6 +8,7 @@ import {
   ModalExportarNotas,
   PeriodoRelatorio,
 } from '../../components/modal-exportar-notas/modal-exportar-notas';
+import { FormaPagamento } from '../../models/pedido.models';
 import { NotaFiscal, NotasFiscaisService } from '../../services/notas-fiscais.service';
 
 @Component({
@@ -33,6 +34,17 @@ export class NotasDoDiaPage implements OnInit {
 
   get valorTotalAcumulado(): number {
     return this.notasFiscais.reduce((total, notaFiscal) => total + notaFiscal.valorTotal, 0);
+  }
+
+  formatarFormaPagamento(formaPagamento: FormaPagamento | null): string {
+    const rotulos: Record<FormaPagamento, string> = {
+      dinheiro: 'Dinheiro',
+      credito: 'Cartão de crédito',
+      debito: 'Cartão de débito',
+      voucher: 'Voucher',
+      pix: 'PIX',
+    };
+    return formaPagamento ? rotulos[formaPagamento] : 'Não informada';
   }
 
   ngOnInit(): void {

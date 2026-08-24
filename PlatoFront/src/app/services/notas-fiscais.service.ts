@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { PedidoRegistrado } from '../models/pedido.models';
+import { FormaPagamento, PedidoRegistrado } from '../models/pedido.models';
 
 export interface ProdutoNotaFiscal {
   readonly nome: string;
@@ -14,6 +14,7 @@ export interface NotaFiscal {
   readonly numero: string;
   readonly emitidaEm: string;
   readonly valorTotal: number;
+  readonly formaPagamento: FormaPagamento | null;
   readonly produtos: readonly ProdutoNotaFiscal[];
 }
 
@@ -33,6 +34,7 @@ export class NotasFiscaisService {
             id: String(pedido.id),
             numero: String(pedido.id).padStart(6, '0'),
             emitidaEm: pedido.dataPedido,
+            formaPagamento: pedido.formaPagamento ?? null,
             valorTotal: pedido.itens.reduce(
               (total, item) => total + item.produto.preco * item.quantidade,
               0,

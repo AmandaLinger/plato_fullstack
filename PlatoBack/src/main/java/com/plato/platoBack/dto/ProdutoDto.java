@@ -16,4 +16,6 @@ public class ProdutoDto {
 
     String imagemUrl;
 
+    String categoria;
+
 } 

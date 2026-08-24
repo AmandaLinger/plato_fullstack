@@ -7,7 +7,10 @@
         <h1 id="page-title">Cardápio</h1>
         <p>Cadastre e atualize os produtos disponíveis na loja.</p>
       </div>
-      <button class="add-button" type="button" aria-label="Adicionar produto" (click)="openCreateModal()">+</button>
+      <div class="header-actions">
+        <button class="qr-button" type="button" (click)="openQrCodeModal()">QR Code do Cardápio</button>
+        <button class="add-button" type="button" aria-label="Adicionar produto" (click)="openCreateModal()">+</button>
+      </div>
     </header>
 
     @if (errorMessage) {
@@ -31,6 +34,7 @@
             <img [src]="produto.imagemUrl" [alt]="produto.nome">
             <div class="product-content">
               <h2>{{ produto.nome }}</h2>
+              <span class="category-label">{{ produto.categoria || 'Outros' }}</span>
               <p>{{ produto.descricao }}</p>
               <strong>{{ produto.preco | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
             </div>
@@ -47,4 +51,8 @@
 
 @if (isModalOpen) {
   <app-modal-produto-form [produto]="produtoSelecionado" (closed)="closeModal()" (saved)="saveProduto($event)" />
+}
+
+@if (isQrCodeModalOpen) {
+  <app-modal-qrcode-cardapio [cardapioUrl]="cardapioUrl" (closed)="isQrCodeModalOpen = false" />
 }

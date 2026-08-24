@@ -1,18 +1,31 @@
-main{
+main {
   height: 100vh;
-  background-color: #f1eef4;
+  background-image: url('/bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+main::before {
+  opacity: 0.5;
 }
 
 .cabecalho{
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   padding: 100px 0 0 0;
   h1{
+    text-align: center;
     font-family: 'Ubuntu', sans-serif;
     font-size: var(--ts-48);
     margin-bottom: 4px;
-  }
-  p{
-    font-size: var(--ts-16);
+    color: var(--plato-orange);
+    background: var(--plato-surface);
+    padding: 16px 24px;
+    width: fit-content;
+    border-radius: 16px;
   }
 }
 

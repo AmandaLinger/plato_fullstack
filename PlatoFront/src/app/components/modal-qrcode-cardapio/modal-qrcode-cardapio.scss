@@ -1,0 +1,16 @@
+.overlay { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; box-sizing: border-box; padding: 16px; background: rgb(24 16 31 / 65%); }
+.modal { position: relative; width: min(100%, 520px); max-height: calc(100vh - 32px); overflow-y: auto; box-sizing: border-box; border-radius: 18px; background: var(--plato-surface); padding: 28px; }
+.close { position: absolute; top: 12px; right: 12px; border: 0; background: transparent; color: var(--plato-text-secondary); cursor: pointer; font-size: var(--ts-24); }
+.eyebrow { margin: 0 0 4px; color: var(--plato-purple); font-weight: 800; text-transform: uppercase; }
+h2 { margin: 0; color: var(--plato-purple-dark); }
+.description { color: var(--plato-text-secondary); }
+.qr-frame { display: grid; width: fit-content; max-width: 100%; margin: 20px auto; place-items: center; border: 1px solid var(--plato-border); border-radius: 16px; background: white; padding: 12px; }
+canvas { display: block; width: min(280px, 70vw) !important; height: auto !important; }
+label { display: block; margin-bottom: 6px; font-weight: 700; }
+.link-row { display: flex; gap: 8px; }
+input { min-width: 0; flex: 1; border: 1px solid var(--plato-border); border-radius: 8px; padding: 10px; font: inherit; }
+button { border: 0; border-radius: 8px; background: var(--plato-purple); padding: 10px 14px; color: white; cursor: pointer; font: inherit; font-weight: 700; }
+.download { width: 100%; margin-top: 16px; background-image: var(--orange-gradient); }
+.download:disabled { cursor: not-allowed; opacity: .55; }
+.error { color: var(--plato-error); }
+@media (max-width: 480px) { .modal { padding: 24px 18px; } .link-row { flex-direction: column; } }

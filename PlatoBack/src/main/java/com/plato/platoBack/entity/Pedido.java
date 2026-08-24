@@ -1,6 +1,7 @@
 package com.plato.platoBack.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.plato.platoBack.enuns.FormaPagamento;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -33,6 +34,10 @@ public class Pedido {
     List<ItemPedido> itens;
 
     Boolean pedidoAberto;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "forma_pagamento", length = 20)
+    FormaPagamento formaPagamento;
 
     LocalDate dataPedido;
 }

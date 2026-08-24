@@ -33,6 +33,12 @@
         <small class="field-error">Informe a descrição do produto.</small>
       }
 
+      <label for="categoria">Categoria</label>
+      <input id="categoria" type="text" formControlName="categoria" maxlength="80" placeholder="Ex.: Bebidas">
+      @if (form.controls.categoria.touched && form.controls.categoria.invalid) {
+        <small class="field-error">Informe a categoria do produto.</small>
+      }
+
       <label for="valor">Valor (R$)</label>
       <input id="valor" type="number" formControlName="preco" min="0.01" step="0.01">
       @if (form.controls.preco.touched && form.controls.preco.invalid) {

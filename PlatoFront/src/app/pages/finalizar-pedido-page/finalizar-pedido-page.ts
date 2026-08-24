@@ -63,7 +63,7 @@ export class FinalizarPedidoPage implements OnInit {
     this.isFinalizing = true;
     this.finalizeError = '';
     this.pedidosService
-      .finalizar(pedidoIds)
+      .finalizar(pedidoIds, finalizacao.formaPagamento)
       .pipe(finalize(() => (this.isFinalizing = false)))
       .subscribe({
         next: () => {

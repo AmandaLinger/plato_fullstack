@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Pedido, Produto } from '../models/pedido.models';
+import { FormaPagamento, Pedido, Produto } from '../models/pedido.models';
 
 interface ItemPedidoPayload {
   readonly produto: Produto;
@@ -35,9 +35,9 @@ export class PedidosService {
     return this.http.post<void>(this.endpoint, payload);
   }
 
-  finalizar(ids: readonly number[]): Observable<void> {
+  finalizar(ids: readonly number[], formaPagamento: FormaPagamento): Observable<void> {
     const requests = ids.map((id) =>
-      this.http.patch<void>(`${this.endpoint}/${id}/finalizar`, {}),
+      this.http.patch<void>(`${this.endpoint}/${id}/finalizar`, { formaPagamento }),
     );
 
     return forkJoin(requests).pipe(map(() => undefined));

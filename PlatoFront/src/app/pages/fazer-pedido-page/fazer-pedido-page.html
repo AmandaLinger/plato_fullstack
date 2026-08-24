@@ -19,7 +19,7 @@
           @for (produto of produtos; track produto.id) {
             <button class="product-card" type="button" (click)="openProductModal(produto)">
               <img [src]="produto.imagemUrl" [alt]="produto.nome">
-              <div>
+              <div class="alinhamento-texto">
                 <h2>{{ produto.nome }}</h2>
                 <p>{{ produto.descricao }}</p>
               </div>

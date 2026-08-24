@@ -57,6 +57,12 @@
 .state-message { color: var(--plato-text-secondary); text-align: center; }
 .error-message { color: var(--plato-error); text-align: center; }
 
+.alinhamento-texto{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
 .container-position{
   width: 100%;
   position: absolute;

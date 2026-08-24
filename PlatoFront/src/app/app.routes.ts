@@ -18,6 +18,7 @@ import { CadastrarRestaurantePage } from './pages/cadastrar-restaurante-page/cad
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 import { RestaurantesAdminPage } from './pages/restaurantes-admin-page/restaurantes-admin-page';
+import { CardapioPublicoPage } from './pages/cardapio-publico-page/cardapio-publico-page';
 
 const gerente = { roles: ['GERENTE'] };
 const operacao = { roles: ['GERENTE', 'ATENDENTE', 'CAIXA'] };
@@ -26,6 +27,7 @@ export const routes: Routes = [
   { path: '', component: InitialPage, pathMatch: 'full' },
   { path: 'login', component: LoginPage },
   { path: 'cadastrar-restaurante', component: CadastrarRestaurantePage },
+  { path: 'cardapio/:restauranteId', component: CardapioPublicoPage },
   {
     path: '',
     canActivateChild: [authGuard],

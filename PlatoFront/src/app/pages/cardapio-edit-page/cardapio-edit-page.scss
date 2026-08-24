@@ -1,6 +1,8 @@
 @use '../page-layout';
 
 .page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.header-actions { display: flex; align-items: center; gap: 8px; }
+.qr-button { border: 1px solid var(--plato-purple); border-radius: 8px; background: transparent; padding: 10px 12px; color: var(--plato-purple); cursor: pointer; font: inherit; font-weight: 700; }
 
 .add-button {
   display: grid;
@@ -31,6 +33,7 @@
   > img { width: 88px; height: 88px; border-radius: 8px; object-fit: cover; background-color: var(--plato-border); }
 }
 .product-content { h2, p { margin: 0; } h2 { font-size: var(--ts-20); } p { margin-top: 4px; color: var(--plato-text-secondary); } strong { display: block; margin-top: 12px; color: var(--plato-purple-dark); } }
+.category-label { display: inline-block; margin-top: 5px; border-radius: 999px; background: var(--plato-purple-light); padding: 3px 8px; color: white; font-size: var(--ts-12); }
 .card-actions { display: flex; grid-column: 1 / -1; justify-content: flex-end; gap: 8px;
   button { border: 0; border-radius: 8px; background-color: var(--plato-purple-light); padding: 8px 12px; color: var(--plato-surface); cursor: pointer; font: inherit; font-weight: 700; }
   .delete-button { background-color: var(--plato-error); }
@@ -60,6 +63,8 @@
 @media (min-width: 700px) {
 
 }
+
+@media (max-width: 560px) { .page-header { flex-direction: column; } .header-actions { width: 100%; justify-content: space-between; } }
 
 @media (min-width: 1700px) {
   .products-grid {

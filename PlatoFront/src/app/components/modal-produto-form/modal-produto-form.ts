@@ -22,6 +22,7 @@ export class ModalProdutoForm implements OnChanges {
     imagemUrl: ['', [Validators.required]],
     nome: ['', [Validators.required, Validators.maxLength(80)]],
     descricao: ['', [Validators.required, Validators.maxLength(300)]],
+    categoria: ['Outros', [Validators.required, Validators.maxLength(80)]],
     preco: [0, [Validators.required, Validators.min(0.01)]],
   });
 
@@ -51,6 +52,7 @@ export class ModalProdutoForm implements OnChanges {
         imagemUrl: this.produto?.imagemUrl ?? '',
         nome: this.produto?.nome ?? '',
         descricao: this.produto?.descricao ?? '',
+        categoria: this.produto?.categoria ?? 'Outros',
         preco: this.produto?.preco ?? 0,
       });
     }
@@ -104,6 +106,7 @@ export class ModalProdutoForm implements OnChanges {
       imagemUrl: value.imagemUrl.trim(),
       nome: value.nome.trim(),
       descricao: value.descricao.trim(),
+      categoria: value.categoria.trim(),
       preco: value.preco,
     };
 

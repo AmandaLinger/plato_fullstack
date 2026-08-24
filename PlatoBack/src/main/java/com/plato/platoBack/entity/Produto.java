@@ -32,4 +32,12 @@ public class Produto {
 
     String descricao;
 
+    @Builder.Default
+    @Column(nullable = false, length = 80, columnDefinition = "varchar(80) default 'Outros'")
+    String categoria = "Outros";
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    Boolean ativo = true;
+
 }

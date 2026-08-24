@@ -1,0 +1,32 @@
+:host { display: block; min-height: 100vh; background: #f8f5fb; color: var(--plato-text); }
+
+main {
+  width: min(100%, 960px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+  box-sizing: border-box;
+
+}
+
+header { margin: 0 -16px 28px; border-radius: 0 0 28px 28px; background-image: var(--purple-gradient); padding: 48px 24px 36px; color: white; }
+header h1 { margin: 4px 0 8px; font-size: clamp(2rem, 9vw, 3.5rem); line-height: 1; }
+header p { margin: 0; opacity: .9; }
+.eyebrow { font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.menu, .products { display: grid; gap: 16px; }
+.category { margin-bottom: 30px; }
+.category h2 { margin: 0 0 14px; color: var(--plato-purple-dark); font-size: 1.5rem; }
+.product { display: grid; grid-template-columns: 104px 1fr; gap: 14px; overflow: hidden; border: 1px solid var(--plato-border); border-radius: 16px; background: white; padding: 12px; box-shadow: 0 8px 24px rgb(45 28 62 / 6%); }
+.product:not(:has(img)) { grid-template-columns: 1fr; }
+.product img { width: 104px; height: 104px; border-radius: 12px; object-fit: cover; background: var(--plato-border); }
+.product h3, .product p { margin: 0; }
+.product h3 { font-size: 1.08rem; }
+.product p { margin-top: 6px; color: var(--plato-text-secondary); font-size: .92rem; line-height: 1.4; }
+.product strong { display: block; margin-top: 10px; color: var(--plato-purple-dark); }
+.state { display: grid; min-height: 60vh; place-content: center; justify-items: center; text-align: center; }
+.state h1, .state h2, .state p { margin: 4px; }
+.error h1 { color: var(--plato-error); }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--plato-border); border-top-color: var(--plato-purple); border-radius: 50%; animation: spin .8s linear infinite; }
+footer { padding-top: 16px; color: var(--plato-text-secondary); text-align: center; font-size: .85rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (min-width: 680px) { main { padding-inline: 28px; } header { margin-inline: -28px; padding-inline: 48px; } .products { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

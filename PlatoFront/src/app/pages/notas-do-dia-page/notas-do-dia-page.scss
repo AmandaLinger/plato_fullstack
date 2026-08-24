@@ -87,6 +87,19 @@ time {
   display: block;
 }
 
+.invoice-payment {
+  text-align: right;
+
+  span,
+  p {
+    display: block;
+    margin: 4px 0 0;
+  }
+
+  span { color: var(--plato-text-secondary); font-size: var(--ts-14); }
+  p { color: var(--plato-text); }
+}
+
 .invoice-number {
   color: var(--plato-text);
   font-size: var(--ts-20);
@@ -163,6 +176,8 @@ time,
     flex-direction: column;
     gap: 8px;
   }
+
+  .invoice-payment { text-align: left; }
 }
 
 @media (min-width: 700px){
