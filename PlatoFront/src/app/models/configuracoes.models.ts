@@ -11,6 +11,7 @@ export interface Fornecedor {
   readonly id: number;
   readonly nome: string;
   readonly cnpj: string;
+  readonly telefone: string;
 }
 
 export type FornecedorCadastro = Omit<Fornecedor, 'id'>;

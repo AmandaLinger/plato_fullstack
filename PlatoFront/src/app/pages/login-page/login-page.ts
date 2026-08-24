@@ -5,10 +5,11 @@ import {BtnOrange} from '../../components/btn-orange/btn-orange';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FooterComponent, BtnOrange, RouterLink, ReactiveFormsModule],
+  imports: [FooterComponent, BtnOrange, RouterLink, ReactiveFormsModule, FeedbackToast],
   templateUrl: './login-page.html',
   styleUrl: './login-page.scss',
 })

@@ -1,18 +1,16 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { finalize } from 'rxjs';
+import { Observable, finalize, map } from 'rxjs';
 import { Funcionario, FuncionarioCadastro } from '../../models/configuracoes.models';
 import { FuncionariosService } from '../../services/funcionarios.service';
+import { IconButton } from '../icon-button/icon-button';
 
-@Component({
-  selector: 'app-modal-funcionario-form',
-  imports: [ReactiveFormsModule],
-  templateUrl: './modal-funcionario-form.html',
-  styleUrl: './modal-funcionario-form.scss',
-})
-export class ModalFuncionarioForm {
+@Component({ selector: 'app-modal-funcionario-form', imports: [ReactiveFormsModule, IconButton], templateUrl: './modal-funcionario-form.html', styleUrl: './modal-funcionario-form.scss' })
+export class ModalFuncionarioForm implements OnChanges {
+  @Input() funcionario: Funcionario | null = null;
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly saved = new EventEmitter<Funcionario>();
+  @Output() readonly deleted = new EventEmitter<number>();
   private readonly formBuilder = inject(FormBuilder);
   private readonly funcionariosService = inject(FuncionariosService);
 
@@ -22,37 +20,48 @@ export class ModalFuncionarioForm {
     cargo: ['', [Validators.required, Validators.maxLength(80)]],
   });
   isSaving = false;
+  isDeleting = false;
   saveError = '';
 
-  close(): void {
-    if (!this.isSaving) {
-      this.closed.emit();
+  get isEditing(): boolean { return this.funcionario !== null; }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['funcionario']) {
+      this.saveError = '';
+      this.form.reset({ nome: this.funcionario?.nome ?? '', telefone: this.funcionario?.telefone ?? '', cargo: this.funcionario?.cargo ?? '' });
     }
   }
 
+  close(): void { if (!this.isSaving && !this.isDeleting) this.closed.emit(); }
+
   save(): void {
-    if (this.form.invalid || this.isSaving) {
+    if (this.form.invalid || this.isSaving || this.isDeleting) {
       this.form.markAllAsTouched();
       return;
     }
-
     const value = this.form.getRawValue();
-    const payload: FuncionarioCadastro = {
-      nome: value.nome.trim(),
-      telefone: value.telefone.trim(),
-      cargo: value.cargo.trim(),
-    };
-
+    const payload: FuncionarioCadastro = { nome: value.nome.trim(), telefone: value.telefone.trim(), cargo: value.cargo.trim() };
+    const request: Observable<Funcionario> = this.funcionario
+      ? this.funcionariosService
+          .atualizar(this.funcionario.id, payload)
+          .pipe(map(() => ({ ...this.funcionario!, ...payload })))
+      : this.funcionariosService.criar(payload);
     this.isSaving = true;
     this.saveError = '';
-    this.funcionariosService
-      .criar(payload)
-      .pipe(finalize(() => (this.isSaving = false)))
-      .subscribe({
-        next: (funcionario) => this.saved.emit(funcionario),
-        error: () => {
-          this.saveError = 'Não foi possível cadastrar o funcionário. Tente novamente.';
-        },
-      });
+    request.pipe(finalize(() => (this.isSaving = false))).subscribe({
+      next: (salvo) => this.saved.emit(salvo),
+      error: () => (this.saveError = 'Não foi possível salvar o funcionário. Tente novamente.'),
+    });
+  }
+
+  inactivate(): void {
+    const id = this.funcionario?.id;
+    if (id === undefined || this.isSaving || this.isDeleting) return;
+    this.isDeleting = true;
+    this.saveError = '';
+    this.funcionariosService.inativar(id).pipe(finalize(() => (this.isDeleting = false))).subscribe({
+      next: () => this.deleted.emit(id),
+      error: () => (this.saveError = 'Não foi possível inativar o funcionário. Tente novamente.'),
+    });
   }
 }

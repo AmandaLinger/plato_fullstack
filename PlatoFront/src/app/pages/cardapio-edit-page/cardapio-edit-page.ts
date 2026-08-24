@@ -2,13 +2,14 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { BtnBack } from '../../components/btn-back/btn-back';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { ModalProdutoForm } from '../../components/modal-produto-form/modal-produto-form';
 import { Produto } from '../../models/pedido.models';
 import { ProdutosService } from '../../services/produtos.service';
 
 @Component({
   selector: 'app-cardapio-edit-page',
-  imports: [CurrencyPipe, BtnBack, ModalProdutoForm],
+  imports: [CurrencyPipe, BtnBack, FeedbackToast, ModalProdutoForm],
   templateUrl: './cardapio-edit-page.html',
   styleUrl: './cardapio-edit-page.scss',
 })

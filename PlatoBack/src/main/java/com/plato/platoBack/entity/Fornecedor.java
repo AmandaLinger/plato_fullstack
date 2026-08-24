@@ -22,6 +22,8 @@ public class Fornecedor {
 
     String cnpj;
 
+    String telefone;
+
     @Builder.Default
     @Column(nullable = false, columnDefinition = "boolean default true")
     Boolean ativo = true;

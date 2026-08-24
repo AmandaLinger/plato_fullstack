@@ -2,11 +2,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { BtnBack } from '../../components/btn-back/btn-back';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-perfil-page',
-  imports: [BtnBack, ReactiveFormsModule],
+  imports: [BtnBack, ReactiveFormsModule, FeedbackToast],
   templateUrl: './perfil-page.html',
   styleUrl: './perfil-page.scss',
 })

@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BtnBack } from '../../components/btn-back/btn-back';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { MesasService } from '../../services/mesas.service';
 
-@Component({ selector: 'app-mesas-page', imports: [ReactiveFormsModule, BtnBack], templateUrl: './mesas-page.html', styleUrl: './mesas-page.scss' })
+@Component({ selector: 'app-mesas-page', imports: [ReactiveFormsModule, BtnBack, FeedbackToast], templateUrl: './mesas-page.html', styleUrl: './mesas-page.scss' })
 export class MesasPage {
   private readonly formBuilder = inject(FormBuilder);
   private readonly mesasService = inject(MesasService);

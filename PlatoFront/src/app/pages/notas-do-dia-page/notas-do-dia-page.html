@@ -39,10 +39,7 @@
         <p>Carregando notas fiscais...</p>
       </section>
     } @else if (errorMessage) {
-      <section class="state-message error-state" role="alert">
-        <p>{{ errorMessage }}</p>
-        <app-btn-orange (click)="loadNotasFiscais()">Tentar novamente</app-btn-orange>
-      </section>
+      <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
     } @else if (notasFiscais.length === 0) {
       <section class="state-message">
         <h2>Nenhum pedido finalizado nesta data</h2>

@@ -2,6 +2,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { finalize, forkJoin } from 'rxjs';
 import { BtnBack } from '../../components/btn-back/btn-back';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { ModalNotaFornecedor } from '../../components/modal-nota-fornecedor/modal-nota-fornecedor';
 import {
   ModalExportarNotas,
@@ -13,7 +14,7 @@ import { NotasFornecedorService } from '../../services/notas-fornecedor.service'
 
 @Component({
   selector: 'app-nota-fornecedor-page',
-  imports: [CurrencyPipe, DatePipe, BtnBack, ModalNotaFornecedor, ModalExportarNotas],
+  imports: [CurrencyPipe, DatePipe, BtnBack, FeedbackToast, ModalNotaFornecedor, ModalExportarNotas],
   templateUrl: './nota-fornecedor-page.html',
   styleUrl: './nota-fornecedor-page.scss',
 })

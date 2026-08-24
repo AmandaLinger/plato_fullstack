@@ -1,59 +1,50 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { BtnBack } from '../../components/btn-back/btn-back';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { ModalFornecedorForm } from '../../components/modal-fornecedor-form/modal-fornecedor-form';
-import { Fornecedor, FornecedorCadastro } from '../../models/configuracoes.models';
+import { Fornecedor } from '../../models/configuracoes.models';
 import { FornecedoresService } from '../../services/fornecedores.service';
 
-@Component({ selector: 'app-fornecedores-page', imports: [BtnBack, ModalFornecedorForm], templateUrl: './fornecedores-page.html', styleUrl: './fornecedores-page.scss' })
+@Component({ selector: 'app-fornecedores-page', imports: [BtnBack, FeedbackToast, ModalFornecedorForm], templateUrl: './fornecedores-page.html', styleUrl: './fornecedores-page.scss' })
 export class FornecedoresPage implements OnInit {
   private readonly fornecedoresService = inject(FornecedoresService);
-  fornecedores: Fornecedor[] = [];
+  fornecedores: readonly Fornecedor[] = [];
+  fornecedorSelecionado: Fornecedor | null = null;
   isModalOpen = false;
   isLoading = true;
-  isSaving = false;
   errorMessage = '';
   successMessage = '';
 
-  ngOnInit(): void {
-    this.loadFornecedores();
+  ngOnInit(): void { this.loadFornecedores(); }
+
+  openCreateModal(): void { this.fornecedorSelecionado = null; this.isModalOpen = true; }
+  openEditModal(fornecedor: Fornecedor): void { this.fornecedorSelecionado = fornecedor; this.isModalOpen = true; }
+  closeModal(): void { this.isModalOpen = false; this.fornecedorSelecionado = null; }
+
+  saveFornecedor(fornecedor: Fornecedor): void {
+    const isEditing = this.fornecedorSelecionado !== null;
+    this.fornecedores = isEditing
+      ? this.fornecedores.map((item) => item.id === fornecedor.id ? fornecedor : item)
+      : [...this.fornecedores, fornecedor];
+    this.successMessage = isEditing ? 'Fornecedor atualizado com sucesso.' : 'Fornecedor cadastrado com sucesso.';
+    this.errorMessage = '';
+    this.closeModal();
   }
 
-  addFornecedor(fornecedor: FornecedorCadastro): void {
-    if (this.isSaving) {
-      return;
-    }
-
-    this.isSaving = true;
+  removeFornecedor(id: number): void {
+    this.fornecedores = this.fornecedores.filter((item) => item.id !== id);
+    this.successMessage = 'Fornecedor inativado com sucesso.';
     this.errorMessage = '';
-    this.successMessage = '';
-    this.fornecedoresService
-      .salvarFornecedor(fornecedor)
-      .pipe(finalize(() => (this.isSaving = false)))
-      .subscribe({
-        next: (fornecedorCriado) => {
-          this.fornecedores = [...this.fornecedores, fornecedorCriado];
-          this.isModalOpen = false;
-          this.successMessage = 'Fornecedor cadastrado com sucesso.';
-        },
-        error: () => {
-          this.errorMessage = 'Não foi possível salvar o fornecedor.';
-        },
-      });
+    this.closeModal();
   }
 
   private loadFornecedores(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.fornecedoresService
-      .listarFornecedores()
-      .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe({
-        next: (fornecedores) => (this.fornecedores = [...fornecedores]),
-        error: () => {
-          this.fornecedores = [];
-          this.errorMessage = 'Não foi possível carregar os fornecedores.';
-        },
-      });
+    this.fornecedoresService.listarFornecedores().pipe(finalize(() => (this.isLoading = false))).subscribe({
+      next: (fornecedores) => (this.fornecedores = fornecedores),
+      error: () => { this.fornecedores = []; this.errorMessage = 'Não foi possível carregar os fornecedores.'; },
+    });
   }
 }

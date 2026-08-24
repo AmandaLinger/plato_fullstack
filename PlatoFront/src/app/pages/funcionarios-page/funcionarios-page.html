@@ -1,26 +1,14 @@
-<main class="settings-page">
-  <section class="settings-container" aria-labelledby="employees-title">
-    <app-btn-back />
-    <header class="settings-header">
-      <div><h1 id="employees-title">Funcionários</h1><p>Gerencie a equipe da loja.</p></div>
-      <button class="action-button" type="button" (click)="isModalOpen = true">Adicionar funcionário</button>
-    </header>
-    @if (errorMessage) {
-      <p class="error-message" role="alert">{{ errorMessage }}</p>
+<main class="settings-page"><section class="settings-container" aria-labelledby="employees-title">
+  <app-btn-back />
+  <header class="settings-header"><div><h1 id="employees-title">Funcionários</h1><p>Gerencie a equipe da loja.</p></div><button class="action-button" type="button" (click)="openCreateModal()">Adicionar funcionário</button></header>
+  @if (errorMessage) { <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" /> }
+  @else if (successMessage) { <app-feedback-toast type="success" [message]="successMessage" (dismissed)="successMessage = ''" /> }
+  @if (isLoading) { <p class="state-message" aria-live="polite">Carregando funcionários...</p> }
+  @else if (funcionarios.length === 0) { <p class="state-message">Nenhum funcionário cadastrado.</p> }
+  @else { <div class="table-wrapper"><table><thead><tr><th>Nome / Telefone</th><th>Cargo / Função</th><th><span class="visually-hidden">Ações</span></th></tr></thead><tbody>
+    @for (funcionario of funcionarios; track funcionario.id) {
+      <tr><td>{{ funcionario.nome }}<small>{{ funcionario.telefone }}</small></td><td>{{ funcionario.cargo }}</td><td class="actions-cell"><button class="edit-button" type="button" (click)="openEditModal(funcionario)">Editar</button></td></tr>
     }
-    @if (isLoading) {
-      <p class="state-message" aria-live="polite">Carregando funcionários...</p>
-    } @else if (funcionarios.length === 0) {
-      <p class="state-message">Nenhum funcionário cadastrado.</p>
-    } @else {
-    <div class="table-wrapper">
-      <table><thead><tr><th>Nome / Telefone</th><th>Cargo / Função</th></tr></thead><tbody>
-        @for (funcionario of funcionarios; track funcionario.id) {
-          <tr><td>{{ funcionario.nome }}<small>{{ funcionario.telefone }}</small></td><td>{{ funcionario.cargo }}</td></tr>
-        }
-      </tbody></table>
-    </div>
-    }
-  </section>
-</main>
-@if (isModalOpen) { <app-modal-funcionario-form (closed)="isModalOpen = false" (saved)="addFuncionario($event)" /> }
+  </tbody></table></div> }
+</section></main>
+@if (isModalOpen) { <app-modal-funcionario-form [funcionario]="funcionarioSelecionado" (closed)="closeModal()" (saved)="saveFuncionario($event)" (deleted)="removeFuncionario($event)" /> }

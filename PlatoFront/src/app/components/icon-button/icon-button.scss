@@ -1,0 +1,5 @@
+.icon-button { display: grid; width: 42px; height: 42px; place-items: center; flex: 0 0 auto; border: 1px solid transparent; border-radius: 50%; background: transparent; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease; }
+.icon-button:hover:not(:disabled), .icon-button:focus-visible { border-color: var(--plato-border); background-color: var(--plato-surface); transform: scale(1.06); }
+.icon-button:focus-visible { outline: 2px solid var(--plato-purple); outline-offset: 2px; }
+.icon-button:disabled { cursor: not-allowed; opacity: 0.5; }
+.icon-button img { width: 22px; height: 22px; object-fit: contain; }

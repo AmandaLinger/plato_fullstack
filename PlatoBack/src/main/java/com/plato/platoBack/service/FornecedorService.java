@@ -28,6 +28,7 @@ public class FornecedorService {
         Fornecedor fornecedor = new Fornecedor();
         fornecedor.setNome(fornecedorDto.getNome());
         fornecedor.setCnpj(fornecedorDto.getCnpj());
+        fornecedor.setTelefone(fornecedorDto.getTelefone());
         fornecedor.setAtivo(true);
         return fornecedorRepository.save(fornecedor);
     }
@@ -38,6 +39,7 @@ public class FornecedorService {
 
         fornecedor.setNome(fornecedorDto.getNome());
         fornecedor.setCnpj(fornecedorDto.getCnpj());
+        fornecedor.setTelefone(fornecedorDto.getTelefone());
 
         fornecedorRepository.save(fornecedor);
     }

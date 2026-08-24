@@ -10,7 +10,7 @@
     @if (isLoading) {
       <p class="empty-state" aria-live="polite">Carregando mesas ocupadas...</p>
     } @else if (errorMessage) {
-      <p class="error-message" role="alert">{{ errorMessage }}</p>
+      <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
     } @else if (notasFiscais.length === 0) {
       <p class="empty-state">Não há pedidos aguardando finalização.</p>
     } @else {
@@ -31,12 +31,8 @@
     }
   </section>
 
-  @if (showNotification) {
-    @if (notaFinalizada; as nota) {
-      <div class="container-position">
-        <p class="success-message" role="status">A nota da {{ nota.mesa }} foi finalizada com sucesso.</p>
-      </div>
-    }
+  @if (notaFinalizada; as nota) {
+    <app-feedback-toast type="success" [message]="'A nota da ' + nota.mesa + ' foi finalizada com sucesso.'" (dismissed)="notaFinalizada = null" />
   }
 </main>
 

@@ -16,4 +16,6 @@ public class FornecedorDto {
     String nome;
 
     String cnpj;
+
+    String telefone;
 }

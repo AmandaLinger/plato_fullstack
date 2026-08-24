@@ -3,6 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { BtnOrange } from '../../components/btn-orange/btn-orange';
 import { BtnBack } from '../../components/btn-back/btn-back';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { ModalConfirmarPedido } from '../../components/modal-confirmar-pedido/modal-confirmar-pedido';
 import { ModalDetalheProduto } from '../../components/modal-detalhe-produto/modal-detalhe-produto';
 import { ItemPedido, Pedido, Produto, SelecaoProduto } from '../../models/pedido.models';
@@ -11,7 +12,7 @@ import { ProdutosService } from '../../services/produtos.service';
 
 @Component({
   selector: 'app-fazer-pedido-page',
-  imports: [CurrencyPipe, BtnOrange, BtnBack, ModalDetalheProduto, ModalConfirmarPedido],
+  imports: [CurrencyPipe, BtnOrange, BtnBack, FeedbackToast, ModalDetalheProduto, ModalConfirmarPedido],
   templateUrl: './fazer-pedido-page.html',
   styleUrl: './fazer-pedido-page.scss',
 })

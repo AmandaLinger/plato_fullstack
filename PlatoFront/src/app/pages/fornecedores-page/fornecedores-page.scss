@@ -1,1 +1,8 @@
 @use '../configuracoes-child';
+
+.actions-cell { width: 1%; text-align: right; white-space: nowrap; }
+.edit-button { border: 1px solid var(--plato-purple); border-radius: 8px; background: transparent; padding: 8px 14px; color: var(--plato-purple); cursor: pointer; font: inherit; font-weight: 700; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.state-message, .error-message { text-align: center; }
+.state-message { color: var(--plato-text-secondary); }
+.error-message { color: var(--plato-error); }

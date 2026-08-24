@@ -11,7 +11,7 @@
     </header>
 
     @if (errorMessage) {
-      <div class="error-message" role="alert">{{ errorMessage }}</div>
+      <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
     }
 
     @if (isLoading) {

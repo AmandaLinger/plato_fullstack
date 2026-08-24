@@ -22,7 +22,7 @@
     </div>
 
     @if (errorMessage) {
-      <p class="login-error" role="alert">{{ errorMessage }}</p>
+      <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
     }
 
     <div class="container-btn">

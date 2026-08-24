@@ -1,18 +1,16 @@
-<div class="overlay" (click)="closed.emit()">
+<div class="overlay" (click)="close()">
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="supplier-form-title" (click)="$event.stopPropagation()">
-    <button class="close-button" type="button" aria-label="Fechar" (click)="closed.emit()">×</button>
-    <p class="eyebrow">Parceiros</p>
-    <h2 id="supplier-form-title">Adicionar fornecedor</h2>
+    <button class="close-button" type="button" aria-label="Fechar" [disabled]="isSaving || isDeleting" (click)="close()">×</button>
+    <div class="modal-heading"><div><p class="eyebrow">Parceiros</p><h2 id="supplier-form-title">{{ isEditing ? 'Editar fornecedor' : 'Adicionar fornecedor' }}</h2></div>
+      @if (isEditing) { <app-icon-button label="Inativar fornecedor" [disabled]="isSaving || isDeleting" (pressed)="inactivate()" /> }
+    </div>
     <form [formGroup]="form" (ngSubmit)="save()">
-      <label for="supplier-name">Nome</label>
-      <input id="supplier-name" formControlName="nome" placeholder="Nome da empresa">
+      <label for="supplier-name">Nome</label><input id="supplier-name" formControlName="nome" placeholder="Nome da empresa">
       @if (form.controls.nome.touched && form.controls.nome.invalid) { <small>Informe o nome.</small> }
-      <label for="supplier-cnpj">CNPJ <span>(opcional)</span></label>
-      <input id="supplier-cnpj" formControlName="cnpj" placeholder="00.000.000/0000-00">
-      <div class="actions">
-        <button class="secondary-button" type="button" (click)="closed.emit()">Cancelar</button>
-        <button class="primary-button" type="submit" [disabled]="form.invalid">Salvar</button>
-      </div>
+      <label for="supplier-cnpj">CNPJ <span>(opcional)</span></label><input id="supplier-cnpj" formControlName="cnpj" placeholder="00.000.000/0000-00">
+      <label for="supplier-phone">Telefone <span>(opcional)</span></label><input id="supplier-phone" formControlName="telefone" placeholder="(00) 00000-0000">
+      @if (saveError) { <small role="alert">{{ saveError }}</small> }
+      <div class="actions"><button class="secondary-button" type="button" [disabled]="isSaving || isDeleting" (click)="close()">Cancelar</button><button class="primary-button" type="submit" [disabled]="form.invalid || isSaving || isDeleting">{{ isSaving ? 'Salvando...' : 'Salvar' }}</button></div>
     </form>
   </section>
 </div>

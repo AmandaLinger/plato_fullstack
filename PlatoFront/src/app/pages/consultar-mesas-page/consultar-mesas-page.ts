@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { BtnBack } from '../../components/btn-back/btn-back';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { ModalDetalhesMesa } from '../../components/modal-detalhes-mesa/modal-detalhes-mesa';
 import { ModalReservarMesa } from '../../components/modal-reservar-mesa/modal-reservar-mesa';
 import { ConsumoMesa, Mesa, ReservaMesa, StatusMesa } from '../../models/pedido.models';
@@ -11,7 +12,7 @@ import { MesasService } from '../../services/mesas.service';
 
 @Component({
   selector: 'app-consultar-mesas-page',
-  imports: [DecimalPipe, BtnBack, ModalDetalhesMesa, ModalReservarMesa],
+  imports: [DecimalPipe, BtnBack, FeedbackToast, ModalDetalhesMesa, ModalReservarMesa],
   templateUrl: './consultar-mesas-page.html',
   styleUrl: './consultar-mesas-page.scss',
 })

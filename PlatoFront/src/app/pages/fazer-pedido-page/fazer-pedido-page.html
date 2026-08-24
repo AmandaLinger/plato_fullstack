@@ -12,7 +12,7 @@
         @if (isLoadingProdutos) {
           <p class="state-message" aria-live="polite">Carregando produtos...</p>
         } @else if (produtosError) {
-          <p class="error-message" role="alert">{{ produtosError }}</p>
+          <app-feedback-toast type="error" [message]="produtosError" (dismissed)="produtosError = ''" />
         } @else if (produtos.length === 0) {
           <p class="state-message">Nenhum produto cadastrado.</p>
         } @else {
@@ -56,19 +56,15 @@
           <app-btn-orange [disabled]="itens.length === 0 || isSubmitting" (click)="openConfirmationModal()">Realizar pedido</app-btn-orange>
         </div>
         @if (pedidoError) {
-          <p class="error-message" role="alert">{{ pedidoError }}</p>
+          <app-feedback-toast type="error" [message]="pedidoError" (dismissed)="pedidoError = ''" />
         }
       </aside>
     </div>
   </section>
 
-  <div class="container-position">
-    @if (pedidoConfirmado; as pedido) {
-      <p class="confirmation-message" role="status">
-        Pedido da mesa {{ pedido.mesa }} confirmado para {{ pedido.garcom }}.
-      </p>
-    }
-  </div>
+  @if (pedidoConfirmado; as pedido) {
+    <app-feedback-toast type="success" [message]="'Pedido da mesa ' + pedido.mesa + ' confirmado para ' + pedido.garcom + '.'" (dismissed)="pedidoConfirmado = null" />
+  }
 </main>
 
 @if (isProductModalOpen) {

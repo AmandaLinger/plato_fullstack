@@ -16,4 +16,12 @@ export class FuncionariosService {
   criar(funcionario: FuncionarioCadastro): Observable<Funcionario> {
     return this.http.post<Funcionario>(this.endpoint, funcionario);
   }
+
+  atualizar(id: number, funcionario: FuncionarioCadastro): Observable<void> {
+    return this.http.put<void>(`${this.endpoint}/${id}`, funcionario);
+  }
+
+  inativar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.endpoint}/${id}`);
+  }
 }

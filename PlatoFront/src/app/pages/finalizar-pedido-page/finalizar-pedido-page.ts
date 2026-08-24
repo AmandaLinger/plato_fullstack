@@ -1,8 +1,9 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { BtnBack } from '../../components/btn-back/btn-back';
 import { BtnOrange } from '../../components/btn-orange/btn-orange';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { ModalFinalizarNota } from '../../components/modal-finalizar-nota/modal-finalizar-nota';
 import { FinalizacaoNota, NotaFiscalPendente } from '../../models/pedido.models';
 import { MesasService } from '../../services/mesas.service';
@@ -10,11 +11,11 @@ import { PedidosService } from '../../services/pedidos.service';
 
 @Component({
   selector: 'app-finalizar-pedido-page',
-  imports: [CurrencyPipe, BtnBack, BtnOrange, ModalFinalizarNota],
+  imports: [CurrencyPipe, BtnBack, BtnOrange, FeedbackToast, ModalFinalizarNota],
   templateUrl: './finalizar-pedido-page.html',
   styleUrl: './finalizar-pedido-page.scss',
 })
-export class FinalizarPedidoPage implements OnInit, OnDestroy {
+export class FinalizarPedidoPage implements OnInit {
   private readonly mesasService = inject(MesasService);
   private readonly pedidosService = inject(PedidosService);
 
@@ -22,19 +23,13 @@ export class FinalizarPedidoPage implements OnInit, OnDestroy {
 
   notaSelecionada: NotaFiscalPendente | null = null;
   notaFinalizada: NotaFiscalPendente | null = null;
-  showNotification = false;
   isLoading = true;
   errorMessage = '';
   isFinalizing = false;
   finalizeError = '';
-  private notificationTimer: ReturnType<typeof setTimeout> | undefined;
 
   ngOnInit(): void {
     this.loadPedidosOcupados();
-  }
-
-  ngOnDestroy(): void {
-    this.clearNotificationTimer();
   }
 
   openFinalizeModal(notaFiscal: NotaFiscalPendente): void {
@@ -73,28 +68,15 @@ export class FinalizarPedidoPage implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.notaFinalizada = notaFiscal;
-          this.showNotification = true;
           this.notasFiscais = this.notasFiscais.filter(
             (nota) => nota.id !== finalizacao.notaFiscalId,
           );
           this.notaSelecionada = null;
-          this.clearNotificationTimer();
-          this.notificationTimer = setTimeout(() => {
-            this.showNotification = false;
-            this.notificationTimer = undefined;
-          }, 2000);
         },
         error: () => {
           this.finalizeError = 'Não foi possível finalizar o pedido. Tente novamente.';
         },
       });
-  }
-
-  private clearNotificationTimer(): void {
-    if (this.notificationTimer) {
-      clearTimeout(this.notificationTimer);
-      this.notificationTimer = undefined;
-    }
   }
 
   private loadPedidosOcupados(): void {

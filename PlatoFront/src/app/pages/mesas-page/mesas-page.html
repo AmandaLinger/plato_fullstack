@@ -11,6 +11,6 @@
         <button class="action-button" type="submit">Salvar alterações</button>
       </form>
     </div>
-    @if (saved) { <p class="feedback-message" role="status">Quantidade de mesas atualizada.</p> }
+    @if (saved) { <app-feedback-toast type="success" message="Quantidade de mesas atualizada." (dismissed)="saved = false" /> }
   </section>
 </main>

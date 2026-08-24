@@ -8,7 +8,7 @@
     </header>
 
     @if (errorMessage && !isModalOpen) {
-      <p class="error-message" role="alert">{{ errorMessage }}</p>
+      <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
     }
     <div class="reservation-action">
       <button (click)="openReservationModal()" class="btn-reserva">

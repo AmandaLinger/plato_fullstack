@@ -1,5 +1,6 @@
 @use '../modal-detalhe-produto/modal-detalhe-produto.scss' as *;
 .modal { width: min(100%, 480px); }
+.modal-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 form { display: grid; gap: 8px; margin-top: 20px; }
 input { border: 1px solid var(--plato-border); border-radius: 8px; padding: 12px; font: inherit; }
 small { color: var(--plato-error); }

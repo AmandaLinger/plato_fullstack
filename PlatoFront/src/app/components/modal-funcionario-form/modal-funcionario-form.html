@@ -1,23 +1,18 @@
 <div class="overlay" (click)="close()">
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="employee-form-title" (click)="$event.stopPropagation()">
-    <button class="close-button" type="button" aria-label="Fechar" [disabled]="isSaving" (click)="close()">×</button>
-    <p class="eyebrow">Equipe</p>
-    <h2 id="employee-form-title">Adicionar funcionário</h2>
+    <button class="close-button" type="button" aria-label="Fechar" [disabled]="isSaving || isDeleting" (click)="close()">×</button>
+    <div class="modal-heading"><div><p class="eyebrow">Equipe</p><h2 id="employee-form-title">{{ isEditing ? 'Editar funcionário' : 'Adicionar funcionário' }}</h2></div>
+      @if (isEditing) { <app-icon-button label="Inativar funcionário" [disabled]="isSaving || isDeleting" (pressed)="inactivate()" /> }
+    </div>
     <form [formGroup]="form" (ngSubmit)="save()">
-      <label for="employee-name">Nome</label>
-      <input id="employee-name" formControlName="nome" placeholder="Nome completo">
+      <label for="employee-name">Nome</label><input id="employee-name" formControlName="nome" placeholder="Nome completo">
       @if (form.controls.nome.touched && form.controls.nome.invalid) { <small>Informe o nome.</small> }
-      <label for="employee-phone">Telefone</label>
-      <input id="employee-phone" formControlName="telefone" placeholder="(00) 00000-0000">
+      <label for="employee-phone">Telefone</label><input id="employee-phone" formControlName="telefone" placeholder="(00) 00000-0000">
       @if (form.controls.telefone.touched && form.controls.telefone.invalid) { <small>Informe o telefone.</small> }
-      <label for="employee-role">Cargo / Função</label>
-      <input id="employee-role" formControlName="cargo" placeholder="Ex.: Garçom">
+      <label for="employee-role">Cargo / Função</label><input id="employee-role" formControlName="cargo" placeholder="Ex.: Garçom">
       @if (form.controls.cargo.touched && form.controls.cargo.invalid) { <small>Informe o cargo.</small> }
       @if (saveError) { <small role="alert">{{ saveError }}</small> }
-      <div class="actions">
-        <button class="secondary-button" type="button" [disabled]="isSaving" (click)="close()">Cancelar</button>
-        <button class="primary-button" type="submit" [disabled]="form.invalid || isSaving">{{ isSaving ? 'Salvando...' : 'Salvar' }}</button>
-      </div>
+      <div class="actions"><button class="secondary-button" type="button" [disabled]="isSaving || isDeleting" (click)="close()">Cancelar</button><button class="primary-button" type="submit" [disabled]="form.invalid || isSaving || isDeleting">{{ isSaving ? 'Salvando...' : 'Salvar' }}</button></div>
     </form>
   </section>
 </div>

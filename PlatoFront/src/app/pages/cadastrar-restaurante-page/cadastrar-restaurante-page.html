@@ -25,8 +25,11 @@
         @if (form.controls.telefone.touched && form.controls.telefone.invalid) { <small>Informe um telefone válido com DDD.</small> }
       </div>
 
-      @if (successMessage) { <p class="feedback success" role="status">{{ successMessage }}</p> }
-      @if (errorMessage) { <p class="feedback error" role="alert">{{ errorMessage }}</p> }
+      @if (errorMessage) {
+        <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
+      } @else if (successMessage) {
+        <app-feedback-toast type="success" [message]="successMessage" (dismissed)="successMessage = ''" />
+      }
 
       <app-btn-orange type="submit" [disabled]="form.invalid || isSubmitting" fontSize="var(--ts-16)">
         {{ isSubmitting ? 'Enviando...' : 'Solicitar Login' }}

@@ -2,8 +2,8 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { BtnOrange } from '../../components/btn-orange/btn-orange';
 import { BtnBack } from '../../components/btn-back/btn-back';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import {
   ModalExportarNotas,
   PeriodoRelatorio,
@@ -12,7 +12,7 @@ import { NotaFiscal, NotasFiscaisService } from '../../services/notas-fiscais.se
 
 @Component({
   selector: 'app-notas-do-dia-page',
-  imports: [CurrencyPipe, DatePipe, FormsModule, BtnOrange, BtnBack, ModalExportarNotas],
+  imports: [CurrencyPipe, DatePipe, FormsModule, BtnBack, FeedbackToast, ModalExportarNotas],
   templateUrl: './notas-do-dia-page.html',
   styleUrl: './notas-do-dia-page.scss',
 })

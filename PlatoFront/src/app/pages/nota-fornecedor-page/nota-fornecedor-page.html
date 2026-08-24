@@ -21,8 +21,8 @@
       </button>
     </div>
 
-    @if (errorMessage) { <p class="error-message" role="alert">{{ errorMessage }}</p> }
-    @if (successMessage) { <p class="feedback-message" role="status">{{ successMessage }}</p> }
+    @if (errorMessage) { <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" /> }
+    @else if (successMessage) { <app-feedback-toast type="success" [message]="successMessage" (dismissed)="successMessage = ''" /> }
 
     @if (isLoading) {
       <section class="state-message" aria-live="polite" aria-busy="true"><span class="loading-indicator" aria-hidden="true"></span><p>Carregando notas...</p></section>

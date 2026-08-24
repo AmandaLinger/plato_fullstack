@@ -1,0 +1,10 @@
+<div
+  class="feedback-toast"
+  [class.success]="type === 'success'"
+  [class.error]="type === 'error'"
+  [class.leaving]="isLeaving"
+  [attr.role]="ariaRole"
+  [attr.aria-live]="type === 'success' ? 'polite' : 'assertive'"
+>
+  {{ message }}
+</div>

@@ -49,11 +49,10 @@
         }
       </div>
 
-      @if (successMessage) {
-        <p class="feedback success" role="status">{{ successMessage }}</p>
-      }
       @if (errorMessage) {
-        <p class="feedback error" role="alert">{{ errorMessage }}</p>
+        <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
+      } @else if (successMessage) {
+        <app-feedback-toast type="success" [message]="successMessage" (dismissed)="successMessage = ''" />
       }
 
       <div class="form-actions">

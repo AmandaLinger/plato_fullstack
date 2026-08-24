@@ -3,11 +3,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { BtnOrange } from '../../components/btn-orange/btn-orange';
+import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { RestauranteService } from '../../services/restaurante.service';
 
 @Component({
   selector: 'app-cadastrar-restaurante-page',
-  imports: [ReactiveFormsModule, RouterLink, BtnOrange],
+  imports: [ReactiveFormsModule, RouterLink, BtnOrange, FeedbackToast],
   templateUrl: './cadastrar-restaurante-page.html',
   styleUrl: './cadastrar-restaurante-page.scss',
 })
