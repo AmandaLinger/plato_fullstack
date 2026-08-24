@@ -1,9 +1,15 @@
 <main>
   <section>
     <nav>
-      <a routerLink="/perfil">
-        Editar meu perfil
-      </a>
+      <div class="navbar">
+        <a routerLink="/perfil">
+          <img src="icon_person.png" alt="ícone de pessoa">
+        </a>
+
+        <button type="button" class="btn-consulta">
+          Consultar solicitações
+        </button>
+      </div>
 
       <button type="button" (click)="sair()">Sair</button>
 
@@ -12,9 +18,10 @@
     <h1>Administração global</h1>
     <h2>Novo restaurante</h2>
 
-    <form [formGroup]="restauranteForm" (ngSubmit)="criar()">
+    <form [formGroup]="restauranteForm" (ngSubmit)="criar()" class="style-container">
       <input formControlName="nome" placeholder="Nome do restaurante">
-      <button type="submit">Cadastrar</button>
+      <button type="submit" class="style-btn">Salvar restaurante
+      </button>
 
     </form>
 
@@ -32,7 +39,7 @@
       <input formControlName="nome" placeholder="Login do gerente">
       <input type="password" formControlName="senha" placeholder="Senha">
 
-      <button type="submit">Criar gerente</button>
+      <button type="submit" class="style-btn">Criar gerente</button>
     </form>
 
 

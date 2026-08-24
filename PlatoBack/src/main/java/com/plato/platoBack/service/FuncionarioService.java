@@ -2,6 +2,7 @@ package com.plato.platoBack.service;
 
 import com.plato.platoBack.dto.FuncionarioDto;
 import com.plato.platoBack.entity.Funcionario;
+import com.plato.platoBack.dto.UsuarioDto;
 import com.plato.platoBack.repository.FuncionarioRepository;
 import jakarta.transaction.Transactional;
 import org.apache.coyote.BadRequestException;
@@ -23,6 +24,9 @@ public class FuncionarioService {
     @Autowired
     private RestauranteContextService restauranteContext;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     public List<Funcionario> chamaTodosFuncionarios(){
         return funcionarioRepository.findAllByRestauranteIdAndAtivoTrue(restauranteContext.getId());
     }
@@ -31,8 +35,14 @@ public class FuncionarioService {
         return buscarAtivo(id);
     }
 
-    public Funcionario cadastrarFuncionario(FuncionarioDto funcionarioDto){
+    @Transactional
+    public Funcionario cadastrarFuncionario(FuncionarioDto funcionarioDto) throws BadRequestException {
         validarAcesso(funcionarioDto);
+        usuarioService.criarUsuario(new UsuarioDto(
+                funcionarioDto.getNome(),
+                funcionarioDto.getSenha(),
+                funcionarioDto.getAcesso()
+        ));
         Funcionario funcionario = new Funcionario();
         funcionario.setNome(funcionarioDto.getNome());
         funcionario.setTelefone(funcionarioDto.getTelefone());

@@ -1,13 +1,13 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { BtnBack } from '../../components/btn-back/btn-back';
 import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { ModalFuncionarioForm } from '../../components/modal-funcionario-form/modal-funcionario-form';
-import { Funcionario } from '../../models/configuracoes.models';
+import { CredenciaisFuncionario, Funcionario } from '../../models/configuracoes.models';
 import { FuncionariosService } from '../../services/funcionarios.service';
 
 @Component({ selector: 'app-funcionarios-page', imports: [BtnBack, FeedbackToast, ModalFuncionarioForm], templateUrl: './funcionarios-page.html', styleUrl: './funcionarios-page.scss' })
-export class FuncionariosPage implements OnInit {
+export class FuncionariosPage implements OnInit, OnDestroy {
   private readonly funcionariosService = inject(FuncionariosService);
   funcionarios: readonly Funcionario[] = [];
   funcionarioSelecionado: Funcionario | null = null;
@@ -15,11 +15,23 @@ export class FuncionariosPage implements OnInit {
   isLoading = true;
   errorMessage = '';
   successMessage = '';
+  credenciais: CredenciaisFuncionario | null = null;
+  private credentialsTimer: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void { this.loadFuncionarios(); }
+  ngOnDestroy(): void { if (this.credentialsTimer) clearTimeout(this.credentialsTimer); }
   openCreateModal(): void { this.funcionarioSelecionado = null; this.isModalOpen = true; }
   openEditModal(funcionario: Funcionario): void { this.funcionarioSelecionado = funcionario; this.isModalOpen = true; }
   closeModal(): void { this.isModalOpen = false; this.funcionarioSelecionado = null; }
+
+  showCredentials(credenciais: CredenciaisFuncionario): void {
+    this.credenciais = credenciais;
+    if (this.credentialsTimer) clearTimeout(this.credentialsTimer);
+    this.credentialsTimer = setTimeout(() => {
+      this.credenciais = null;
+      this.credentialsTimer = null;
+    }, 3000);
+  }
 
   saveFuncionario(funcionario: Funcionario): void {
     const isEditing = this.funcionarioSelecionado !== null;

@@ -2,6 +2,7 @@ package com.plato.platoBack.controller;
 
 
 import com.plato.platoBack.dto.FuncionarioDto;
+import com.plato.platoBack.dto.FuncionarioCriadoResponse;
 import com.plato.platoBack.entity.Funcionario;
 import com.plato.platoBack.service.FuncionarioService;
 import lombok.AllArgsConstructor;
@@ -33,8 +34,8 @@ public class FuncionarioController {
     }
 
     @PostMapping
-    public Funcionario cadastrarFuncionario(@RequestBody FuncionarioDto funcionarioDto) {
-        return funcionarioService.cadastrarFuncionario(funcionarioDto);
+    public FuncionarioCriadoResponse cadastrarFuncionario(@RequestBody FuncionarioDto funcionarioDto) throws BadRequestException {
+        return FuncionarioCriadoResponse.from(funcionarioService.cadastrarFuncionario(funcionarioDto));
     }
 
     @PutMapping("/{id}")

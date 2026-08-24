@@ -5,3 +5,12 @@
 .actions-cell { width: 1%; text-align: right; white-space: nowrap; }
 .edit-button { border: 1px solid var(--plato-purple); border-radius: 8px; background: transparent; padding: 8px 14px; color: var(--plato-purple); cursor: pointer; font: inherit; font-weight: 700; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.credentials-overlay { position: fixed; z-index: 30; inset: 0; display: grid; place-items: center; padding: 20px; background: rgb(24 24 27 / 56%); }
+.credentials-modal { box-sizing: border-box; width: min(100%, 440px); border-radius: 16px; background: var(--plato-background); padding: 28px 24px; box-shadow: 0 18px 50px rgb(0 0 0 / 24%); }
+.credentials-modal h2 { margin: 0 0 20px; }
+.credentials-eyebrow { margin: 0 0 4px; color: var(--plato-purple); font-weight: 700; text-transform: uppercase; }
+.credentials-modal dl { display: grid; gap: 12px; margin: 0; }
+.credentials-modal dl div { border-radius: 8px; background: var(--plato-surface); padding: 10px 12px; }
+.credentials-modal dt { color: var(--plato-text-secondary); font-size: var(--ts-14); }
+.credentials-modal dd { margin: 2px 0 0; overflow-wrap: anywhere; color: var(--plato-text); font-weight: 700; }
+.credentials-hint { margin: 18px 0 0; color: var(--plato-text-secondary); font-size: var(--ts-14); }

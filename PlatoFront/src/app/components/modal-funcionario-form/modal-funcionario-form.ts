@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, finalize, map } from 'rxjs';
-import { Funcionario, FuncionarioCadastro } from '../../models/configuracoes.models';
+import { CredenciaisFuncionario, Funcionario, FuncionarioAtualizacao, FuncionarioCadastro, FuncionarioCriado } from '../../models/configuracoes.models';
 import { FuncionariosService } from '../../services/funcionarios.service';
 import { IconButton } from '../icon-button/icon-button';
 
@@ -10,6 +10,7 @@ export class ModalFuncionarioForm implements OnChanges {
   @Input() funcionario: Funcionario | null = null;
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly saved = new EventEmitter<Funcionario>();
+  @Output() readonly credentialsGenerated = new EventEmitter<CredenciaisFuncionario>();
   @Output() readonly deleted = new EventEmitter<number>();
   private readonly formBuilder = inject(FormBuilder);
   private readonly funcionariosService = inject(FuncionariosService);
@@ -19,6 +20,7 @@ export class ModalFuncionarioForm implements OnChanges {
     telefone: ['', [Validators.required, Validators.maxLength(30)]],
     cargo: ['', [Validators.required, Validators.maxLength(80)]],
     acesso: ['ATENDENTE' as 'GERENTE' | 'ATENDENTE' | 'CAIXA', Validators.required],
+    senha: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
   });
   isSaving = false;
   isDeleting = false;
@@ -29,7 +31,11 @@ export class ModalFuncionarioForm implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['funcionario']) {
       this.saveError = '';
-      this.form.reset({ nome: this.funcionario?.nome ?? '', telefone: this.funcionario?.telefone ?? '', cargo: this.funcionario?.cargo ?? '', acesso: this.funcionario?.acesso ?? 'ATENDENTE' });
+      const senhaControl = this.form.controls.senha;
+      if (this.isEditing) senhaControl.clearValidators();
+      else senhaControl.setValidators([Validators.required, Validators.minLength(8), Validators.maxLength(72)]);
+      senhaControl.updateValueAndValidity({ emitEvent: false });
+      this.form.reset({ nome: this.funcionario?.nome ?? '', telefone: this.funcionario?.telefone ?? '', cargo: this.funcionario?.cargo ?? '', acesso: this.funcionario?.acesso ?? 'ATENDENTE', senha: '' });
     }
   }
 
@@ -41,16 +47,22 @@ export class ModalFuncionarioForm implements OnChanges {
       return;
     }
     const value = this.form.getRawValue();
-    const payload: FuncionarioCadastro = { nome: value.nome.trim(), telefone: value.telefone.trim(), cargo: value.cargo.trim(), acesso: value.acesso };
+    const dadosBasicos: FuncionarioAtualizacao = { nome: value.nome.trim(), telefone: value.telefone.trim(), cargo: value.cargo.trim(), acesso: value.acesso };
     const request: Observable<Funcionario> = this.funcionario
       ? this.funcionariosService
-          .atualizar(this.funcionario.id, payload)
-          .pipe(map(() => ({ ...this.funcionario!, ...payload })))
-      : this.funcionariosService.criar(payload);
+          .atualizar(this.funcionario.id, dadosBasicos)
+          .pipe(map(() => ({ ...this.funcionario!, ...dadosBasicos })))
+      : this.funcionariosService.criar({ ...dadosBasicos, senha: value.senha } satisfies FuncionarioCadastro);
     this.isSaving = true;
     this.saveError = '';
     request.pipe(finalize(() => (this.isSaving = false))).subscribe({
-      next: (salvo) => this.saved.emit(salvo),
+      next: (salvo) => {
+        if (!this.isEditing && 'restauranteNome' in salvo) {
+          const criado = salvo as FuncionarioCriado;
+          this.credentialsGenerated.emit({ restaurante: criado.restauranteNome, login: criado.nome, senha: value.senha });
+        }
+        this.saved.emit(salvo);
+      },
       error: () => (this.saveError = 'Não foi possível salvar o funcionário. Tente novamente.'),
     });
   }

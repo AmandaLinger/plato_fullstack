@@ -11,4 +11,18 @@
     }
   </tbody></table></div> }
 </section></main>
-@if (isModalOpen) { <app-modal-funcionario-form [funcionario]="funcionarioSelecionado" (closed)="closeModal()" (saved)="saveFuncionario($event)" (deleted)="removeFuncionario($event)" /> }
+@if (isModalOpen) { <app-modal-funcionario-form [funcionario]="funcionarioSelecionado" (closed)="closeModal()" (saved)="saveFuncionario($event)" (credentialsGenerated)="showCredentials($event)" (deleted)="removeFuncionario($event)" /> }
+@if (credenciais) {
+  <div class="credentials-overlay" role="presentation">
+    <section class="credentials-modal" role="dialog" aria-modal="true" aria-labelledby="credentials-title">
+      <p class="credentials-eyebrow">Cadastro concluído</p>
+      <h2 id="credentials-title">Credenciais geradas</h2>
+      <dl>
+        <div><dt>Restaurante</dt><dd>{{ credenciais.restaurante }}</dd></div>
+        <div><dt>Login</dt><dd>{{ credenciais.login }}</dd></div>
+        <div><dt>Senha</dt><dd>{{ credenciais.senha }}</dd></div>
+      </dl>
+      <p class="credentials-hint" aria-live="polite">Esta confirmação fechará automaticamente em 3 segundos.</p>
+    </section>
+  </div>
+}

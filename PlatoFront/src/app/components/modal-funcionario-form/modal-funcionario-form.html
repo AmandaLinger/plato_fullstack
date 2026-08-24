@@ -17,6 +17,10 @@
         <option value="ATENDENTE">Atendente</option>
         <option value="CAIXA">Caixa</option>
       </select>
+      @if (!isEditing) {
+        <label for="employee-password">Senha</label><input id="employee-password" type="password" formControlName="senha" autocomplete="new-password" placeholder="Mínimo de 8 caracteres">
+        @if (form.controls.senha.touched && form.controls.senha.invalid) { <small>A senha deve ter entre 8 e 72 caracteres.</small> }
+      }
       @if (saveError) { <small role="alert">{{ saveError }}</small> }
       <div class="actions"><button class="secondary-button" type="button" [disabled]="isSaving || isDeleting" (click)="close()">Cancelar</button><button class="primary-button" type="submit" [disabled]="form.invalid || isSaving || isDeleting">{{ isSaving ? 'Salvando...' : 'Salvar' }}</button></div>
     </form>

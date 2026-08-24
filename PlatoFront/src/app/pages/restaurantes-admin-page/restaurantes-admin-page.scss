@@ -7,6 +7,13 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  overflow-y: auto;
+}
+
+a img{
+  height: 48px;
+  padding-right: 8px;
 }
 
 nav{
@@ -14,6 +21,21 @@ nav{
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+
+  .navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.style-container{
+  display: flex;
+  justify-content: space-between;
+}
+
+h1{
+  margin-bottom: 16px;
 }
 
 section {
@@ -36,6 +58,10 @@ form {
   margin-bottom: 28px;
 }
 
+input, select, .style-btn, {
+  width: 100%;
+}
+
 input, select, button {
   border: 1px solid var(--plato-border);
   border-radius: 8px;
@@ -49,10 +75,15 @@ button {
   color: white;
 }
 
+.btn-consulta{
+  border: 1px solid var(--plato-purple);
+  color: var(--plato-purple);
+  background: transparent;
+}
+
 ul {
   padding: 0;
   list-style: none;
-  overflow-y: auto;
 }
 
 li {

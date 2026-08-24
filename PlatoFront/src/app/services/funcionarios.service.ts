@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Funcionario, FuncionarioCadastro } from '../models/configuracoes.models';
+import { Funcionario, FuncionarioAtualizacao, FuncionarioCadastro, FuncionarioCriado } from '../models/configuracoes.models';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -13,11 +13,11 @@ export class FuncionariosService {
     return this.http.get<readonly Funcionario[]>(this.endpoint);
   }
 
-  criar(funcionario: FuncionarioCadastro): Observable<Funcionario> {
-    return this.http.post<Funcionario>(this.endpoint, funcionario);
+  criar(funcionario: FuncionarioCadastro): Observable<FuncionarioCriado> {
+    return this.http.post<FuncionarioCriado>(this.endpoint, funcionario);
   }
 
-  atualizar(id: number, funcionario: FuncionarioCadastro): Observable<void> {
+  atualizar(id: number, funcionario: FuncionarioAtualizacao): Observable<void> {
     return this.http.put<void>(`${this.endpoint}/${id}`, funcionario);
   }
 

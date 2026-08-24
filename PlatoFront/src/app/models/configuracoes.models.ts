@@ -6,7 +6,19 @@ export interface Funcionario {
   readonly acesso: 'GERENTE' | 'ATENDENTE' | 'CAIXA';
 }
 
-export type FuncionarioCadastro = Omit<Funcionario, 'id'>;
+export type FuncionarioAtualizacao = Omit<Funcionario, 'id'>;
+
+export type FuncionarioCadastro = FuncionarioAtualizacao & { readonly senha: string };
+
+export interface FuncionarioCriado extends Funcionario {
+  readonly restauranteNome: string;
+}
+
+export interface CredenciaisFuncionario {
+  readonly restaurante: string;
+  readonly login: string;
+  readonly senha: string;
+}
 
 export interface Fornecedor {
   readonly id: number;
