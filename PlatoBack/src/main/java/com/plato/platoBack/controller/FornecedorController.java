@@ -7,6 +7,7 @@ import com.plato.platoBack.service.FornecedorService;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,7 @@ public class FornecedorController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletaFornecedor(@PathVariable Long id) throws BadRequestException {
         fornecedorService.deletarFornecedor(id);
     }

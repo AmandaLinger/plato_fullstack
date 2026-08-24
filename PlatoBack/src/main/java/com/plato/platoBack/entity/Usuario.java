@@ -24,4 +24,8 @@ public class Usuario {
     @NotNull
     @JsonIgnore
     String senha;
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    Boolean ativo = true;
 }

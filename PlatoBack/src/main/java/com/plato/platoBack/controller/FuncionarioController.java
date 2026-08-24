@@ -7,6 +7,7 @@ import com.plato.platoBack.service.FuncionarioService;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,5 +40,11 @@ public class FuncionarioController {
     @PutMapping("/{id}")
     public void atualizarFuncionario(@PathVariable Long id, @Validated @RequestBody FuncionarioDto funcionarioDto) throws BadRequestException {
         funcionarioService.atualizaFuncionario(id,funcionarioDto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletarFuncionario(@PathVariable Long id) throws BadRequestException {
+        funcionarioService.deletarFuncionario(id);
     }
 }

@@ -32,4 +32,43 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        this.clearToken();
+        return false;
+      }
+
+      const encodedPayload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padding = '='.repeat((4 - (encodedPayload.length % 4)) % 4);
+      const payload: unknown = JSON.parse(atob(encodedPayload + padding));
+      const expiration =
+        typeof payload === 'object' && payload !== null && 'exp' in payload
+          ? (payload as { exp?: unknown }).exp
+          : null;
+      const isValid =
+        typeof expiration === 'number' &&
+        Number.isFinite(expiration) &&
+        expiration > Date.now() / 1000;
+
+      if (!isValid) {
+        this.clearToken();
+      }
+      return isValid;
+    } catch {
+      this.clearToken();
+      return false;
+    }
+  }
+
+  clearToken(): void {
+    localStorage.removeItem(this.tokenKey);
+  }
 }

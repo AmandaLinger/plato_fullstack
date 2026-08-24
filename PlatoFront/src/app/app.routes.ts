@@ -15,23 +15,30 @@ import { MesasPage } from './pages/mesas-page/mesas-page';
 import { CozinhaPage } from './pages/cozinha-page/cozinha-page';
 import { NotaFornecedorPage } from './pages/nota-fornecedor-page/nota-fornecedor-page';
 import { CadastrarRestaurantePage } from './pages/cadastrar-restaurante-page/cadastrar-restaurante-page';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: InitialPage },
-  { path: 'home', component: HomePage },
+  { path: '', component: InitialPage, pathMatch: 'full' },
   { path: 'login', component: LoginPage },
   { path: 'cadastrar-restaurante', component: CadastrarRestaurantePage },
-  { path: 'perfil', component: PerfilPage },
-  { path: 'cardapioEdit', component: CardapioEditPage},
-  { path: 'configuracoes', component: ConfiguracoesPage },
-  { path: 'fazer-pedido', component: FazerPedidoPage },
-  { path: 'finalizar-pedido', component: FinalizarPedidoPage },
-  { path: 'consultar-mesas', component: ConsultarMesasPage },
-  { path: 'notas-do-dia', component: NotasDoDiaPage },
-  { path: 'configuracoes/funcionarios', component: FuncionariosPage },
-  { path: 'configuracoes/fornecedores', component: FornecedoresPage },
-  { path: 'configuracoes/mesas', component: MesasPage },
-  { path: 'configuracoes/cozinha', component: CozinhaPage },
-  { path: 'nota-fornecedor', component: NotaFornecedorPage },
+  {
+    path: '',
+    canActivateChild: [authGuard],
+    children: [
+      { path: 'home', component: HomePage },
+      { path: 'perfil', component: PerfilPage },
+      { path: 'cardapioEdit', component: CardapioEditPage },
+      { path: 'configuracoes', component: ConfiguracoesPage },
+      { path: 'fazer-pedido', component: FazerPedidoPage },
+      { path: 'finalizar-pedido', component: FinalizarPedidoPage },
+      { path: 'consultar-mesas', component: ConsultarMesasPage },
+      { path: 'notas-do-dia', component: NotasDoDiaPage },
+      { path: 'configuracoes/funcionarios', component: FuncionariosPage },
+      { path: 'configuracoes/fornecedores', component: FornecedoresPage },
+      { path: 'configuracoes/mesas', component: MesasPage },
+      { path: 'configuracoes/cozinha', component: CozinhaPage },
+      { path: 'nota-fornecedor', component: NotaFornecedorPage },
+    ],
+  },
   { path: '**', redirectTo: '' }
 ];

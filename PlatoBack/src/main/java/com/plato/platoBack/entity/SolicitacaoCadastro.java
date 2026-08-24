@@ -1,5 +1,6 @@
 package com.plato.platoBack.entity;
 
+import com.plato.platoBack.enuns.StatusSolicitacaoCadastro;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -30,7 +30,7 @@ public class NotaFornecedorService {
             );
         }
 
-        Fornecedor fornecedor = fornecedorRepository.findById(dto.getFornecedorId())
+        Fornecedor fornecedor = fornecedorRepository.findByIdAndAtivoTrue(dto.getFornecedorId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Fornecedor não encontrado"

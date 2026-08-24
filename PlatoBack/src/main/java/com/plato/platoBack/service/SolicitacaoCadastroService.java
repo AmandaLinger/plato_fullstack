@@ -2,7 +2,7 @@ package com.plato.platoBack.service;
 
 import com.plato.platoBack.dto.SolicitacaoCadastroDto;
 import com.plato.platoBack.entity.SolicitacaoCadastro;
-import com.plato.platoBack.entity.StatusSolicitacaoCadastro;
+import com.plato.platoBack.enuns.StatusSolicitacaoCadastro;
 import com.plato.platoBack.repository.SolicitacaoCadastroRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

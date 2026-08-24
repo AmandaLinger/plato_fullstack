@@ -23,4 +23,8 @@ public class Funcionario {
     String telefone;
 
     String cargo;
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    Boolean ativo = true;
 }

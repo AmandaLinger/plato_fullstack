@@ -8,7 +8,9 @@ import com.plato.platoBack.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public void criarUsuario(UsuarioDto usuario) throws BadRequestException {
-        Usuario u = usuarioRepository.findByNome(usuario.getNome())
+        Usuario u = usuarioRepository.findByNomeAndAtivoTrue(usuario.getNome())
                 .orElse(null);
 
         if(u != null){
@@ -32,16 +34,16 @@ public class UsuarioService {
         usuarioRepository.save(Usuario.builder()
                 .nome(usuario.getNome())
                 .senha(encodeSenha(usuario.getSenha()))
+                .ativo(true)
                 .build()
         );
     }
 
     @Transactional
     public void atualizarUsuario(Long id,UsuarioDto usuario) throws BadRequestException {
-        Usuario u = usuarioRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("Nenhum usuário encontrado"));
+        Usuario u = buscarAtivo(id);
 
-        if (usuarioRepository.existsByNomeAndIdNot(usuario.getNome(), id)) {
+        if (usuarioRepository.existsByNomeAndAtivoTrueAndIdNot(usuario.getNome(), id)) {
             throw new BadRequestException("Nome de usuário já cadastrado no banco");
         }
 
@@ -53,7 +55,7 @@ public class UsuarioService {
     }
 
     public Usuario autenticar(String nome, String senha) throws BadRequestException {
-        Usuario usuario = usuarioRepository.findByNome(nome)
+        Usuario usuario = usuarioRepository.findByNomeAndAtivoTrue(nome)
                 .orElseThrow(() -> new BadRequestException("Login ou senha inválidos"));
 
         if (!passwordEncoder.matches(senha, usuario.getSenha())) {
@@ -64,8 +66,7 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorId(Long id) throws BadRequestException {
-        return usuarioRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("Nenhum usuário encontrado"));
+        return buscarAtivo(id);
     }
 
     private String encodeSenha(String senha) throws BadRequestException {
@@ -75,17 +76,22 @@ public class UsuarioService {
         return passwordEncoder.encode(senha);
     }
 
-    public List<Usuario> chamaUsuarios() throws BadRequestException {
-        List<Usuario> listaUsuarios = usuarioRepository.findAll();
-
-        if(listaUsuarios == null|| listaUsuarios.isEmpty()) {
-            throw new BadRequestException("Nenhum usuário encontrado");
-        }
-        return listaUsuarios;
+    public List<Usuario> chamaUsuarios() {
+        return usuarioRepository.findAllByAtivoTrue();
     }
 
     @Transactional
     public void deletarUsuario(Long id){
-        usuarioRepository.deleteById(id);
+        Usuario usuario = buscarAtivo(id);
+        usuario.setAtivo(false);
+        usuarioRepository.save(usuario);
+    }
+
+    private Usuario buscarAtivo(Long id) {
+        return usuarioRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Nenhum usuário encontrado"
+                ));
     }
 }

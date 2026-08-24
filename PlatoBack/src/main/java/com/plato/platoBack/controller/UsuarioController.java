@@ -40,6 +40,11 @@ public class UsuarioController {
         return listaUsuarios;
     }
 
+    @GetMapping("/{id}")
+    public Usuario buscarUsuario(@PathVariable Long id) throws BadRequestException {
+        return usuarioService.buscarPorId(id);
+    }
+
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void atualizarUsuario(@RequestBody UsuarioDto usuarioDto, @PathVariable Long id)

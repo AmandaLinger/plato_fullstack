@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {FooterComponent} from '../../components/footer-component/footer-component';
 import {BtnOrange} from '../../components/btn-orange/btn-orange';
-import {Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
@@ -16,6 +16,7 @@ export class LoginPage {
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly form = this.formBuilder.nonNullable.group({
     nome: ['', Validators.required],
@@ -38,7 +39,12 @@ export class LoginPage {
       .login({ nome: value.nome.trim(), senha: value.senha })
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: () => void this.router.navigate(['/home']),
+        next: () => {
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+          const destination =
+            returnUrl?.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/home';
+          void this.router.navigateByUrl(destination);
+        },
         error: () => (this.errorMessage = 'Login ou senha inválidos.'),
       });
   }

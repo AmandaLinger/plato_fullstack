@@ -7,8 +7,9 @@ import jakarta.transaction.Transactional;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,14 +21,11 @@ public class FuncionarioService {
     private FuncionarioRepository funcionarioRepository;
 
     public List<Funcionario> chamaTodosFuncionarios(){
-        return funcionarioRepository.findAll();
+        return funcionarioRepository.findAllByAtivoTrue();
     }
 
     public Funcionario chamaFuncionario(Long id) throws BadRequestException {
-        Funcionario funcionario = funcionarioRepository.findById(id)
-                .orElseThrow( () -> new BadRequestException("Nenhum funcionário encontrado")) ;
-
-        return funcionario;
+        return buscarAtivo(id);
     }
 
     public Funcionario cadastrarFuncionario(FuncionarioDto funcionarioDto){
@@ -35,27 +33,34 @@ public class FuncionarioService {
         funcionario.setNome(funcionarioDto.getNome());
         funcionario.setTelefone(funcionarioDto.getTelefone());
         funcionario.setCargo(funcionarioDto.getCargo());
+        funcionario.setAtivo(true);
 
         return funcionarioRepository.save(funcionario);
     }
 
     @Transactional
     public void deletarFuncionario(Long id) throws BadRequestException {
-        Funcionario funcionario = funcionarioRepository.findById(id)
-                .orElseThrow(()-> new BadRequestException("Nenhum funcionário encontrado"));
-
-        funcionarioRepository.delete(funcionario);
+        Funcionario funcionario = buscarAtivo(id);
+        funcionario.setAtivo(false);
+        funcionarioRepository.save(funcionario);
     }
 
     @Transactional
     public void atualizaFuncionario(Long id, FuncionarioDto funcionarioDto) throws BadRequestException {
-        Funcionario funcionario = funcionarioRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("Nenhum funcionário encontrado"));
+        Funcionario funcionario = buscarAtivo(id);
 
         funcionario.setNome(funcionarioDto.getNome());
         funcionario.setTelefone(funcionarioDto.getTelefone());
         funcionario.setCargo(funcionarioDto.getCargo());
 
         funcionarioRepository.save(funcionario);
+    }
+
+    private Funcionario buscarAtivo(Long id) {
+        return funcionarioRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Nenhum funcionário encontrado"
+                ));
     }
 }
