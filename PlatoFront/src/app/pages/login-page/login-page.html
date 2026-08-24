@@ -11,6 +11,15 @@
 
     <div class="inputs">
       <div class="flex-column mb-8px">
+        <label for="restaurante" class="mb-4px">Restaurante</label>
+        <select id="restaurante" formControlName="restauranteId">
+          <option [ngValue]="0" disabled>{{ isLoadingRestaurantes ? 'Carregando restaurantes...' : 'Selecione o restaurante' }}</option>
+          @for (restaurante of restaurantes; track restaurante.id) {
+            <option [ngValue]="restaurante.id">{{ restaurante.nome }}</option>
+          }
+        </select>
+      </div>
+      <div class="flex-column mb-8px">
         <label for="usuario" class="mb-4px">Usuario</label>
         <input id="usuario" formControlName="nome" autocomplete="username" placeholder="usuario" />
       </div>

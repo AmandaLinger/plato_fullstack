@@ -7,7 +7,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface NotaFornecedorRepository extends JpaRepository<NotaFornecedor, Long> {
-    List<NotaFornecedor> findByDataEmissaoBetweenOrderByDataEmissaoAscIdAsc(
+    List<NotaFornecedor> findAllByRestauranteId(Long restauranteId);
+
+    List<NotaFornecedor> findByRestauranteIdAndDataEmissaoBetweenOrderByDataEmissaoAscIdAsc(
+            Long restauranteId,
             LocalDate inicio,
             LocalDate fim
     );

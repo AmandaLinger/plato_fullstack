@@ -24,13 +24,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
-        if (request.nome() == null || request.nome().isBlank()
+        if (request.restauranteId() == null || request.nome() == null || request.nome().isBlank()
                 || request.senha() == null || request.senha().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Login e senha são obrigatórios");
         }
 
         try {
-            Usuario usuario = usuarioService.autenticar(request.nome().trim(), request.senha());
+            Usuario usuario = usuarioService.autenticar(request.restauranteId(), request.nome().trim(), request.senha());
             return new LoginResponse(jwtService.gerarToken(usuario), PerfilResponse.from(usuario));
         } catch (BadRequestException exception) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, exception.getMessage());

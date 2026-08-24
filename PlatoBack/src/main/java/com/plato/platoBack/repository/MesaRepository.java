@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MesaRepository extends JpaRepository<Mesa, Integer> {
-    List<Mesa> findAllByOrderByNumeroAsc();
+public interface MesaRepository extends JpaRepository<Mesa, Long> {
+    List<Mesa> findAllByRestauranteIdOrderByNumeroAsc(Long restauranteId);
+    long countByRestauranteId(Long restauranteId);
 }

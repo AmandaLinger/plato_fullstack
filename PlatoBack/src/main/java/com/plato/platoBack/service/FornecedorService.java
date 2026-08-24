@@ -20,8 +20,11 @@ public class FornecedorService {
     @Autowired
     private FornecedorRepository fornecedorRepository;
 
+    @Autowired
+    private RestauranteContextService restauranteContext;
+
     public List<Fornecedor> chamaTodosFornecedores() {
-        return fornecedorRepository.findAllByAtivoTrue();
+        return fornecedorRepository.findAllByRestauranteIdAndAtivoTrue(restauranteContext.getId());
     }
 
     public Fornecedor cadastrarFornecedor(FornecedorDto fornecedorDto) {
@@ -30,6 +33,7 @@ public class FornecedorService {
         fornecedor.setCnpj(fornecedorDto.getCnpj());
         fornecedor.setTelefone(fornecedorDto.getTelefone());
         fornecedor.setAtivo(true);
+        fornecedor.setRestaurante(restauranteContext.getRestaurante());
         return fornecedorRepository.save(fornecedor);
     }
 
@@ -56,7 +60,7 @@ public class FornecedorService {
     }
 
     private Fornecedor buscarAtivo(Long id) {
-        return fornecedorRepository.findByIdAndAtivoTrue(id)
+        return fornecedorRepository.findByIdAndRestauranteIdAndAtivoTrue(id, restauranteContext.getId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Nenhum fornecedor encontrado"

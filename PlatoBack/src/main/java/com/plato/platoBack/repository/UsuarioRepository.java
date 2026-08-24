@@ -9,11 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    Optional<Usuario> findByNomeAndAtivoTrue(String nome);
+    Optional<Usuario> findByNomeAndRestauranteIdAndAtivoTrue(String nome, Long restauranteId);
 
-    boolean existsByNomeAndAtivoTrueAndIdNot(String nome, Long id);
+    boolean existsByNomeAndRestauranteIdAndAtivoTrueAndIdNot(String nome, Long restauranteId, Long id);
 
-    List<Usuario> findAllByAtivoTrue();
+    List<Usuario> findAllByRestauranteIdAndAtivoTrue(Long restauranteId);
 
-    Optional<Usuario> findByIdAndAtivoTrue(Long id);
+    Optional<Usuario> findByIdAndRestauranteIdAndAtivoTrue(Long id, Long restauranteId);
 }

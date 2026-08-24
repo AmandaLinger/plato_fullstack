@@ -12,6 +12,10 @@ import org.antlr.v4.runtime.misc.NotNull;
 @NoArgsConstructor
 @Table(name = "fornecedor")
 public class Fornecedor {
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurante_id")
+    Restaurante restaurante;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

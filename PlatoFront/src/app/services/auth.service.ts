@@ -14,11 +14,15 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
   private readonly tokenKey = 'plato.auth.token';
+  private readonly restauranteKey = 'plato.auth.restaurante-id';
 
   login(payload: LoginPayload): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${this.apiUrl}/auth/login`, payload)
-      .pipe(tap((response) => localStorage.setItem(this.tokenKey, response.token)));
+      .pipe(tap((response) => {
+        localStorage.setItem(this.tokenKey, response.token);
+        localStorage.setItem(this.restauranteKey, String(payload.restauranteId));
+      }));
   }
 
   buscarPerfil(): Observable<PerfilUsuario> {
@@ -31,6 +35,11 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  getRestauranteId(): number | null {
+    const value = localStorage.getItem(this.restauranteKey);
+    return value === null || !Number.isInteger(Number(value)) ? null : Number(value);
   }
 
   isAuthenticated(): boolean {
@@ -70,5 +79,6 @@ export class AuthService {
 
   clearToken(): void {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.restauranteKey);
   }
 }

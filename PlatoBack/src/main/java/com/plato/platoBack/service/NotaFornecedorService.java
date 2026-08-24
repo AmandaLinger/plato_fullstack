@@ -20,6 +20,7 @@ import java.time.LocalDate;
 public class NotaFornecedorService {
     private final NotaFornecedorRepository notaFornecedorRepository;
     private final FornecedorRepository fornecedorRepository;
+    private final RestauranteContextService restauranteContext;
 
     @Transactional
     public NotaFornecedorDto criar(NotaFornecedorDto dto) {
@@ -30,7 +31,8 @@ public class NotaFornecedorService {
             );
         }
 
-        Fornecedor fornecedor = fornecedorRepository.findByIdAndAtivoTrue(dto.getFornecedorId())
+        Long restauranteId = restauranteContext.getId();
+        Fornecedor fornecedor = fornecedorRepository.findByIdAndRestauranteIdAndAtivoTrue(dto.getFornecedorId(), restauranteId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Fornecedor não encontrado"
@@ -43,6 +45,7 @@ public class NotaFornecedorService {
                 .valorTotal(dto.getValorTotal())
                 .chaveAcesso(dto.getChaveAcesso())
                 .observacoes(dto.getObservacoes())
+                .restaurante(restauranteContext.getRestaurante())
                 .build();
 
         return toDto(notaFornecedorRepository.save(nota));
@@ -50,7 +53,7 @@ public class NotaFornecedorService {
 
     @Transactional(readOnly = true)
     public List<NotaFornecedorDto> listar() {
-        return notaFornecedorRepository.findAll().stream().map(this::toDto).toList();
+        return notaFornecedorRepository.findAllByRestauranteId(restauranteContext.getId()).stream().map(this::toDto).toList();
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +66,7 @@ public class NotaFornecedorService {
         }
 
         List<NotaFornecedor> notas = notaFornecedorRepository
-                .findByDataEmissaoBetweenOrderByDataEmissaoAscIdAsc(inicio, fim);
+                .findByRestauranteIdAndDataEmissaoBetweenOrderByDataEmissaoAscIdAsc(restauranteContext.getId(), inicio, fim);
         StringBuilder csv = new StringBuilder(
                 "\uFEFFNúmero da Nota;Data de Emissão;Fornecedor;CNPJ;Chave de Acesso;Valor Total (R$);Observações\r\n"
         );

@@ -1,0 +1,35 @@
+package com.plato.platoBack.controller;
+
+import com.plato.platoBack.dto.RestauranteDto;
+import com.plato.platoBack.entity.Restaurante;
+import com.plato.platoBack.service.RestauranteService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/restaurantes")
+public class RestauranteController {
+    private final RestauranteService restauranteService;
+
+    @GetMapping
+    public ResponseEntity<List<Restaurante>> listarAtivos() {
+        return ResponseEntity.ok(restauranteService.listarAtivos());
+    }
+
+    @PostMapping
+    public ResponseEntity<Restaurante> criarRestaurante(@RequestBody RestauranteDto restauranteDto) {
+        Restaurante restaurante = restauranteService.cadastrarRestaurante(restauranteDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativarRestaurante(@PathVariable Long id) {
+        restauranteService.inativarRestaurante(id);
+    }
+}

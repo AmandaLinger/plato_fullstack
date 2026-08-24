@@ -5,6 +5,7 @@ import com.plato.platoBack.entity.Usuario;
 import jakarta.transaction.Transactional;
 import org.apache.coyote.BadRequestException;
 import com.plato.platoBack.repository.UsuarioRepository;
+import com.plato.platoBack.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,15 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private RestauranteContextService restauranteContext;
+
+    @Autowired
+    private RestauranteRepository restauranteRepository;
+
     public void criarUsuario(UsuarioDto usuario) throws BadRequestException {
-        Usuario u = usuarioRepository.findByNomeAndAtivoTrue(usuario.getNome())
+        Long restauranteId = restauranteContext.getId();
+        Usuario u = usuarioRepository.findByNomeAndRestauranteIdAndAtivoTrue(usuario.getNome(), restauranteId)
                 .orElse(null);
 
         if(u != null){
@@ -35,6 +43,7 @@ public class UsuarioService {
                 .nome(usuario.getNome())
                 .senha(encodeSenha(usuario.getSenha()))
                 .ativo(true)
+                .restaurante(restauranteContext.getRestaurante())
                 .build()
         );
     }
@@ -43,7 +52,7 @@ public class UsuarioService {
     public void atualizarUsuario(Long id,UsuarioDto usuario) throws BadRequestException {
         Usuario u = buscarAtivo(id);
 
-        if (usuarioRepository.existsByNomeAndAtivoTrueAndIdNot(usuario.getNome(), id)) {
+        if (usuarioRepository.existsByNomeAndRestauranteIdAndAtivoTrueAndIdNot(usuario.getNome(), restauranteContext.getId(), id)) {
             throw new BadRequestException("Nome de usuário já cadastrado no banco");
         }
 
@@ -54,8 +63,12 @@ public class UsuarioService {
         usuarioRepository.save(u);
     }
 
-    public Usuario autenticar(String nome, String senha) throws BadRequestException {
-        Usuario usuario = usuarioRepository.findByNomeAndAtivoTrue(nome)
+    public Usuario autenticar(Long restauranteId, String nome, String senha) throws BadRequestException {
+        if (!restauranteRepository.existsById(restauranteId)
+                || restauranteRepository.findByIdAndAtivoTrue(restauranteId).isEmpty()) {
+            throw new BadRequestException("Login ou senha inválidos");
+        }
+        Usuario usuario = usuarioRepository.findByNomeAndRestauranteIdAndAtivoTrue(nome, restauranteId)
                 .orElseThrow(() -> new BadRequestException("Login ou senha inválidos"));
 
         if (!passwordEncoder.matches(senha, usuario.getSenha())) {
@@ -77,7 +90,7 @@ public class UsuarioService {
     }
 
     public List<Usuario> chamaUsuarios() {
-        return usuarioRepository.findAllByAtivoTrue();
+        return usuarioRepository.findAllByRestauranteIdAndAtivoTrue(restauranteContext.getId());
     }
 
     @Transactional
@@ -88,7 +101,7 @@ public class UsuarioService {
     }
 
     private Usuario buscarAtivo(Long id) {
-        return usuarioRepository.findByIdAndAtivoTrue(id)
+        return usuarioRepository.findByIdAndRestauranteIdAndAtivoTrue(id, restauranteContext.getId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Nenhum usuário encontrado"

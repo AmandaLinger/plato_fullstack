@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface FornecedorRepository extends JpaRepository<Fornecedor, Long> {
-    List<Fornecedor> findAllByAtivoTrue();
+    List<Fornecedor> findAllByRestauranteIdAndAtivoTrue(Long restauranteId);
 
-    Optional<Fornecedor> findByIdAndAtivoTrue(Long id);
+    Optional<Fornecedor> findByIdAndRestauranteIdAndAtivoTrue(Long id, Long restauranteId);
 }

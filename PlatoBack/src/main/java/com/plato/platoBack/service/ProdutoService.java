@@ -18,8 +18,11 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
+    @Autowired
+    private RestauranteContextService restauranteContext;
+
     public Produto criarProduto(ProdutoDto produto) throws BadRequestException {
-        Produto p = produtoRepository.findByNome(produto.getNome()).orElse(null);
+        Produto p = produtoRepository.findByNomeAndRestauranteId(produto.getNome(), restauranteContext.getId()).orElse(null);
 
         if(p != null){
             throw new BadRequestException("Nome do produto já cadastrado no banco");
@@ -30,13 +33,14 @@ public class ProdutoService {
                 .preco(produto.getPreco())
                 .descricao(produto.getDescricao())
                 .imagemUrl(produto.getImagemUrl())
+                .restaurante(restauranteContext.getRestaurante())
                 .build()
         );
     }
 
     @Transactional
     public Produto atualizaProduto(Long id, ProdutoDto produtoDto) throws BadRequestException {
-        Produto p = produtoRepository.findById(id)
+        Produto p = produtoRepository.findByIdAndRestauranteId(id, restauranteContext.getId())
                 .orElseThrow( () -> new BadRequestException("Nenhum produto encontrado"));
 
         p.setPreco(produtoDto.getPreco());
@@ -49,11 +53,14 @@ public class ProdutoService {
 
     @Transactional
     public void deletarProduto(Long id){
-        produtoRepository.deleteById(id);
+        Produto produto = produtoRepository.findByIdAndRestauranteId(id, restauranteContext.getId())
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Nenhum produto encontrado"));
+        produtoRepository.delete(produto);
     }
 
     public List<Produto> chamaProdutos() throws BadRequestException {
-        List<Produto> listaProdutos = produtoRepository.findAll();
+        List<Produto> listaProdutos = produtoRepository.findAllByRestauranteId(restauranteContext.getId());
 
         if(listaProdutos == null || listaProdutos.isEmpty()){
             throw new BadRequestException("Nenhum produto encontrado");

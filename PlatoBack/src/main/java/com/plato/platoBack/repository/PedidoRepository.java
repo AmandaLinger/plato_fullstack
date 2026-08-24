@@ -9,11 +9,16 @@ import java.util.List;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
-    List<Pedido> findByPedidoAbertoTrue();
+    List<Pedido> findAllByRestauranteId(Long restauranteId);
 
-    List<Pedido> findByPedidoAbertoFalseAndDataPedidoOrderByIdDesc(LocalDate dataPedido);
+    java.util.Optional<Pedido> findByIdAndRestauranteId(Long id, Long restauranteId);
 
-    List<Pedido> findByPedidoAbertoFalseAndDataPedidoBetweenOrderByDataPedidoAscIdAsc(
+    List<Pedido> findByRestauranteIdAndPedidoAbertoTrue(Long restauranteId);
+
+    List<Pedido> findByRestauranteIdAndPedidoAbertoFalseAndDataPedidoOrderByIdDesc(Long restauranteId, LocalDate dataPedido);
+
+    List<Pedido> findByRestauranteIdAndPedidoAbertoFalseAndDataPedidoBetweenOrderByDataPedidoAscIdAsc(
+            Long restauranteId,
             LocalDate inicio,
             LocalDate fim
     );

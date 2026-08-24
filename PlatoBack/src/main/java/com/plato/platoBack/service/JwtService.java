@@ -42,6 +42,7 @@ public class JwtService {
             Map<String, Object> claims = Map.of(
                     "sub", usuario.getNome(),
                     "uid", usuario.getId(),
+                    "rid", usuario.getRestaurante().getId(),
                     "iat", issuedAt,
                     "exp", issuedAt + expirationSeconds
             );
@@ -55,6 +56,14 @@ public class JwtService {
     }
 
     public Long obterUsuarioId(String authorizationHeader) {
+        return getNumberClaim(authorizationHeader, "uid");
+    }
+
+    public Long obterRestauranteId(String authorizationHeader) {
+        return getNumberClaim(authorizationHeader, "rid");
+    }
+
+    private Long getNumberClaim(String authorizationHeader, String claimName) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw unauthorized();
         }
@@ -76,12 +85,12 @@ public class JwtService {
                     new TypeReference<>() { }
             );
             Number expiration = (Number) claims.get("exp");
-            Number usuarioId = (Number) claims.get("uid");
-            if (expiration == null || usuarioId == null || expiration.longValue() <= Instant.now().getEpochSecond()) {
+            Number claim = (Number) claims.get(claimName);
+            if (expiration == null || claim == null || expiration.longValue() <= Instant.now().getEpochSecond()) {
                 throw unauthorized();
             }
 
-            return usuarioId.longValue();
+            return claim.longValue();
         } catch (ResponseStatusException exception) {
             throw exception;
         } catch (Exception exception) {

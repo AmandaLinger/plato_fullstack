@@ -3,6 +3,7 @@ package com.plato.platoBack.service;
 import com.plato.platoBack.dto.PedidoDto;
 import com.plato.platoBack.entity.Pedido;
 import com.plato.platoBack.repository.PedidoRepository;
+import com.plato.platoBack.repository.ProdutoRepository;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,22 +23,35 @@ public class PedidoService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
+    @Autowired
+    private RestauranteContextService restauranteContext;
+
+    @Autowired
+    private ProdutoRepository produtoRepository;
+
     public void cadastrarPedido(PedidoDto pedidoDto) {
         Pedido p = new Pedido();
         p.setNumeroMesa(pedidoDto.getNumeroMesa());
         p.setItens(pedidoDto.getItens());
         p.setPedidoAberto(true);
         p.setDataPedido(LocalDate.now());
+        p.setRestaurante(restauranteContext.getRestaurante());
 
         if (p.getItens() != null) {
-            p.getItens().forEach(item -> item.setPedido(p));
+            p.getItens().forEach(item -> {
+                Long produtoId = item.getProduto() == null ? null : item.getProduto().getId();
+                item.setProduto(produtoRepository.findByIdAndRestauranteId(produtoId, restauranteContext.getId())
+                        .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                                org.springframework.http.HttpStatus.BAD_REQUEST, "Produto inválido para o restaurante")));
+                item.setPedido(p);
+            });
         }
 
         pedidoRepository.save(p);
     }
 
     public void atualizarPedido(Long id, PedidoDto pedidoDto ) throws BadRequestException {
-        Pedido p = pedidoRepository.findById(id)
+        Pedido p = pedidoRepository.findByIdAndRestauranteId(id, restauranteContext.getId())
                 .orElse(null);
 
         if(p == null){
@@ -56,22 +70,28 @@ public class PedidoService {
         }
 
         if (p.getItens() != null) {
-            p.getItens().forEach(item -> item.setPedido(p));
+            p.getItens().forEach(item -> {
+                Long produtoId = item.getProduto() == null ? null : item.getProduto().getId();
+                item.setProduto(produtoRepository.findByIdAndRestauranteId(produtoId, restauranteContext.getId())
+                        .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                                org.springframework.http.HttpStatus.BAD_REQUEST, "Produto inválido para o restaurante")));
+                item.setPedido(p);
+            });
         }
 
         pedidoRepository.save(p);
     }
 
     public List<Pedido> chamaPedido(){
-        return pedidoRepository.findAll();
+        return pedidoRepository.findAllByRestauranteId(restauranteContext.getId());
     }
 
     public List<Pedido> chamaPedidosAbertos() {
-        return pedidoRepository.findByPedidoAbertoTrue();
+        return pedidoRepository.findByRestauranteIdAndPedidoAbertoTrue(restauranteContext.getId());
     }
 
     public List<Pedido> chamaPedidosFinalizadosPorData(LocalDate dataPedido) {
-        return pedidoRepository.findByPedidoAbertoFalseAndDataPedidoOrderByIdDesc(dataPedido);
+        return pedidoRepository.findByRestauranteIdAndPedidoAbertoFalseAndDataPedidoOrderByIdDesc(restauranteContext.getId(), dataPedido);
     }
 
     @Transactional(readOnly = true)
@@ -81,7 +101,7 @@ public class PedidoService {
         }
 
         List<Pedido> pedidos = pedidoRepository
-                .findByPedidoAbertoFalseAndDataPedidoBetweenOrderByDataPedidoAscIdAsc(inicio, fim);
+                .findByRestauranteIdAndPedidoAbertoFalseAndDataPedidoBetweenOrderByDataPedidoAscIdAsc(restauranteContext.getId(), inicio, fim);
         StringBuilder csv = new StringBuilder("\uFEFFNota Fiscal;Data de Emissão;Mesa;Produtos;Valor Total (R$)\r\n");
 
         for (Pedido pedido : pedidos) {
@@ -120,7 +140,7 @@ public class PedidoService {
 
     @Transactional
     public void finalizarPedido(Long id) throws BadRequestException {
-        Pedido pedido = pedidoRepository.findById(id)
+        Pedido pedido = pedidoRepository.findByIdAndRestauranteId(id, restauranteContext.getId())
                 .orElseThrow(() -> new BadRequestException("Nenhum pedido encontrado"));
 
         pedido.setPedidoAberto(false);
@@ -128,7 +148,7 @@ public class PedidoService {
     }
 
     public void deletaPedido(Long id) throws BadRequestException {
-        Pedido p = pedidoRepository.findById(id).
+        Pedido p = pedidoRepository.findByIdAndRestauranteId(id, restauranteContext.getId()).
                 orElse(null);
 
         if(p == null){

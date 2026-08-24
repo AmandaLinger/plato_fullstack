@@ -20,8 +20,11 @@ public class FuncionarioService {
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
+    @Autowired
+    private RestauranteContextService restauranteContext;
+
     public List<Funcionario> chamaTodosFuncionarios(){
-        return funcionarioRepository.findAllByAtivoTrue();
+        return funcionarioRepository.findAllByRestauranteIdAndAtivoTrue(restauranteContext.getId());
     }
 
     public Funcionario chamaFuncionario(Long id) throws BadRequestException {
@@ -34,6 +37,7 @@ public class FuncionarioService {
         funcionario.setTelefone(funcionarioDto.getTelefone());
         funcionario.setCargo(funcionarioDto.getCargo());
         funcionario.setAtivo(true);
+        funcionario.setRestaurante(restauranteContext.getRestaurante());
 
         return funcionarioRepository.save(funcionario);
     }
@@ -57,7 +61,7 @@ public class FuncionarioService {
     }
 
     private Funcionario buscarAtivo(Long id) {
-        return funcionarioRepository.findByIdAndAtivoTrue(id)
+        return funcionarioRepository.findByIdAndRestauranteIdAndAtivoTrue(id, restauranteContext.getId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Nenhum funcionário encontrado"

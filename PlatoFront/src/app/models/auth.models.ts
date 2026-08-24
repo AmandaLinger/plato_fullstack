@@ -4,6 +4,7 @@ export interface PerfilUsuario {
 }
 
 export interface LoginPayload {
+  readonly restauranteId: number;
   readonly nome: string;
   readonly senha: string;
 }

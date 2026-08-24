@@ -1,4 +1,7 @@
 package com.plato.platoBack.dto;
 
-public record LoginRequest(String nome, String senha) {
-}
+public record LoginRequest(
+        Long restauranteId,
+        String nome,
+        String senha
+) {}

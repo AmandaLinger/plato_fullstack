@@ -13,6 +13,10 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Table(name="usuario")
 @Entity
 public class Usuario {
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurante_id")
+    Restaurante restaurante;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

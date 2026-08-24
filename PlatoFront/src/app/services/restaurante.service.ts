@@ -9,6 +9,11 @@ export interface SolicitacaoCadastro {
   readonly telefone: string;
 }
 
+export interface Restaurante {
+  readonly id: number;
+  readonly nome: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class RestauranteService {
   private readonly http = inject(HttpClient);
@@ -16,5 +21,9 @@ export class RestauranteService {
 
   solicitarLogin(solicitacao: SolicitacaoCadastro): Observable<void> {
     return this.http.post<void>(this.endpoint, solicitacao);
+  }
+
+  listarAtivos(): Observable<readonly Restaurante[]> {
+    return this.http.get<readonly Restaurante[]>(`${environment.apiUrl}/api/restaurantes`);
   }
 }

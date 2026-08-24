@@ -12,6 +12,10 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Table(name="produto")
 @Entity
 public class Produto {
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurante_id")
+    Restaurante restaurante;
 
     @Column(name = "imagem_url", columnDefinition = "TEXT")
     private String imagemUrl;

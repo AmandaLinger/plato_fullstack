@@ -16,6 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "pedido")
 public class Pedido {
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurante_id")
+    Restaurante restaurante;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

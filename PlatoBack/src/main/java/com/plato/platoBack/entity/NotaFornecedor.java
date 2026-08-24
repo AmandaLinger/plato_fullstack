@@ -14,6 +14,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Table(name = "nota_fornecedor")
 public class NotaFornecedor {
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurante_id")
+    private Restaurante restaurante;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
