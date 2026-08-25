@@ -61,16 +61,10 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media (min-width: 700px) {
-  .empty-state {
-    img {
-      height: 60px;
-    }
+
 }
 
-@media (max-width: 560px) {
-  .page-header { flex-direction: column; }
-  .header-actions { width: 100%; justify-content: space-between; }
-}
+@media (max-width: 560px) { .page-header { flex-direction: column; } .header-actions { width: 100%; justify-content: space-between; } }
 
 @media (min-width: 1700px) {
   .products-grid {
@@ -95,4 +89,4 @@
       font-size: var(--ts-20);
     }
   }
-}}
+}

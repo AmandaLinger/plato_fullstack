@@ -79,6 +79,19 @@
   font-weight: 700; text-align: center;
 }
 
+.empty-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-block: 24px;
+
+  img {
+    height: 60px;
+    margin-bottom: 16px;
+  }
+}
+
 @media (max-width: 699.98px) {
   .page-container {
     padding-bottom: 300px;
@@ -106,5 +119,9 @@
     max-height: 700px;
     overflow-y: auto;
     overflow-x: hidden;
+  }
+
+  .empty-content img {
+    height: 80px;
   }
 }

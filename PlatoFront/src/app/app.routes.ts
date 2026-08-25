@@ -19,6 +19,8 @@ import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 import { RestaurantesAdminPage } from './pages/restaurantes-admin-page/restaurantes-admin-page';
 import { CardapioPublicoPage } from './pages/cardapio-publico-page/cardapio-publico-page';
+import {EstoquePage} from './pages/estoque-page/estoque-page';
+import {MetricasPage} from './pages/metricas-page/metricas-page';
 
 const gerente = { roles: ['GERENTE'] };
 const operacao = { roles: ['GERENTE', 'ATENDENTE', 'CAIXA'] };
@@ -43,6 +45,8 @@ export const routes: Routes = [
       { path: 'notas-do-dia', component: NotasDoDiaPage, canActivate: [roleGuard], data: { roles: ['GERENTE', 'CAIXA'] } },
       { path: 'configuracoes/funcionarios', component: FuncionariosPage, canActivate: [roleGuard], data: gerente },
       { path: 'configuracoes/fornecedores', component: FornecedoresPage, canActivate: [roleGuard], data: gerente },
+      { path: 'configuracoes/estoque', component: EstoquePage, canActivate: [roleGuard], data: gerente },
+      { path: 'configuracoes/metricas', component: MetricasPage, canActivate: [roleGuard], data: gerente },
       { path: 'configuracoes/mesas', component: MesasPage, canActivate: [roleGuard], data: gerente },
       { path: 'configuracoes/cozinha', component: CozinhaPage, canActivate: [roleGuard], data: { roles: ['GERENTE', 'ATENDENTE'] } },
       { path: 'cozinha', component: CozinhaPage, canActivate: [roleGuard], data: { roles: ['GERENTE', 'ATENDENTE'] } },

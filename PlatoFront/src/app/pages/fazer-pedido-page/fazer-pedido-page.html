@@ -14,7 +14,11 @@
         } @else if (produtosError) {
           <app-feedback-toast type="error" [message]="produtosError" (dismissed)="produtosError = ''" />
         } @else if (produtos.length === 0) {
-          <p class="state-message">Nenhum produto cadastrado.</p>
+
+          <div class="empty-content">
+            <img src="/lista_vazia.png" alt="ícone de lista vazia">
+            <p class="state-message">Nenhum produto cadastrado.</p>
+          </div>
         } @else {
           @for (produto of produtos; track produto.id) {
             <button class="product-card" type="button" (click)="openProductModal(produto)">
