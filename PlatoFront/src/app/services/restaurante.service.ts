@@ -20,6 +20,7 @@ export interface Restaurante {
 }
 
 export interface PrimeiroGerentePayload { readonly nome: string; readonly senha: string; }
+export interface GerenteRestaurante { readonly id: number; readonly nome: string; readonly acesso: 'GERENTE'; }
 
 @Injectable({ providedIn: 'root' })
 export class RestauranteService {
@@ -62,7 +63,14 @@ export class RestauranteService {
     return this.http.post<void>(`${environment.apiUrl}/api/restaurantes/${id}/primeiro-gerente`, payload);
   }
 
-  atualizarSenhaGerente(id: number, novaSenha: string): Observable<void> {
-    return this.http.patch<void>(`${environment.apiUrl}/api/restaurantes/${id}/gerente/senha`, { novaSenha });
+  listarGerentes(id: number): Observable<readonly GerenteRestaurante[]> {
+    return this.http.get<readonly GerenteRestaurante[]>(`${environment.apiUrl}/api/restaurantes/${id}/gerentes`);
+  }
+
+  atualizarSenhaGerente(restauranteId: number, gerenteId: number, novaSenha: string): Observable<void> {
+    return this.http.patch<void>(
+      `${environment.apiUrl}/api/restaurantes/${restauranteId}/gerentes/${gerenteId}/senha`,
+      { novaSenha },
+    );
   }
 }

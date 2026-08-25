@@ -3,6 +3,7 @@ package com.plato.platoBack.controller;
 import com.plato.platoBack.dto.RestauranteDto;
 import com.plato.platoBack.dto.PrimeiroGerenteDto;
 import com.plato.platoBack.dto.AtualizarSenhaGerenteDto;
+import com.plato.platoBack.dto.GerenteResponse;
 import com.plato.platoBack.entity.Usuario;
 import com.plato.platoBack.entity.Restaurante;
 import com.plato.platoBack.service.RestauranteService;
@@ -49,12 +50,18 @@ public class RestauranteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(restauranteService.criarPrimeiroGerente(id, dto));
     }
 
-    @PatchMapping("/{id}/gerente/senha")
+    @GetMapping("/{id}/gerentes")
+    public List<GerenteResponse> listarGerentes(@PathVariable Long id) {
+        return restauranteService.listarGerentes(id);
+    }
+
+    @PatchMapping("/{id}/gerentes/{gerenteId}/senha")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarSenhaGerente(
             @PathVariable Long id,
+            @PathVariable Long gerenteId,
             @RequestBody AtualizarSenhaGerenteDto dto
     ) {
-        restauranteService.atualizarSenhaGerente(id, dto);
+        restauranteService.atualizarSenhaGerente(id, gerenteId, dto);
     }
 }

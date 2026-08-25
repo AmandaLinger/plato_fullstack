@@ -95,6 +95,21 @@
       <p class="password-restaurant">{{ restauranteSenhaNome }}</p>
 
       <form [formGroup]="senhaGerenteForm" (ngSubmit)="salvarSenhaGerente()" novalidate>
+        <label for="gerente-senha">Selecione o gerente</label>
+        <select id="gerente-senha" formControlName="gerenteId" [attr.aria-busy]="isCarregandoGerentes">
+          <option [ngValue]="0" disabled>
+            {{ isCarregandoGerentes ? 'Carregando gerentes...' : 'Selecione' }}
+          </option>
+          @for (gerente of gerentes; track gerente.id) {
+            <option [ngValue]="gerente.id">{{ gerente.nome }}</option>
+          }
+        </select>
+        @if (!isCarregandoGerentes && gerentes.length === 0 && !senhaError) {
+          <small class="field-error" role="status">Este restaurante não possui gerentes ativos.</small>
+        } @else if (senhaGerenteForm.controls.gerenteId.touched && senhaGerenteForm.controls.gerenteId.invalid) {
+          <small class="field-error" role="alert">Selecione um gerente.</small>
+        }
+
         <label for="nova-senha">Nova senha</label>
         <input id="nova-senha" type="password" formControlName="novaSenha" autocomplete="new-password">
         @if (senhaGerenteForm.controls.novaSenha.touched && senhaGerenteForm.controls.novaSenha.invalid) {

@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
-import { Restaurante, RestauranteService, SolicitacaoCadastro } from '../../services/restaurante.service';
+import { GerenteRestaurante, Restaurante, RestauranteService, SolicitacaoCadastro } from '../../services/restaurante.service';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -29,9 +29,12 @@ export class RestaurantesAdminPage implements OnInit {
   restauranteSenhaNome = '';
   isAtualizandoSenha = false;
   senhaError = '';
+  gerentes: readonly GerenteRestaurante[] = [];
+  isCarregandoGerentes = false;
   readonly restauranteForm = this.fb.nonNullable.group({ nome: ['', Validators.required] });
   readonly gerenteForm = this.fb.nonNullable.group({ restauranteId: [0, Validators.min(1)], nome: ['', Validators.required], senha: ['', [Validators.required, Validators.minLength(8)]] });
   readonly senhaGerenteForm = this.fb.nonNullable.group({
+    gerenteId: [0, [Validators.required, Validators.min(1)]],
     novaSenha: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
     confirmarSenha: ['', Validators.required],
   });
@@ -131,7 +134,23 @@ export class RestaurantesAdminPage implements OnInit {
     this.restauranteSenhaNome = restaurante.nome;
     this.senhaGerenteForm.reset();
     this.senhaError = '';
+    this.gerentes = [];
+    this.isCarregandoGerentes = true;
     this.isSenhaModalOpen = true;
+    const restauranteId = restaurante.id;
+    this.service.listarGerentes(restauranteId)
+      .pipe(finalize(() => (this.isCarregandoGerentes = false)))
+      .subscribe({
+        next: gerentes => {
+          if (!this.isSenhaModalOpen || this.restauranteSenhaId !== restauranteId) return;
+          this.gerentes = gerentes.filter(gerente => gerente.acesso === 'GERENTE');
+        },
+        error: (error: HttpErrorResponse) => {
+          if (!this.isSenhaModalOpen || this.restauranteSenhaId !== restauranteId) return;
+          const body = error.error as { detail?: string; message?: string } | null;
+          this.senhaError = body?.detail ?? body?.message ?? 'Não foi possível carregar os gerentes deste restaurante.';
+        },
+      });
   }
   fecharSenhaGerente(): void {
     if (this.isAtualizandoSenha) return;
@@ -139,6 +158,7 @@ export class RestaurantesAdminPage implements OnInit {
     this.restauranteSenhaId = null;
     this.restauranteSenhaNome = '';
     this.senhaError = '';
+    this.gerentes = [];
     this.senhaGerenteForm.reset();
   }
   salvarSenhaGerente(): void {
@@ -147,16 +167,17 @@ export class RestaurantesAdminPage implements OnInit {
       return;
     }
 
-    const novaSenha = this.senhaGerenteForm.getRawValue().novaSenha;
+    const { gerenteId, novaSenha } = this.senhaGerenteForm.getRawValue();
     this.isAtualizandoSenha = true;
     this.senhaError = '';
-    this.service.atualizarSenhaGerente(this.restauranteSenhaId, novaSenha)
+    this.service.atualizarSenhaGerente(this.restauranteSenhaId, gerenteId, novaSenha)
       .pipe(finalize(() => (this.isAtualizandoSenha = false)))
       .subscribe({
         next: () => {
           this.isSenhaModalOpen = false;
           this.restauranteSenhaId = null;
           this.restauranteSenhaNome = '';
+          this.gerentes = [];
           this.senhaGerenteForm.reset();
           this.successMessage = 'Senha do gerente atualizada com sucesso!';
         },

@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import com.plato.platoBack.dto.PrimeiroGerenteDto;
 import com.plato.platoBack.dto.AtualizarSenhaGerenteDto;
+import com.plato.platoBack.dto.GerenteResponse;
 import com.plato.platoBack.entity.Usuario;
 import com.plato.platoBack.repository.UsuarioRepository;
 import com.plato.platoBack.enuns.NivelAcesso;
@@ -89,8 +90,21 @@ public class RestauranteService {
                 .build());
     }
 
+    @Transactional(readOnly = true)
+    public List<GerenteResponse> listarGerentes(Long restauranteId) {
+        exigirRoot();
+        if (restauranteRepository.findByIdAndAtivoTrue(restauranteId).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Restaurante não encontrado");
+        }
+        return usuarioRepository
+                .findAllByRestauranteIdAndAcessoAndAtivoTrueOrderByNomeAsc(restauranteId, NivelAcesso.GERENTE)
+                .stream()
+                .map(GerenteResponse::from)
+                .toList();
+    }
+
     @Transactional
-    public void atualizarSenhaGerente(Long restauranteId, AtualizarSenhaGerenteDto dto) {
+    public void atualizarSenhaGerente(Long restauranteId, Long gerenteId, AtualizarSenhaGerenteDto dto) {
         exigirRoot();
         if (dto == null || dto.novaSenha() == null
                 || dto.novaSenha().length() < 8 || dto.novaSenha().length() > 72) {
@@ -102,11 +116,11 @@ public class RestauranteService {
         if (restauranteRepository.findByIdAndAtivoTrue(restauranteId).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Restaurante não encontrado");
         }
-        Usuario gerente = usuarioRepository
-                .findFirstByRestauranteIdAndAcessoAndAtivoTrueOrderByIdAsc(restauranteId, NivelAcesso.GERENTE)
+        Usuario gerente = usuarioRepository.findByIdAndRestauranteIdAndAtivoTrue(gerenteId, restauranteId)
+                .filter(usuario -> usuario.getAcesso() == NivelAcesso.GERENTE)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "O restaurante não possui gerente ativo"
+                        "Gerente não encontrado neste restaurante"
                 ));
         gerente.setSenha(passwordEncoder.encode(dto.novaSenha()));
         usuarioRepository.save(gerente);
