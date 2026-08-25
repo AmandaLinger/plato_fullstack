@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   AtualizarPerfilPayload,
@@ -11,6 +11,13 @@ import {
   NivelAcesso,
   VerifyTwoFactorPayload,
 } from '../models/auth.models';
+
+export class AuthRequestError extends Error {
+  constructor(readonly status: number, message: string) {
+    super(message);
+    this.name = 'AuthRequestError';
+  }
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -26,13 +33,16 @@ export class AuthService {
         if ('token' in response) {
           this.storeSession(response, payload.restauranteId);
         }
-      }));
+      }), catchError((error: HttpErrorResponse) => this.mapAuthError(error)));
   }
 
   verifyTwoFactor(payload: VerifyTwoFactorPayload): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${this.apiUrl}/api/auth/login/verify-2fa`, payload)
-      .pipe(tap((response) => this.storeSession(response, 0)));
+      .pipe(
+        tap((response) => this.storeSession(response, 0)),
+        catchError((error: HttpErrorResponse) => this.mapAuthError(error)),
+      );
   }
 
   buscarPerfil(): Observable<PerfilUsuario> {
@@ -112,5 +122,18 @@ export class AuthService {
   private storeSession(response: LoginResponse, restauranteId: number): void {
     localStorage.setItem(this.tokenKey, response.token);
     localStorage.setItem(this.restauranteKey, String(restauranteId));
+  }
+
+  private mapAuthError(error: HttpErrorResponse): Observable<never> {
+    if (error.status === 429) {
+      return throwError(() => new AuthRequestError(
+        429,
+        'Por motivos de segurança, este IP foi temporariamente bloqueado após muitas tentativas. Aguarde 10 minutos antes de tentar novamente.',
+      ));
+    }
+    if (error.status === 401) {
+      return throwError(() => new AuthRequestError(401, 'Credenciais ou código de autenticação inválidos.'));
+    }
+    return throwError(() => new AuthRequestError(error.status, 'Não foi possível concluir a autenticação. Tente novamente.'));
   }
 }

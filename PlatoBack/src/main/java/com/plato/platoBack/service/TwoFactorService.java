@@ -20,26 +20,19 @@ import org.springframework.web.server.ResponseStatusException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.time.Clock;
-import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class TwoFactorService {
-    private static final int MAX_ATTEMPTS = 5;
-    private static final long RATE_WINDOW_SECONDS = 60;
     private static final char[] RECOVERY_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789".toCharArray();
 
     private final UsuarioRepository usuarioRepository;
     private final RecoveryCodeRepository recoveryCodeRepository;
     private final JwtService jwtService;
     private final UsuarioService usuarioService;
-    private final Clock clock = Clock.systemUTC();
     private final SecureRandom secureRandom = new SecureRandom();
     private final BCryptPasswordEncoder codeEncoder = new BCryptPasswordEncoder(12);
-    private final Map<Long, Deque<Instant>> attempts = new ConcurrentHashMap<>();
 
     public AuthLoginResponse login(Long restauranteId, String nome, String senha)
             throws org.apache.coyote.BadRequestException {
@@ -94,7 +87,6 @@ public class TwoFactorService {
     public LoginResponse verifyLogin(String tempToken, String code) {
         if (tempToken == null || tempToken.isBlank()) unauthorized("Token temporário obrigatório");
         Long usuarioId = jwtService.obterUsuarioIdTokenTemporario2FA(tempToken);
-        checkRateLimit(usuarioId);
         Usuario root = requireRoot(usuarioId);
         if (!Boolean.TRUE.equals(root.getTwoFactorEnabled()) || root.getTwoFactorSecret() == null) {
             unauthorized("2FA não está ativado para esta conta");
@@ -106,7 +98,6 @@ public class TwoFactorService {
         if (!valid) valid = consumeRecoveryCode(root.getId(), code);
         if (!valid) unauthorized("Código 2FA ou de recuperação inválido");
 
-        attempts.remove(usuarioId);
         return new LoginResponse(jwtService.gerarToken(root), PerfilResponse.from(root));
     }
 
@@ -127,16 +118,6 @@ public class TwoFactorService {
         DefaultCodeVerifier verifier = new DefaultCodeVerifier(new DefaultCodeGenerator(), new SystemTimeProvider());
         verifier.setAllowedTimePeriodDiscrepancy(1);
         return verifier.isValidCode(secret, code);
-    }
-
-    private synchronized void checkRateLimit(Long usuarioId) {
-        Instant cutoff = clock.instant().minusSeconds(RATE_WINDOW_SECONDS);
-        Deque<Instant> userAttempts = attempts.computeIfAbsent(usuarioId, ignored -> new ArrayDeque<>());
-        while (!userAttempts.isEmpty() && !userAttempts.peekFirst().isAfter(cutoff)) userAttempts.removeFirst();
-        if (userAttempts.size() >= MAX_ATTEMPTS) {
-            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Limite de tentativas excedido; tente novamente em um minuto");
-        }
-        userAttempts.addLast(clock.instant());
     }
 
     private Usuario requireRoot(Long usuarioId) {

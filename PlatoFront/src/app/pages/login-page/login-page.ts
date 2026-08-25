@@ -4,7 +4,7 @@ import {FooterComponent} from '../../components/footer-component/footer-componen
 import {BtnOrange} from '../../components/btn-orange/btn-orange';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { finalize } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { AuthRequestError, AuthService } from '../../services/auth.service';
 import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { Restaurante, RestauranteService } from '../../services/restaurante.service';
 import {
@@ -72,7 +72,9 @@ export class LoginPage implements OnInit {
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (response) => this.handleLoginResponse(response),
-        error: () => (this.errorMessage = 'Login ou senha inválidos.'),
+        error: (error: AuthRequestError) => {
+          this.errorMessage = error.status === 401 ? 'Login ou senha inválidos.' : error.message;
+        },
       });
   }
 
@@ -112,10 +114,10 @@ export class LoginPage implements OnInit {
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (response) => this.finishLogin(response),
-        error: (error: { status?: number }) => {
-          this.errorMessage = error.status === 429
-            ? 'Muitas tentativas. Aguarde um minuto e tente novamente.'
-            : 'Código de autenticação inválido ou expirado.';
+        error: (error: AuthRequestError) => {
+          this.errorMessage = error.status === 401
+            ? 'Código de autenticação inválido ou expirado.'
+            : error.message;
         },
       });
   }
