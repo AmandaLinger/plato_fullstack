@@ -37,4 +37,12 @@ public class Usuario {
     @Builder.Default
     @Column(nullable = false, columnDefinition = "boolean default true")
     Boolean ativo = true;
+
+    @JsonIgnore
+    @Column(name = "two_factor_secret", length = 128)
+    String twoFactorSecret;
+
+    @Builder.Default
+    @Column(name = "two_factor_enabled", nullable = false, columnDefinition = "boolean default false")
+    Boolean twoFactorEnabled = false;
 }

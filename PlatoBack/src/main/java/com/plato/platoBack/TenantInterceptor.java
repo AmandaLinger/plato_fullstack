@@ -55,7 +55,8 @@ public class TenantInterceptor implements HandlerInterceptor {
     private void autorizar(HttpServletRequest request, NivelAcesso acesso) {
         String path = request.getRequestURI();
         if (acesso == NivelAcesso.ROOT) {
-            if (!path.startsWith("/api/restaurantes")
+            if (!path.startsWith("/api/admin/2fa")
+                    && !path.startsWith("/api/restaurantes")
                     && !path.startsWith("/api/solicitacoes-cadastro")
                     && !path.startsWith("/usuario/perfil")) negar();
             return;

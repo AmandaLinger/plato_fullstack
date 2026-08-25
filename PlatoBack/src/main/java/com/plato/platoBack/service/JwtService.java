@@ -27,6 +27,7 @@ public class JwtService {
     private final ObjectMapper objectMapper;
     private final byte[] secret;
     private final long expirationSeconds;
+    private static final long TWO_FACTOR_EXPIRATION_SECONDS = 300;
 
     public JwtService(
             ObjectMapper objectMapper,
@@ -39,14 +40,26 @@ public class JwtService {
     }
 
     public String gerarToken(Usuario usuario) {
+        return gerarToken(usuario, "session", expirationSeconds);
+    }
+
+    public String gerarTokenTemporario2FA(Usuario usuario) {
+        if (usuario.getAcesso() != NivelAcesso.ROOT) {
+            throw new IllegalArgumentException("Token temporário de 2FA é exclusivo do ROOT");
+        }
+        return gerarToken(usuario, "2fa_pending", TWO_FACTOR_EXPIRATION_SECONDS);
+    }
+
+    private String gerarToken(Usuario usuario, String purpose, long durationSeconds) {
         try {
             long issuedAt = Instant.now().getEpochSecond();
             Map<String, Object> claims = new HashMap<>();
             claims.put("sub", usuario.getNome());
             claims.put("uid", usuario.getId());
             claims.put("acesso", usuario.getAcesso().name());
+            claims.put("purpose", purpose);
             claims.put("iat", issuedAt);
-            claims.put("exp", issuedAt + expirationSeconds);
+            claims.put("exp", issuedAt + durationSeconds);
             if (usuario.getRestaurante() != null) claims.put("rid", usuario.getRestaurante().getId());
             String header = encode(HEADER.getBytes(StandardCharsets.UTF_8));
             String payload = encode(objectMapper.writeValueAsBytes(claims));
@@ -58,15 +71,15 @@ public class JwtService {
     }
 
     public Long obterUsuarioId(String authorizationHeader) {
-        return getNumberClaim(authorizationHeader, "uid");
+        return getNumberClaim(requireSessionClaims(authorizationHeader), "uid");
     }
 
     public Long obterRestauranteId(String authorizationHeader) {
-        return getNumberClaim(authorizationHeader, "rid");
+        return getNumberClaim(requireSessionClaims(authorizationHeader), "rid");
     }
 
     public NivelAcesso obterNivelAcesso(String authorizationHeader) {
-        String value = getStringClaim(authorizationHeader, "acesso");
+        String value = getStringClaim(requireSessionClaims(authorizationHeader), "acesso");
         try {
             return NivelAcesso.valueOf(value);
         } catch (Exception exception) {
@@ -74,14 +87,29 @@ public class JwtService {
         }
     }
 
-    private String getStringClaim(String authorizationHeader, String claimName) {
-        Object value = getClaims(authorizationHeader).get(claimName);
+    public Long obterUsuarioIdTokenTemporario2FA(String token) {
+        Map<String, Object> claims = getClaims("Bearer " + token);
+        if (!"2fa_pending".equals(claims.get("purpose"))
+                || !NivelAcesso.ROOT.name().equals(claims.get("acesso"))) {
+            throw unauthorized();
+        }
+        return getNumberClaim(claims, "uid");
+    }
+
+    private Map<String, Object> requireSessionClaims(String authorizationHeader) {
+        Map<String, Object> claims = getClaims(authorizationHeader);
+        if (!"session".equals(claims.get("purpose"))) throw unauthorized();
+        return claims;
+    }
+
+    private String getStringClaim(Map<String, Object> claims, String claimName) {
+        Object value = claims.get(claimName);
         if (!(value instanceof String stringValue)) throw unauthorized();
         return stringValue;
     }
 
-    private Long getNumberClaim(String authorizationHeader, String claimName) {
-        Object value = getClaims(authorizationHeader).get(claimName);
+    private Long getNumberClaim(Map<String, Object> claims, String claimName) {
+        Object value = claims.get(claimName);
         if (!(value instanceof Number number)) throw unauthorized();
         return number.longValue();
     }

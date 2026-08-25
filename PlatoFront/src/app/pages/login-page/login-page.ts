@@ -7,6 +7,11 @@ import { finalize } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { Restaurante, RestauranteService } from '../../services/restaurante.service';
+import {
+  AuthLoginResponse,
+  LoginResponse,
+  TwoFactorRequiredResponse,
+} from '../../models/auth.models';
 
 @Component({
   selector: 'app-login-page',
@@ -25,12 +30,15 @@ export class LoginPage implements OnInit {
     restauranteId: [-1, [Validators.required, Validators.min(0)]],
     nome: ['', Validators.required],
     senha: ['', Validators.required],
+    codigo2FA: [''],
   });
 
   isLoading = false;
   isLoadingRestaurantes = true;
   restaurantes: readonly Restaurante[] = [];
   errorMessage = '';
+  requiresTwoFactor = false;
+  private tempToken = '';
 
   ngOnInit(): void {
     this.restauranteService.listarAtivos().pipe(finalize(() => (this.isLoadingRestaurantes = false))).subscribe({
@@ -51,6 +59,11 @@ export class LoginPage implements OnInit {
       return;
     }
 
+    if (this.requiresTwoFactor) {
+      this.verifyTwoFactor();
+      return;
+    }
+
     const value = this.form.getRawValue();
     this.isLoading = true;
     this.errorMessage = '';
@@ -58,15 +71,65 @@ export class LoginPage implements OnInit {
       .login({ restauranteId: value.restauranteId, nome: value.nome.trim(), senha: value.senha })
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (response) => {
-          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-          const destination = returnUrl?.startsWith('/') && !returnUrl.startsWith('//')
-            ? returnUrl
-            : response.usuario.acesso === 'ROOT' ? '/admin/restaurantes' : '/home';
-          void this.router.navigateByUrl(destination);
-        },
+        next: (response) => this.handleLoginResponse(response),
         error: () => (this.errorMessage = 'Login ou senha inválidos.'),
       });
+  }
+
+  cancelTwoFactor(): void {
+    this.requiresTwoFactor = false;
+    this.tempToken = '';
+    this.form.controls.codigo2FA.reset();
+    this.form.controls.codigo2FA.clearValidators();
+    this.form.controls.codigo2FA.updateValueAndValidity();
+    this.errorMessage = '';
+  }
+
+  private handleLoginResponse(response: AuthLoginResponse): void {
+    if (this.isTwoFactorRequired(response)) {
+      this.requiresTwoFactor = true;
+      this.tempToken = response.tempToken;
+      this.form.controls.codigo2FA.setValidators([
+        Validators.required,
+        Validators.pattern(/^(\d{6}|[A-Za-z2-9]{5}-?[A-Za-z2-9]{5})$/),
+      ]);
+      this.form.controls.codigo2FA.updateValueAndValidity();
+      return;
+    }
+    this.finishLogin(response);
+  }
+
+  private verifyTwoFactor(): void {
+    const codeControl = this.form.controls.codigo2FA;
+    if (codeControl.invalid || this.isLoading) {
+      codeControl.markAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.authService.verifyTwoFactor({ tempToken: this.tempToken, code: codeControl.value.trim() })
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (response) => this.finishLogin(response),
+        error: (error: { status?: number }) => {
+          this.errorMessage = error.status === 429
+            ? 'Muitas tentativas. Aguarde um minuto e tente novamente.'
+            : 'Código de autenticação inválido ou expirado.';
+        },
+      });
+  }
+
+  private finishLogin(response: LoginResponse): void {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    const destination = returnUrl?.startsWith('/') && !returnUrl.startsWith('//')
+      ? returnUrl
+      : response.usuario.acesso === 'ROOT' ? '/admin/restaurantes' : '/home';
+    void this.router.navigateByUrl(destination);
+  }
+
+  private isTwoFactorRequired(response: AuthLoginResponse): response is TwoFactorRequiredResponse {
+    return 'require2FA' in response && response.require2FA === true;
   }
 
 }

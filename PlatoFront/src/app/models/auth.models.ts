@@ -18,6 +18,18 @@ export interface LoginResponse {
   readonly usuario: PerfilUsuario;
 }
 
+export interface TwoFactorRequiredResponse {
+  readonly require2FA: true;
+  readonly tempToken: string;
+}
+
+export type AuthLoginResponse = LoginResponse | TwoFactorRequiredResponse;
+
+export interface VerifyTwoFactorPayload {
+  readonly tempToken: string;
+  readonly code: string;
+}
+
 export interface AtualizarPerfilPayload {
   readonly nome: string;
   readonly senha?: string;

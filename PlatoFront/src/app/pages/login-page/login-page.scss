@@ -77,6 +77,30 @@ main{
   text-align: center;
 }
 
+.two-factor-heading {
+  max-width: 320px;
+  margin: 0 auto 16px;
+  text-align: center;
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: var(--ts-20);
+    color: var(--plato-purple-dark);
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.4;
+    color: var(--plato-text-secondary);
+  }
+}
+
+.field-error {
+  margin-top: 4px;
+  color: var(--plato-error);
+  font-size: 13px;
+}
+
 .link-cadastro{
   position: absolute;
   left: 0;
@@ -88,6 +112,14 @@ main{
 
 
   bottom: -70px;
+}
+
+.link-button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 

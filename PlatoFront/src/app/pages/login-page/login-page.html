@@ -10,25 +10,46 @@
     </div>
 
     <div class="inputs">
-      <div class="flex-column mb-8px">
-        <label for="restaurante" class="mb-4px">Restaurante</label>
-        <select id="restaurante" formControlName="restauranteId">
-          <option [ngValue]="0">Administração global (Root)</option>
-          <option [ngValue]="-1" disabled>{{ isLoadingRestaurantes ? 'Carregando restaurantes...' : 'Selecione o restaurante' }}</option>
-          @for (restaurante of restaurantes; track restaurante.id) {
-            <option [ngValue]="restaurante.id">{{ restaurante.nome }}</option>
-          }
-        </select>
-      </div>
-      <div class="flex-column mb-8px">
-        <label for="usuario" class="mb-4px">Usuario</label>
-        <input id="usuario" formControlName="nome" autocomplete="username" placeholder="usuario" />
-      </div>
+      @if (!requiresTwoFactor) {
+        <div class="flex-column mb-8px">
+          <label for="restaurante" class="mb-4px">Restaurante</label>
+          <select id="restaurante" formControlName="restauranteId">
+            <option [ngValue]="0">Administração global (Root)</option>
+            <option [ngValue]="-1" disabled>{{ isLoadingRestaurantes ? 'Carregando restaurantes...' : 'Selecione o restaurante' }}</option>
+            @for (restaurante of restaurantes; track restaurante.id) {
+              <option [ngValue]="restaurante.id">{{ restaurante.nome }}</option>
+            }
+          </select>
+        </div>
+        <div class="flex-column mb-8px">
+          <label for="usuario" class="mb-4px">Usuário</label>
+          <input id="usuario" formControlName="nome" autocomplete="username" placeholder="usuário" />
+        </div>
 
-      <div class="flex-column mb-8px">
-        <label for="senha" class="mb-4px">Senha</label>
-        <input id="senha" formControlName="senha" type="password" autocomplete="current-password" placeholder="********" />
-      </div>
+        <div class="flex-column mb-8px">
+          <label for="senha" class="mb-4px">Senha</label>
+          <input id="senha" formControlName="senha" type="password" autocomplete="current-password" placeholder="********" />
+        </div>
+      } @else {
+        <div class="two-factor-heading" id="position-text">
+          <h1>Verificação em duas etapas</h1>
+          <p>Digite o código do aplicativo autenticador ou um código de recuperação.</p>
+        </div>
+        <div class="flex-column mb-8px">
+          <label for="codigo-2fa" class="mb-4px">Código de autenticação</label>
+          <input
+            id="codigo-2fa"
+            formControlName="codigo2FA"
+            autocomplete="one-time-code"
+            inputmode="text"
+            maxlength="11"
+            placeholder="000000"
+          />
+          @if (form.controls.codigo2FA.touched && form.controls.codigo2FA.invalid) {
+            <span class="field-error">Informe um código válido.</span>
+          }
+        </div>
+      }
     </div>
 
     @if (errorMessage) {
@@ -37,11 +58,14 @@
 
     <div class="container-btn">
       <app-btn-orange type="submit">
-        {{ isLoading ? 'Entrando...' : 'Login' }}
+        {{ isLoading ? 'Verificando...' : requiresTwoFactor ? 'Verificar código' : 'Login' }}
       </app-btn-orange>
     </div>
-    <a routerLink="/cadastrar-restaurante" class="link-cadastro">
-      Cadastrar restaurante</a>
+    @if (requiresTwoFactor) {
+      <button type="button" class="link-cadastro link-button" (click)="cancelTwoFactor()">Voltar ao login</button>
+    } @else {
+      <a routerLink="/cadastrar-restaurante" class="link-cadastro">Cadastrar restaurante</a>
+    }
   </form>
 
   <app-footer-component/>

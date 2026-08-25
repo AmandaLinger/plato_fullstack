@@ -4,10 +4,12 @@ import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   AtualizarPerfilPayload,
+  AuthLoginResponse,
   LoginPayload,
   LoginResponse,
   PerfilUsuario,
   NivelAcesso,
+  VerifyTwoFactorPayload,
 } from '../models/auth.models';
 
 @Injectable({ providedIn: 'root' })
@@ -17,13 +19,20 @@ export class AuthService {
   private readonly tokenKey = 'plato.auth.token';
   private readonly restauranteKey = 'plato.auth.restaurante-id';
 
-  login(payload: LoginPayload): Observable<LoginResponse> {
+  login(payload: LoginPayload): Observable<AuthLoginResponse> {
     return this.http
-      .post<LoginResponse>(`${this.apiUrl}/auth/login`, payload)
+      .post<AuthLoginResponse>(`${this.apiUrl}/api/auth/login`, payload)
       .pipe(tap((response) => {
-        localStorage.setItem(this.tokenKey, response.token);
-        localStorage.setItem(this.restauranteKey, String(payload.restauranteId));
+        if ('token' in response) {
+          this.storeSession(response, payload.restauranteId);
+        }
       }));
+  }
+
+  verifyTwoFactor(payload: VerifyTwoFactorPayload): Observable<LoginResponse> {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/api/auth/login/verify-2fa`, payload)
+      .pipe(tap((response) => this.storeSession(response, 0)));
   }
 
   buscarPerfil(): Observable<PerfilUsuario> {
@@ -98,5 +107,10 @@ export class AuthService {
   clearToken(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.restauranteKey);
+  }
+
+  private storeSession(response: LoginResponse, restauranteId: number): void {
+    localStorage.setItem(this.tokenKey, response.token);
+    localStorage.setItem(this.restauranteKey, String(restauranteId));
   }
 }
