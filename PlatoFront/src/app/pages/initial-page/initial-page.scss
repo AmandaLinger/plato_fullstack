@@ -1,6 +1,6 @@
 main {
   height: 100vh;
-  background-image: url('/bg.png');
+  background-image: url('/bg-v3.jpeg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -21,8 +21,7 @@ main::before {
     font-family: 'Ubuntu', sans-serif;
     font-size: var(--ts-48);
     margin-bottom: 4px;
-    color: var(--plato-orange);
-    background: var(--plato-surface);
+    color: var(--plato-surface);
     padding: 24px;
     width: fit-content;
     border-radius: 16px;
@@ -59,7 +58,8 @@ main::before {
 .container-btn{
   display: flex;
   justify-content: center;
-  transform: translateY(-40px);
+  margin-top: 16px;
+
 }
 
 @media screen and (min-width: 700px) {
@@ -81,7 +81,7 @@ main::before {
       height: 300px;
     }
     .subtitle{
-      transform: translateY(40px);
+      transform: translateY(20px);
       h3{
         font-size: var(--ts-32);
       }
@@ -94,10 +94,6 @@ main::before {
     }
   }
 
-  .container-btn{
-    transform: translateY(-40px);
-  }
-
 }
 
 @media screen and (min-width: 1700px){
@@ -108,7 +104,7 @@ main::before {
       height: 350px;
     }
     .subtitle{
-      transform: translateY(-10px);
+      transform: translateY(-40px);
       p{
         font-size: var(--ts-24);
         padding: 0 500px;

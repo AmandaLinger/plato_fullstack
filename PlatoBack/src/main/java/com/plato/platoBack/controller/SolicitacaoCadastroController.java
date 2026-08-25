@@ -2,6 +2,7 @@ package com.plato.platoBack.controller;
 
 import com.plato.platoBack.dto.SolicitacaoCadastroDto;
 import com.plato.platoBack.entity.SolicitacaoCadastro;
+import com.plato.platoBack.entity.Restaurante;
 import com.plato.platoBack.service.SolicitacaoCadastroService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,11 @@ public class SolicitacaoCadastroController {
     @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
     public void rejeitar(@PathVariable Long id) {
         service.rejeitar(id);
+    }
+
+    @PatchMapping("/{id}/aprovar")
+    public Restaurante aprovar(@PathVariable Long id) {
+        return service.aprovar(id);
     }
 
     @PostMapping

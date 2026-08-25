@@ -21,6 +21,8 @@ export class RestaurantesAdminPage implements OnInit {
   isLoadingSolicitacoes = false;
   solicitacoesError = '';
   solicitacaoEmExclusaoId: number | null = null;
+  solicitacaoSelecionadaId: number | null = null;
+  isAprovandoSolicitacao = false;
   readonly restauranteForm = this.fb.nonNullable.group({ nome: ['', Validators.required] });
   readonly gerenteForm = this.fb.nonNullable.group({ restauranteId: [0, Validators.min(1)], nome: ['', Validators.required], senha: ['', [Validators.required, Validators.minLength(8)]] });
 
@@ -29,21 +31,54 @@ export class RestaurantesAdminPage implements OnInit {
     this.isSolicitacoesModalOpen = true;
     this.isLoadingSolicitacoes = true;
     this.solicitacoesError = '';
+    this.solicitacaoSelecionadaId = null;
     this.solicitacoes = [];
     this.service.listarSolicitacoesPendentes()
       .pipe(finalize(() => (this.isLoadingSolicitacoes = false)))
       .subscribe({
-        next: solicitacoes => this.solicitacoes = solicitacoes,
+        next: solicitacoes => this.solicitacoes = solicitacoes.filter(item => item.status === 'PENDENTE'),
         error: () => this.solicitacoesError = 'Não foi possível carregar as solicitações.',
       });
   }
   fecharSolicitacoes(): void {
-    if (!this.isLoadingSolicitacoes) this.isSolicitacoesModalOpen = false;
+    if (!this.isLoadingSolicitacoes && !this.isAprovandoSolicitacao) {
+      this.isSolicitacoesModalOpen = false;
+      this.solicitacaoSelecionadaId = null;
+    }
   }
   selecionarSolicitacao(solicitacao: SolicitacaoCadastro): void {
+    this.solicitacaoSelecionadaId = solicitacao.id;
     this.restauranteForm.patchValue({ nome: solicitacao.nomeEstabelecimento });
     this.gerenteForm.patchValue({ nome: solicitacao.nomeResponsavel });
-    this.isSolicitacoesModalOpen = false;
+    this.solicitacoesError = '';
+  }
+  aprovarSolicitacao(): void {
+    const id = this.solicitacaoSelecionadaId;
+    if (id === null || this.isAprovandoSolicitacao) return;
+
+    const solicitacao = this.solicitacoes.find(item => item.id === id);
+    if (!solicitacao) {
+      this.solicitacoesError = 'A solicitação selecionada não está mais disponível.';
+      return;
+    }
+
+    this.isAprovandoSolicitacao = true;
+    this.solicitacoesError = '';
+    this.service.aprovarSolicitacao(id)
+      .pipe(finalize(() => (this.isAprovandoSolicitacao = false)))
+      .subscribe({
+        next: restaurante => {
+          this.solicitacoes = this.solicitacoes.filter(item => item.id !== id);
+          this.restaurantes = [...this.restaurantes, restaurante];
+          this.restaurantesSemGerente = [...this.restaurantesSemGerente, restaurante];
+          this.gerenteForm.patchValue({ restauranteId: restaurante.id, nome: solicitacao.nomeResponsavel });
+          this.restauranteForm.reset();
+          this.isSolicitacoesModalOpen = false;
+          this.solicitacaoSelecionadaId = null;
+          this.successMessage = `Solicitação de ${restaurante.nome} aprovada com sucesso.`;
+        },
+        error: () => this.solicitacoesError = 'Não foi possível aprovar a solicitação. Tente novamente.',
+      });
   }
   rejeitarSolicitacao(id: number): void {
     this.solicitacaoEmExclusaoId = id;
@@ -51,7 +86,10 @@ export class RestaurantesAdminPage implements OnInit {
     this.service.rejeitarSolicitacao(id)
       .pipe(finalize(() => (this.solicitacaoEmExclusaoId = null)))
       .subscribe({
-        next: () => this.solicitacoes = this.solicitacoes.filter(item => item.id !== id),
+        next: () => {
+          this.solicitacoes = this.solicitacoes.filter(item => item.id !== id);
+          if (this.solicitacaoSelecionadaId === id) this.solicitacaoSelecionadaId = null;
+        },
         error: () => this.solicitacoesError = 'Não foi possível excluir a solicitação.',
       });
   }

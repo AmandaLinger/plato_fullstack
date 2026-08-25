@@ -38,6 +38,10 @@ export class RestauranteService {
     return this.http.delete<void>(`${this.endpoint}/${id}`);
   }
 
+  aprovarSolicitacao(id: number): Observable<Restaurante> {
+    return this.http.patch<Restaurante>(`${this.endpoint}/${id}/aprovar`, {});
+  }
+
   listarAtivos(): Observable<readonly Restaurante[]> {
     return this.http.get<readonly Restaurante[]>(`${environment.apiUrl}/api/restaurantes`);
   }

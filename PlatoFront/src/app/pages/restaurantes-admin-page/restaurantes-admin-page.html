@@ -66,8 +66,9 @@
 }
 @if (isSolicitacoesModalOpen) {
   <div class="requests-overlay" (click)="fecharSolicitacoes()">
+
     <section class="requests-modal" role="dialog" aria-modal="true" aria-labelledby="requests-title" (click)="$event.stopPropagation()">
-      <button class="modal-close" type="button" aria-label="Fechar solicitações" [disabled]="isLoadingSolicitacoes" (click)="fecharSolicitacoes()">×</button>
+      <button class="modal-close" type="button" aria-label="Fechar solicitações" [disabled]="isLoadingSolicitacoes || isAprovandoSolicitacao" (click)="fecharSolicitacoes()">×</button>
       <p class="modal-eyebrow">Cadastros</p>
       <h2 id="requests-title">Solicitações pendentes</h2>
 
@@ -83,18 +84,23 @@
             <thead><tr><th>Restaurante</th><th>Responsável</th><th>Telefone</th><th><span class="visually-hidden">Ação</span></th></tr></thead>
             <tbody>
               @for (solicitacao of solicitacoes; track solicitacao.id) {
-                <tr>
+                <tr [class.selected-request]="solicitacaoSelecionadaId === solicitacao.id">
                   <td>{{ solicitacao.nomeEstabelecimento }}</td>
                   <td>{{ solicitacao.nomeResponsavel }}</td>
                   <td>{{ solicitacao.telefone }}</td>
                   <td class="request-actions">
-                    <button class="select-request" type="button" [disabled]="solicitacaoEmExclusaoId !== null" (click)="selecionarSolicitacao(solicitacao)">Selecionar</button>
-                    <button class="delete-request" type="button" [disabled]="solicitacaoEmExclusaoId !== null" (click)="rejeitarSolicitacao(solicitacao.id)">{{ solicitacaoEmExclusaoId === solicitacao.id ? 'Excluindo...' : 'Excluir' }}</button>
+                    <button class="select-request" type="button" [disabled]="solicitacaoEmExclusaoId !== null || isAprovandoSolicitacao" (click)="selecionarSolicitacao(solicitacao)">{{ solicitacaoSelecionadaId === solicitacao.id ? 'Selecionado' : 'Selecionar' }}</button>
+                    <button class="delete-request" type="button" [disabled]="solicitacaoEmExclusaoId !== null || isAprovandoSolicitacao" (click)="rejeitarSolicitacao(solicitacao.id)">{{ solicitacaoEmExclusaoId === solicitacao.id ? 'Excluindo...' : 'Excluir' }}</button>
                   </td>
                 </tr>
               }
             </tbody>
           </table>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="save-request" [disabled]="solicitacaoSelecionadaId === null || isAprovandoSolicitacao || solicitacaoEmExclusaoId !== null" (click)="aprovarSolicitacao()">
+            {{ isAprovandoSolicitacao ? 'Salvando...' : 'Salvar restaurante' }}
+          </button>
         </div>
       }
     </section>

@@ -137,10 +137,14 @@ li {
 .requests-modal th, .requests-modal td { padding: 12px 10px; border-bottom: 1px solid var(--plato-border); text-align: left; }
 .requests-modal th { color: var(--plato-purple-dark); }
 .requests-modal td:last-child { text-align: right; }
+.requests-modal tr.selected-request td { background: color-mix(in srgb, var(--plato-purple) 10%, transparent); }
 .select-request { white-space: nowrap; padding: 8px 12px; }
 .request-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .request-actions button:disabled { cursor: not-allowed; opacity: 0.55; }
 .delete-request { white-space: nowrap; padding: 8px 12px; background: var(--plato-error); }
+.modal-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+.save-request { min-width: 190px; }
+.save-request:disabled { cursor: not-allowed; opacity: 0.55; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 @media (max-width: 620px) {
