@@ -104,6 +104,27 @@ li {
   padding: 12px 0;
 }
 
+.restaurant-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.manager-password-button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 6px;
+  background: transparent;
+  border-radius: 100%;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
 .requests-overlay {
   position: fixed;
   z-index: 30;
@@ -125,6 +146,32 @@ li {
   background: var(--plato-background);
   padding: 32px 24px 24px;
 }
+
+.password-modal {
+  position: relative;
+  width: min(100%, 440px);
+  box-sizing: border-box;
+  border-radius: 16px;
+  background: var(--plato-background);
+  padding: 32px 24px 24px;
+
+  h2 { margin: 0 0 4px; color: var(--plato-text); }
+
+  form {
+    display: grid;
+    gap: 8px;
+    margin: 24px 0 0;
+  }
+
+  input { width: 100%; box-sizing: border-box; }
+}
+
+.password-restaurant { margin: 0; color: var(--plato-text-secondary); }
+.field-error { color: var(--plato-error); }
+.password-error { margin: 8px 0; text-align: left; }
+.password-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+.password-actions button:disabled { cursor: not-allowed; opacity: 0.55; }
+.cancel-button { background: transparent; color: var(--plato-purple); }
 
 .modal-close { position: absolute; top: 12px; right: 12px; border: 0; background: transparent; color: var(--plato-text-secondary); font-size: var(--ts-24); }
 .modal-close:disabled { cursor: not-allowed; opacity: 0.55; }

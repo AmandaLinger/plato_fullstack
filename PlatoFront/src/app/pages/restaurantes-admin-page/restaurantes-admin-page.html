@@ -54,7 +54,17 @@
     <ul>@for (item of restaurantes; track item.id) {
       <li>
         <span>{{ item.nome }}</span>
-        <button type="button" (click)="inativar(item.id)">Inativar</button>
+        <div class="restaurant-actions">
+          <button
+            type="button"
+            class="manager-password-button"
+            title="Alterar senha do gerente"
+            (click)="abrirSenhaGerente(item)"
+          >
+            <img src="/icon_pessoa_adm.png" alt="Alterar senha do gerente">
+          </button>
+          <button type="button" (click)="inativar(item.id)">Inativar</button>
+        </div>
       </li>
     }</ul>
   </section>
@@ -63,6 +73,51 @@
   <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
 } @else if (successMessage) {
   <app-feedback-toast type="success" [message]="successMessage" (dismissed)="successMessage = ''" />
+}
+@if (isSenhaModalOpen) {
+  <div class="requests-overlay" (click)="fecharSenhaGerente()">
+    <section
+      class="password-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="password-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <button
+        class="modal-close"
+        type="button"
+        aria-label="Fechar alteração de senha"
+        [disabled]="isAtualizandoSenha"
+        (click)="fecharSenhaGerente()"
+      >×</button>
+      <p class="modal-eyebrow">Gerente</p>
+      <h2 id="password-modal-title">Alterar senha</h2>
+      <p class="password-restaurant">{{ restauranteSenhaNome }}</p>
+
+      <form [formGroup]="senhaGerenteForm" (ngSubmit)="salvarSenhaGerente()" novalidate>
+        <label for="nova-senha">Nova senha</label>
+        <input id="nova-senha" type="password" formControlName="novaSenha" autocomplete="new-password">
+        @if (senhaGerenteForm.controls.novaSenha.touched && senhaGerenteForm.controls.novaSenha.invalid) {
+          <small class="field-error" role="alert">A senha deve ter entre 8 e 72 caracteres.</small>
+        }
+
+        <label for="confirmar-nova-senha">Confirmar nova senha</label>
+        <input id="confirmar-nova-senha" type="password" formControlName="confirmarSenha" autocomplete="new-password">
+        @if (senhaGerenteForm.controls.confirmarSenha.touched && (senhaGerenteForm.controls.confirmarSenha.invalid || senhasNaoCoincidem)) {
+          <small class="field-error" role="alert">As senhas devem ser iguais.</small>
+        }
+
+        @if (senhaError) {
+          <p class="modal-state modal-error password-error" role="alert">{{ senhaError }}</p>
+        }
+
+        <div class="password-actions">
+          <button type="button" class="cancel-button" [disabled]="isAtualizandoSenha" (click)="fecharSenhaGerente()">Cancelar</button>
+          <button type="submit" [disabled]="!podeSalvarSenha">{{ isAtualizandoSenha ? 'Salvando...' : 'Salvar' }}</button>
+        </div>
+      </form>
+    </section>
+  </div>
 }
 @if (isSolicitacoesModalOpen) {
   <div class="requests-overlay" (click)="fecharSolicitacoes()">

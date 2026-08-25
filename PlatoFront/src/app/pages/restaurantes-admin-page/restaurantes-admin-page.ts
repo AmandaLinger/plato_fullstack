@@ -5,6 +5,7 @@ import { FeedbackToast } from '../../components/feedback-toast/feedback-toast';
 import { Restaurante, RestauranteService, SolicitacaoCadastro } from '../../services/restaurante.service';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({ selector: 'app-restaurantes-admin-page', imports: [ReactiveFormsModule, RouterLink, FeedbackToast], templateUrl: './restaurantes-admin-page.html', styleUrl: './restaurantes-admin-page.scss' })
 export class RestaurantesAdminPage implements OnInit {
@@ -23,8 +24,26 @@ export class RestaurantesAdminPage implements OnInit {
   solicitacaoEmExclusaoId: number | null = null;
   solicitacaoSelecionadaId: number | null = null;
   isAprovandoSolicitacao = false;
+  isSenhaModalOpen = false;
+  restauranteSenhaId: number | null = null;
+  restauranteSenhaNome = '';
+  isAtualizandoSenha = false;
+  senhaError = '';
   readonly restauranteForm = this.fb.nonNullable.group({ nome: ['', Validators.required] });
   readonly gerenteForm = this.fb.nonNullable.group({ restauranteId: [0, Validators.min(1)], nome: ['', Validators.required], senha: ['', [Validators.required, Validators.minLength(8)]] });
+  readonly senhaGerenteForm = this.fb.nonNullable.group({
+    novaSenha: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
+    confirmarSenha: ['', Validators.required],
+  });
+
+  get senhasNaoCoincidem(): boolean {
+    const value = this.senhaGerenteForm.getRawValue();
+    return value.confirmarSenha.length > 0 && value.novaSenha !== value.confirmarSenha;
+  }
+
+  get podeSalvarSenha(): boolean {
+    return this.senhaGerenteForm.valid && !this.senhasNaoCoincidem && !this.isAtualizandoSenha;
+  }
 
   ngOnInit(): void { this.carregar(); }
   abrirSolicitacoes(): void {
@@ -107,5 +126,45 @@ export class RestaurantesAdminPage implements OnInit {
     this.service.criarPrimeiroGerente(value.restauranteId, { nome: value.nome.trim(), senha: value.senha }).subscribe({ next: () => { this.restaurantesSemGerente = this.restaurantesSemGerente.filter(item => item.id !== value.restauranteId); this.gerenteForm.reset(); this.successMessage = 'Primeiro gerente criado com sucesso.'; }, error: () => this.errorMessage = 'Não foi possível criar o primeiro gerente.' });
   }
   inativar(id: number): void { this.service.inativar(id).subscribe({ next: () => { this.restaurantes = this.restaurantes.filter(item => item.id !== id); this.restaurantesSemGerente = this.restaurantesSemGerente.filter(item => item.id !== id); this.successMessage = 'Restaurante inativado.'; }, error: () => this.errorMessage = 'Não foi possível inativar o restaurante.' }); }
+  abrirSenhaGerente(restaurante: Restaurante): void {
+    this.restauranteSenhaId = restaurante.id;
+    this.restauranteSenhaNome = restaurante.nome;
+    this.senhaGerenteForm.reset();
+    this.senhaError = '';
+    this.isSenhaModalOpen = true;
+  }
+  fecharSenhaGerente(): void {
+    if (this.isAtualizandoSenha) return;
+    this.isSenhaModalOpen = false;
+    this.restauranteSenhaId = null;
+    this.restauranteSenhaNome = '';
+    this.senhaError = '';
+    this.senhaGerenteForm.reset();
+  }
+  salvarSenhaGerente(): void {
+    if (!this.podeSalvarSenha || this.restauranteSenhaId === null) {
+      this.senhaGerenteForm.markAllAsTouched();
+      return;
+    }
+
+    const novaSenha = this.senhaGerenteForm.getRawValue().novaSenha;
+    this.isAtualizandoSenha = true;
+    this.senhaError = '';
+    this.service.atualizarSenhaGerente(this.restauranteSenhaId, novaSenha)
+      .pipe(finalize(() => (this.isAtualizandoSenha = false)))
+      .subscribe({
+        next: () => {
+          this.isSenhaModalOpen = false;
+          this.restauranteSenhaId = null;
+          this.restauranteSenhaNome = '';
+          this.senhaGerenteForm.reset();
+          this.successMessage = 'Senha do gerente atualizada com sucesso!';
+        },
+        error: (error: HttpErrorResponse) => {
+          const body = error.error as { detail?: string; message?: string } | null;
+          this.senhaError = body?.detail ?? body?.message ?? 'Não foi possível atualizar a senha do gerente.';
+        },
+      });
+  }
   sair(): void { this.auth.clearToken(); void this.router.navigate(['/login']); }
 }

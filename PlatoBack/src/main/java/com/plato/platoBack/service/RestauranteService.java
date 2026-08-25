@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import com.plato.platoBack.dto.PrimeiroGerenteDto;
+import com.plato.platoBack.dto.AtualizarSenhaGerenteDto;
 import com.plato.platoBack.entity.Usuario;
 import com.plato.platoBack.repository.UsuarioRepository;
 import com.plato.platoBack.enuns.NivelAcesso;
@@ -86,6 +87,29 @@ public class RestauranteService {
                 .ativo(true)
                 .restaurante(restaurante)
                 .build());
+    }
+
+    @Transactional
+    public void atualizarSenhaGerente(Long restauranteId, AtualizarSenhaGerenteDto dto) {
+        exigirRoot();
+        if (dto == null || dto.novaSenha() == null
+                || dto.novaSenha().length() < 8 || dto.novaSenha().length() > 72) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A nova senha deve ter entre 8 e 72 caracteres"
+            );
+        }
+        if (restauranteRepository.findByIdAndAtivoTrue(restauranteId).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Restaurante não encontrado");
+        }
+        Usuario gerente = usuarioRepository
+                .findFirstByRestauranteIdAndAcessoAndAtivoTrueOrderByIdAsc(restauranteId, NivelAcesso.GERENTE)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "O restaurante não possui gerente ativo"
+                ));
+        gerente.setSenha(passwordEncoder.encode(dto.novaSenha()));
+        usuarioRepository.save(gerente);
     }
 
     private void exigirRoot() {

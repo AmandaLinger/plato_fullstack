@@ -61,4 +61,8 @@ export class RestauranteService {
   criarPrimeiroGerente(id: number, payload: PrimeiroGerentePayload): Observable<void> {
     return this.http.post<void>(`${environment.apiUrl}/api/restaurantes/${id}/primeiro-gerente`, payload);
   }
+
+  atualizarSenhaGerente(id: number, novaSenha: string): Observable<void> {
+    return this.http.patch<void>(`${environment.apiUrl}/api/restaurantes/${id}/gerente/senha`, { novaSenha });
+  }
 }

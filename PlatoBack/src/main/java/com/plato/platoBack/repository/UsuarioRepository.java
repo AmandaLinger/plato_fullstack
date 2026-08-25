@@ -19,4 +19,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     List<Usuario> findAllByRestauranteIdAndAtivoTrue(Long restauranteId);
 
     Optional<Usuario> findByIdAndRestauranteIdAndAtivoTrue(Long id, Long restauranteId);
+
+    Optional<Usuario> findFirstByRestauranteIdAndAcessoAndAtivoTrueOrderByIdAsc(
+            Long restauranteId,
+            com.plato.platoBack.enuns.NivelAcesso acesso
+    );
 }
