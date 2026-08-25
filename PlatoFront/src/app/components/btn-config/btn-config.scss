@@ -1,10 +1,32 @@
 button{
   border-radius: 100px;
   border: none;
-  background-color: var(--plato-purple);
+  background-color: transparent;
   cursor: pointer;
   padding: 8px;
+  margin: 8px;
   img{
-    height: 38px;
+    height: 56px;
+  }
+}
+
+button:hover{
+  transition: 0.5s ease;
+  transform: rotate(45deg);
+}
+
+@media screen and (min-width: 700px){
+  button{
+    img{
+      height: 64px;
+    }
+  }
+}
+
+@media screen and (min-width: 1700px){
+  button{
+    img{
+      height: 72px;
+    }
   }
 }

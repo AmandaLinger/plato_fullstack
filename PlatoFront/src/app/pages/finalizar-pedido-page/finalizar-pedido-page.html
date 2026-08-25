@@ -12,7 +12,11 @@
     } @else if (errorMessage) {
       <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" />
     } @else if (notasFiscais.length === 0) {
-      <p class="empty-state">Não há pedidos aguardando finalização.</p>
+      <div class="empty-state">
+        <img src="/icon_none.png" alt="ícone de vazio" class="size-img">
+        <p >Não há pedidos aguardando finalização.</p>
+      </div>
+
     } @else {
       <section class="order-list" aria-label="Pedidos abertos">
         @for (notaFiscal of notasFiscais; track notaFiscal.id) {

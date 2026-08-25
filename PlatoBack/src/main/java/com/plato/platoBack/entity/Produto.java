@@ -40,4 +40,8 @@ public class Produto {
     @Column(nullable = false, columnDefinition = "boolean default true")
     Boolean ativo = true;
 
+    @Builder.Default
+    @Column(name = "enviar_para_cozinha", nullable = false, columnDefinition = "boolean default false")
+    Boolean enviarParaCozinha = false;
+
 }

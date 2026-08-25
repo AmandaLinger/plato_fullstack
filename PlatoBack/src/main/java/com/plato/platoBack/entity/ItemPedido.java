@@ -31,4 +31,8 @@ public class ItemPedido {
     @Column(length = 500)
     String observacoes;
 
+    @Builder.Default
+    @Column(name = "enviar_para_cozinha", nullable = false, columnDefinition = "boolean default false")
+    Boolean enviarParaCozinha = false;
+
 }

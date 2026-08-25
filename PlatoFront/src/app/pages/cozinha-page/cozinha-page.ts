@@ -25,8 +25,13 @@ export class CozinhaPage implements OnInit {
       )),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe((pedidos) => {
-      this.pedidos = pedidos.filter((pedido) => pedido.enviarCozinha &&
-        (pedido.statusCozinha === 'PENDENTE' || pedido.statusCozinha === 'EM_PREPARO'));
+      this.pedidos = [...pedidos
+        .filter((pedido) => pedido.enviarCozinha && pedido.itens.length > 0 &&
+          (pedido.statusCozinha === 'PENDENTE' || pedido.statusCozinha === 'EM_PREPARO'))]
+        .sort((a, b) => {
+          const timeDifference = new Date(a.criadoEm ?? 0).getTime() - new Date(b.criadoEm ?? 0).getTime();
+          return timeDifference !== 0 ? timeDifference : a.id - b.id;
+        });
       this.isLoading = false;
     });
   }

@@ -45,6 +45,18 @@
         <small class="field-error">Informe um valor maior que zero.</small>
       }
 
+      <fieldset class="kitchen-choice">
+        <legend>Enviar produto para a cozinha?</legend>
+        <label>
+          <input type="radio" formControlName="enviarParaCozinha" [value]="true">
+          Sim
+        </label>
+        <label>
+          <input type="radio" formControlName="enviarParaCozinha" [value]="false">
+          Não
+        </label>
+      </fieldset>
+
       @if (saveError) {
         <div class="field-error" role="alert">{{ saveError }}</div>
       }

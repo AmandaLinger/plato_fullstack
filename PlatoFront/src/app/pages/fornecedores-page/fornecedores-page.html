@@ -1,10 +1,27 @@
 <main class="settings-page"><section class="settings-container" aria-labelledby="suppliers-title">
   <app-btn-back />
-  <header class="settings-header"><div><h1 id="suppliers-title">Fornecedores</h1><p>Consulte e edite os parceiros cadastrados.</p></div><button class="action-button" type="button" (click)="openCreateModal()">Adicionar fornecedor</button></header>
+  <header class="settings-header">
+    <div>
+      <h1 id="suppliers-title">Fornecedores</h1>
+      <p>Consulte e edite os parceiros cadastrados.</p>
+    </div>
+
+    <div class="position-btn">
+      <button class="action-button" type="button" (click)="openCreateModal()">
+        +
+      </button>
+
+    </div>
+  </header>
   @if (errorMessage) { <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" /> }
   @else if (successMessage) { <app-feedback-toast type="success" [message]="successMessage" (dismissed)="successMessage = ''" /> }
   @if (isLoading) { <p class="state-message" aria-live="polite">Carregando fornecedores...</p> }
-  @else if (fornecedores.length === 0) { <p class="state-message">Nenhum fornecedor cadastrado.</p> }
+  @else if (fornecedores.length === 0) {
+    <div class="empty-content">
+      <img src="/lista_vazia.png" alt="ícone de lista vazia">
+      <p class="state-message">Nenhum fornecedor cadastrado.</p>
+    </div>
+  }
   @else { <div class="table-wrapper"><table><thead><tr><th>Nome</th><th>CNPJ</th><th>Telefone</th><th><span class="visually-hidden">Ações</span></th></tr></thead><tbody>
     @for (fornecedor of fornecedores; track fornecedor.id) {
       <tr><td>{{ fornecedor.nome }}</td><td>{{ fornecedor.cnpj || 'Não informado' }}</td><td>{{ fornecedor.telefone || 'Não informado' }}</td><td class="actions-cell"><button class="edit-button" type="button" (click)="openEditModal(fornecedor)">Editar</button></td></tr>

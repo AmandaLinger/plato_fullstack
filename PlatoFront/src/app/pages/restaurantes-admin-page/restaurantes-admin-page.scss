@@ -1,12 +1,16 @@
 main {
   min-height: 100vh;
   padding: 16px;
-  background-image: var(--purple-gradient);
   box-sizing: border-box;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  background-image: url("/bg-v3.jpeg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 
   overflow-y: auto;
 }
@@ -27,6 +31,15 @@ nav{
     justify-content: space-between;
     align-items: center;
   }
+}
+
+.btn-sair{
+  background: var(--plato-orange);
+
+}
+
+.btn-sair:hover{
+    scale: 0.8;
 }
 
 .style-container{
@@ -79,6 +92,11 @@ button {
   border: 1px solid var(--plato-purple);
   color: var(--plato-purple);
   background: transparent;
+}
+
+.btn-consulta:hover{
+  background: var(--plato-purple);
+  color: var(--plato-surface);
 }
 
 .style-div{
@@ -164,6 +182,10 @@ li {
   }
 
   input { width: 100%; box-sizing: border-box; }
+}
+
+.hover1-05:hover{
+  scale: 1.05;
 }
 
 .password-restaurant { margin: 0; color: var(--plato-text-secondary); }

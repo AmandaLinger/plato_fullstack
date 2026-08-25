@@ -14,3 +14,53 @@
 .credentials-modal dt { color: var(--plato-text-secondary); font-size: var(--ts-14); }
 .credentials-modal dd { margin: 2px 0 0; overflow-wrap: anywhere; color: var(--plato-text); font-weight: 700; }
 .credentials-hint { margin: 18px 0 0; color: var(--plato-text-secondary); font-size: var(--ts-14); }
+
+.position-btn{
+  display: flex;
+  justify-content: right;
+
+
+  .action-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 100%;
+    font-size: var(--ts-24);
+
+    height: 46px;
+    width: 46px;
+
+  }
+}
+
+.empty-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-block: 24px;
+
+  img{
+    height: 80px ;
+    width: fit-content;
+    margin-bottom: 16px;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .empty-content{
+    img{
+      height: 100px ;
+    }
+  }
+}
+
+@media screen and (min-width: 1700px) {
+  .empty-content{
+    img{
+      height: 120px ;
+    }
+  }
+}

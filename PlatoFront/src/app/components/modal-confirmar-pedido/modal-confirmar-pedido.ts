@@ -35,7 +35,6 @@ export class ModalConfirmarPedido implements OnInit, OnChanges {
       ],
     ],
     garcomId: ['', Validators.required],
-    enviarCozinha: [true, Validators.required],
   });
   funcionarios: readonly Funcionario[] = [];
   isLoadingFuncionarios = true;
@@ -59,7 +58,7 @@ export class ModalConfirmarPedido implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['itens']) {
-      this.form.reset({ mesa: '', garcomId: '', enviarCozinha: true });
+      this.form.reset({ mesa: '', garcomId: '' });
     }
   }
 
@@ -85,7 +84,7 @@ export class ModalConfirmarPedido implements OnInit, OnChanges {
       return;
     }
 
-    const { mesa, garcomId, enviarCozinha } = this.form.getRawValue();
+    const { mesa, garcomId } = this.form.getRawValue();
     const funcionario = this.funcionarios.find((item) => item.id === Number(garcomId));
 
     if (!funcionario) {
@@ -98,7 +97,6 @@ export class ModalConfirmarPedido implements OnInit, OnChanges {
       garcomId: funcionario.id,
       itens: this.itens,
       valorTotal: this.valorTotal,
-      enviarCozinha,
     });
   }
 }

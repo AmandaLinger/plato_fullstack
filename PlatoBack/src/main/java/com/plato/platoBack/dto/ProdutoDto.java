@@ -18,4 +18,6 @@ public class ProdutoDto {
 
     String categoria;
 
+    Boolean enviarParaCozinha;
+
 } 

@@ -5,6 +5,7 @@ export interface Produto {
   readonly imagemUrl: string;
   readonly preco: number;
   readonly categoria: string;
+  readonly enviarParaCozinha: boolean;
 }
 
 export interface ProdutoPayload {
@@ -13,6 +14,7 @@ export interface ProdutoPayload {
   readonly imagemUrl: string;
   readonly preco: number;
   readonly categoria: string;
+  readonly enviarParaCozinha: boolean;
 }
 
 export interface SelecaoProduto {
@@ -31,7 +33,6 @@ export interface Pedido {
   readonly garcomId?: number;
   readonly itens: readonly ItemPedido[];
   readonly valorTotal: number;
-  readonly enviarCozinha: boolean;
 }
 
 export interface ItemPedidoRegistrado {

@@ -11,7 +11,7 @@
         </button>
       </div>
 
-      <button type="button" (click)="sair()">Sair</button>
+      <button type="button" (click)="sair()" class="btn-sair">Sair</button>
 
     </nav>
 
@@ -20,7 +20,7 @@
 
     <form [formGroup]="restauranteForm" (ngSubmit)="criar()" class="style-container">
       <input formControlName="nome" placeholder="Nome do restaurante">
-      <button type="submit" class="style-btn">Salvar restaurante
+      <button type="submit" class="style-btn hover1-05">Salvar restaurante
       </button>
 
     </form>
@@ -39,7 +39,7 @@
       <input formControlName="nome" placeholder="Login do gerente">
       <input type="password" formControlName="senha" placeholder="Senha">
 
-      <button type="submit" class="style-btn">Criar gerente</button>
+      <button type="submit" class="style-btn hover1-05">Criar gerente</button>
     </form>
 
 
@@ -63,7 +63,7 @@
           >
             <img src="/icon_pessoa_adm.png" alt="Alterar senha do gerente">
           </button>
-          <button type="button" (click)="inativar(item.id)">Inativar</button>
+          <button type="button" (click)="inativar(item.id)" class="hover1-05">Inativar</button>
         </div>
       </li>
     }</ul>

@@ -4,6 +4,7 @@ package com.plato.platoBack.controller;
 import com.plato.platoBack.dto.PedidoDto;
 import com.plato.platoBack.dto.FinalizarPedidoDto;
 import com.plato.platoBack.dto.AtualizarStatusCozinhaDto;
+import com.plato.platoBack.dto.PedidoCozinhaResponse;
 import com.plato.platoBack.entity.Pedido;
 import com.plato.platoBack.entity.Produto;
 import com.plato.platoBack.service.PedidoService;
@@ -52,7 +53,7 @@ public class PedidoController {
     }
 
     @GetMapping("/cozinha")
-    public List<Pedido> chamaPedidosCozinha() {
+    public List<PedidoCozinhaResponse> chamaPedidosCozinha() {
         return pedidoService.chamaPedidosCozinha();
     }
 

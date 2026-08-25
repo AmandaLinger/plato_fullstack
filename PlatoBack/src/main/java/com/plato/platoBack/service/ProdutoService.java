@@ -35,6 +35,7 @@ public class ProdutoService {
                 .descricao(produto.getDescricao())
                 .imagemUrl(produto.getImagemUrl())
                 .categoria(normalizarCategoria(produto.getCategoria()))
+                .enviarParaCozinha(Boolean.TRUE.equals(produto.getEnviarParaCozinha()))
                 .ativo(true)
                 .restaurante(restauranteContext.getRestaurante())
                 .build()
@@ -55,6 +56,7 @@ public class ProdutoService {
         p.setNome(produtoDto.getNome());
         p.setImagemUrl(produtoDto.getImagemUrl());
         p.setCategoria(normalizarCategoria(produtoDto.getCategoria()));
+        p.setEnviarParaCozinha(Boolean.TRUE.equals(produtoDto.getEnviarParaCozinha()));
 
         return produtoRepository.save(p);
     }

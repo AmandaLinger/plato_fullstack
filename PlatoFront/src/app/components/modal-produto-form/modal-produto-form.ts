@@ -24,6 +24,7 @@ export class ModalProdutoForm implements OnChanges {
     descricao: ['', [Validators.required, Validators.maxLength(300)]],
     categoria: ['Outros', [Validators.required, Validators.maxLength(80)]],
     preco: [0, [Validators.required, Validators.min(0.01)]],
+    enviarParaCozinha: [false],
   });
 
   imageError = '';
@@ -54,6 +55,7 @@ export class ModalProdutoForm implements OnChanges {
         descricao: this.produto?.descricao ?? '',
         categoria: this.produto?.categoria ?? 'Outros',
         preco: this.produto?.preco ?? 0,
+        enviarParaCozinha: this.produto?.enviarParaCozinha ?? false,
       });
     }
   }
@@ -108,6 +110,7 @@ export class ModalProdutoForm implements OnChanges {
       descricao: value.descricao.trim(),
       categoria: value.categoria.trim(),
       preco: value.preco,
+      enviarParaCozinha: value.enviarParaCozinha,
     };
 
     const request = this.produto

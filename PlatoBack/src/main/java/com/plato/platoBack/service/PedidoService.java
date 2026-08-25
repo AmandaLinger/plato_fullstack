@@ -1,6 +1,7 @@
 package com.plato.platoBack.service;
 
 import com.plato.platoBack.dto.PedidoDto;
+import com.plato.platoBack.dto.PedidoCozinhaResponse;
 import com.plato.platoBack.entity.Pedido;
 import com.plato.platoBack.enuns.FormaPagamento;
 import com.plato.platoBack.enuns.StatusCozinha;
@@ -37,10 +38,6 @@ public class PedidoService {
         p.setNumeroMesa(pedidoDto.getNumeroMesa());
         p.setItens(pedidoDto.getItens());
         p.setPedidoAberto(true);
-        p.setEnviarCozinha(Boolean.TRUE.equals(pedidoDto.getEnviarCozinha()));
-        p.setStatusCozinha(Boolean.TRUE.equals(pedidoDto.getEnviarCozinha())
-                ? StatusCozinha.PENDENTE
-                : null);
         p.setCriadoEm(LocalDateTime.now());
         p.setDataPedido(LocalDate.now());
         p.setRestaurante(restauranteContext.getRestaurante());
@@ -51,9 +48,15 @@ public class PedidoService {
                 item.setProduto(produtoRepository.findByIdAndRestauranteId(produtoId, restauranteContext.getId())
                         .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
                                 org.springframework.http.HttpStatus.BAD_REQUEST, "Produto inválido para o restaurante")));
+                item.setEnviarParaCozinha(Boolean.TRUE.equals(item.getProduto().getEnviarParaCozinha()));
                 item.setPedido(p);
             });
         }
+
+        boolean possuiItemCozinha = p.getItens() != null && p.getItens().stream()
+                .anyMatch(item -> Boolean.TRUE.equals(item.getEnviarParaCozinha()));
+        p.setEnviarCozinha(possuiItemCozinha);
+        p.setStatusCozinha(possuiItemCozinha ? StatusCozinha.PENDENTE : null);
 
         pedidoRepository.save(p);
     }
@@ -103,12 +106,14 @@ public class PedidoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Pedido> chamaPedidosCozinha() {
+    public List<PedidoCozinhaResponse> chamaPedidosCozinha() {
         return pedidoRepository
-                .findByRestauranteIdAndEnviarCozinhaTrueAndStatusCozinhaInOrderByCriadoEmAsc(
+                .findByRestauranteIdAndEnviarCozinhaTrueAndStatusCozinhaInOrderByCriadoEmAscIdAsc(
                         restauranteContext.getId(),
                         List.of(StatusCozinha.PENDENTE, StatusCozinha.EM_PREPARO)
-                );
+                ).stream()
+                .map(PedidoCozinhaResponse::from)
+                .toList();
     }
 
     @Transactional

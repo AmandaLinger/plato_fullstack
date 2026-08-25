@@ -16,7 +16,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     List<Pedido> findByRestauranteIdAndPedidoAbertoTrue(Long restauranteId);
 
-    List<Pedido> findByRestauranteIdAndEnviarCozinhaTrueAndStatusCozinhaInOrderByCriadoEmAsc(
+    List<Pedido> findByRestauranteIdAndEnviarCozinhaTrueAndStatusCozinhaInOrderByCriadoEmAscIdAsc(
             Long restauranteId,
             List<StatusCozinha> status
     );

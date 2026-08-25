@@ -15,7 +15,6 @@ interface PedidoPayload {
   readonly itens: readonly ItemPedidoPayload[];
   readonly pedidoAberto: true;
   readonly dataPedido: string;
-  readonly enviarCozinha: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -33,7 +32,6 @@ export class PedidosService {
       })),
       pedidoAberto: true,
       dataPedido: this.getLocalDate(),
-      enviarCozinha: pedido.enviarCozinha,
     };
 
     return this.http.post<void>(this.endpoint, payload);

@@ -1,6 +1,11 @@
 @use '../configuracoes-child';
 
-.page-actions { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+.page-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
 .export-button {
   display: inline-flex;
   align-items: center;

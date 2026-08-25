@@ -1,10 +1,29 @@
 <main class="settings-page"><section class="settings-container" aria-labelledby="employees-title">
   <app-btn-back />
-  <header class="settings-header"><div><h1 id="employees-title">Funcionários</h1><p>Gerencie a equipe da loja.</p></div><button class="action-button" type="button" (click)="openCreateModal()">Adicionar funcionário</button></header>
+  <header class="settings-header">
+    <div>
+      <h1 id="employees-title">Funcionários</h1>
+      <p>Gerencie a equipe da loja.</p>
+    </div>
+
+    <div class="position-btn">
+      <button class="action-button" type="button" (click)="openCreateModal()">
+        +
+      </button>
+    </div>
+
+  </header>
+
   @if (errorMessage) { <app-feedback-toast type="error" [message]="errorMessage" (dismissed)="errorMessage = ''" /> }
   @else if (successMessage) { <app-feedback-toast type="success" [message]="successMessage" (dismissed)="successMessage = ''" /> }
   @if (isLoading) { <p class="state-message" aria-live="polite">Carregando funcionários...</p> }
-  @else if (funcionarios.length === 0) { <p class="state-message">Nenhum funcionário cadastrado.</p> }
+
+  @else if (funcionarios.length === 0) {
+    <div class="empty-content">
+      <img src="/lista_vazia.png" alt="ícone de lista vazia">
+      <p class="state-message">Nenhum funcionário cadastrado.</p>
+    </div>
+  }
   @else { <div class="table-wrapper"><table><thead><tr><th>Nome / Telefone</th><th>Cargo / Função</th><th><span class="visually-hidden">Ações</span></th></tr></thead><tbody>
     @for (funcionario of funcionarios; track funcionario.id) {
       <tr><td>{{ funcionario.nome }}<small>{{ funcionario.telefone }}</small></td><td>{{ funcionario.cargo }}</td><td class="actions-cell"><button class="edit-button" type="button" (click)="openEditModal(funcionario)">Editar</button></td></tr>
